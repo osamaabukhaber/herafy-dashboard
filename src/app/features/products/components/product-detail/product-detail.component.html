@@ -1,0 +1,77 @@
+
+<!--
+<div class="container mx-auto p-6" *ngIf="product">
+  <div class="max-w-4xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold">{{ product.name }}</h1>
+      <div class="space-x-2">
+        <button
+          (click)="editProduct()"
+          class="bg-blue-600 text-white px-4 py-2 rounded">
+          Edit
+        </button>
+        <button
+          (click)="deleteProduct()"
+          class="bg-red-600 text-white px-4 py-2 rounded">
+          Delete
+        </button>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div>
+          <img [src]="product.images[0]" [alt]="product.name" class="w-full rounded-lg">
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <h2 class="text-2xl font-semibold">{{ product.name }}</h2>
+            <p class="text-gray-600">{{ product.description }}</p>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex justify-between">
+              <span class="font-medium">Base Price:</span>
+              <span class="text-xl font-bold">${{ product.basePrice }}</span>
+            </div>
+            <div *ngIf="product.discountPrice && product.discountPrice > 0" class="flex justify-between">
+              <span class="text-gray-500">Discount Price:</span>
+              <span class="text-red-600 font-bold">${{ product.discountPrice }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-medium">Category:</span>
+              <span>{{ product.category }}</span>
+
+              <!-- <span class="font-medium">SKU:</span>
+              <span>{{ product.sku }}</span> -->
+            </div>
+            <div class="flex justify-between">
+              <span class="font-medium">Rating:</span>
+              <span>{{ product.averageRating }}/5 ({{ product.reviewCount }} reviews)</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-medium">Status:</span>
+              <span [class]="!product.isDeleted ? 'text-green-600' : 'text-red-600'">
+                {{ !product.isDeleted ? 'Active' : 'Deleted' }}
+              </span>
+            </div>
+          </div>
+
+          <div *ngIf="product.variants && product.variants.length > 0">
+            <h3 class="font-medium mb-2">Variants:</h3>
+            <div class="space-y-2">
+              <div *ngFor="let variant of product.variants" class="border p-2 rounded">
+                <div class="font-medium">{{ variant.name }}</div>
+                <div *ngFor="let option of variant.options" class="text-sm text-gray-600">
+                  {{ option.value }}: {{ option.stock }} in stock
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->

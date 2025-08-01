@@ -1,0 +1,85 @@
+<!-- <div class="container mx-auto p-6">
+  <div class="max-w-2xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6">{{ isEditMode ? 'Edit Product' : 'Create Product' }}</h1>
+
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="bg-white rounded-lg shadow p-6">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Product Name *</label>
+          <input type="text" formControlName="name" class="w-full px-3 py-2 border rounded">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Description *</label>
+          <textarea formControlName="description" rows="4" class="w-full px-3 py-2 border rounded"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Price *</label>
+            <input type="number" formControlName="price" class="w-full px-3 py-2 border rounded">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">SKU *</label>
+            <input type="text" formControlName="sku" class="w-full px-3 py-2 border rounded">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Category *</label>
+            <select formControlName="category" class="w-full px-3 py-2 border rounded">
+              <option value="">Select Category</option>
+              <option *ngFor="let category of categories" [value]="category._id">
+                {{ category.name }}
+              </option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">Store *</label>
+            <select formControlName="store" class="w-full px-3 py-2 border rounded">
+              <option value="">Select Store</option>
+              <option *ngFor="let store of stores" [value]="store._id">
+                {{ store.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Stock Quantity *</label>
+            <input type="number" formControlName="stockQuantity" class="w-full px-3 py-2 border rounded">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">Weight (kg)</label>
+            <input type="number" formControlName="weight" class="w-full px-3 py-2 border rounded">
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <label class="flex items-center">
+            <input type="checkbox" formControlName="isActive" class="mr-2">
+            <span>Active</span>
+          </label>
+          <label class="flex items-center">
+            <input type="checkbox" formControlName="inStock" class="mr-2">
+            <span>In Stock</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end space-x-4">
+        <button type="button" (click)="onCancel()" class="bg-gray-500 text-white px-4 py-2 rounded">
+          Cancel
+        </button>
+        <button type="submit" [disabled]="productForm.invalid || loading" class="bg-blue-600 text-white px-4 py-2 rounded">
+          {{ loading ? 'Saving...' : (isEditMode ? 'Update' : 'Create') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div> -->
