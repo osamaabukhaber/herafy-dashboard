@@ -1,0 +1,407 @@
+<!-- add-store.component.html -->
+<div class="max-w-4xl mx-auto mt-12 bg-white rounded-2xl shadow-lg p-8 space-y-8">
+  <div class="text-center mb-8">
+    <h2 class="text-3xl font-bold text-gray-800">Add a New Store to Your Network</h2>
+    <p class="text-gray-600 text-base mt-3">Complete the form below to onboard your new store. We'll get you set up quickly and easily.</p>
+    <p class="text-sm text-gray-500 mt-2">Fields marked with <span class="text-red-500">*</span> are required</p>
+  </div>
+
+  <form [formGroup]="storeDataForm">
+    <!-- Store Name Section -->
+    <div class="mb-8">
+      <label class="block mb-2 font-medium text-gray-700">
+        Store Name <span class="text-red-500">*</span>
+      </label>
+      <input
+        name="name"
+        formControlName="name"
+        type="text"
+        placeholder="Enter your store name (e.g., Downtown Electronics)"
+        [ngClass]="{
+          'bg-red-50 text-gray-800 border-red-500 ring-2 ring-red-300': name?.invalid && (name?.touched || name?.dirty),
+          'bg-green-50 text-gray-800 border-green-500 ring-2 ring-green-300': name?.valid && (name?.touched || name?.dirty),
+          'bg-gray-800 text-gray-100 border-gray-400': !name?.touched && !name?.dirty
+        }"
+        class="w-full px-4 py-4 rounded-lg focus:outline-none transition-all duration-300 shadow-sm placeholder-gray-400" />
+
+      @if (name?.invalid && (name?.dirty || name?.touched)) {
+        @switch (name?.errors) {
+          @case (name?.errors?.['required']) {
+            <p class="text-sm text-red-600 mt-2 flex items-center">
+              <span class="mr-2">⚠️</span> Please enter a store name to continue.
+            </p>
+          }
+          @case (name?.errors?.['minlength']) {
+            <p class="text-sm text-red-600 mt-2 flex items-center">
+              <span class="mr-2">⚠️</span> Store name should be at least 3 characters long.
+            </p>
+          }
+          @case (name?.errors?.['maxlength']) {
+            <p class="text-sm text-red-600 mt-2 flex items-center">
+              <span class="mr-2">⚠️</span> Store name should not exceed 50 characters.
+            </p>
+          }
+          @default {
+            <p class="text-sm text-red-600 mt-2 flex items-center">
+              <span class="mr-2">⚠️</span> Please check your store name and try again.
+            </p>
+          }
+        }
+      }
+    </div>
+
+    <!-- Store Address Section -->
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold text-gray-700 mb-4">Store Address</h3>
+      <div formGroupName="address" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- City -->
+        <div>
+          <label class="block mb-2 font-medium text-gray-700">
+            City <span class="text-red-500">*</span>
+          </label>
+          <input
+            formControlName="city"
+            type="text"
+            placeholder="Enter city name"
+            [ngClass]="{
+              'bg-red-50 text-gray-800 border-red-500 ring-2 ring-red-300': city?.invalid && (city?.touched || city?.dirty),
+              'bg-green-50 text-gray-800 border-green-500 ring-2 ring-green-300': city?.valid && (city?.touched || city?.dirty),
+              'bg-gray-800 text-gray-100 border-gray-400': !city?.touched && !city?.dirty
+            }"
+            class="w-full px-4 py-4 rounded-lg focus:outline-none transition-all duration-300 shadow-sm placeholder-gray-400" />
+
+          @if (city?.invalid && (city?.dirty || city?.touched)) {
+            @switch (city?.errors) {
+              @case (city?.errors?.['required']) {
+                <p class="text-sm text-red-600 mt-2">Please enter the city name.</p>
+              }
+              @case (city?.errors?.['minlength']) {
+                <p class="text-sm text-red-600 mt-2">City name should be at least 3 characters.</p>
+              }
+              @case (city?.errors?.['maxlength']) {
+                <p class="text-sm text-red-600 mt-2">City name is too long.</p>
+              }
+              @default {
+                <p class="text-sm text-red-600 mt-2">Please enter a valid city name.</p>
+              }
+            }
+          }
+        </div>
+
+        <!-- Postal Code -->
+        <div>
+          <label class="block mb-2 font-medium text-gray-700">
+            Postal Code <span class="text-red-500">*</span>
+          </label>
+          <input
+            formControlName="postalCode"
+            type="text"
+            placeholder="Enter postal code"
+            [ngClass]="{
+              'bg-red-50 text-gray-800 border-red-500 ring-2 ring-red-300': postalCode?.invalid && (postalCode?.touched || postalCode?.dirty),
+              'bg-green-50 text-gray-800 border-green-500 ring-2 ring-green-300': postalCode?.valid && (postalCode?.touched || postalCode?.dirty),
+              'bg-gray-800 text-gray-100 border-gray-400': !postalCode?.touched && !postalCode?.dirty
+            }"
+            class="w-full px-4 py-4 rounded-lg focus:outline-none transition-all duration-300 shadow-sm placeholder-gray-400" />
+
+          @if (postalCode?.invalid && (postalCode?.dirty || postalCode?.touched)) {
+            @switch (postalCode?.errors) {
+              @case (postalCode?.errors?.['required']) {
+                <p class="text-sm text-red-600 mt-2">Postal code is required.</p>
+              }
+              @case (postalCode?.errors?.['minlength']) {
+                <p class="text-sm text-red-600 mt-2">Postal code should be at least 5 characters.</p>
+              }
+              @case (postalCode?.errors?.['maxlength']) {
+                <p class="text-sm text-red-600 mt-2">Postal code should not exceed 10 characters.</p>
+              }
+              @default {
+                <p class="text-sm text-red-600 mt-2">Please enter a valid postal code.</p>
+              }
+            }
+          }
+        </div>
+
+        <!-- Street -->
+        <div>
+          <label class="block mb-2 font-medium text-gray-700">
+            Street Address <span class="text-red-500">*</span>
+          </label>
+          <input
+            formControlName="street"
+            type="text"
+            placeholder="Enter street address"
+            [ngClass]="{
+              'bg-red-50 text-gray-800 border-red-500 ring-2 ring-red-300': street?.invalid && (street?.touched || street?.dirty),
+              'bg-green-50 text-gray-800 border-green-500 ring-2 ring-green-300': street?.valid && (street?.touched || street?.dirty),
+              'bg-gray-800 text-gray-100 border-gray-400': !street?.touched && !street?.dirty
+            }"
+            class="w-full px-4 py-4 rounded-lg focus:outline-none transition-all duration-300 shadow-sm placeholder-gray-400" />
+
+          @if (street?.invalid && (street?.dirty || street?.touched)) {
+            @switch (street?.errors) {
+              @case (street?.errors?.['required']) {
+                <p class="text-sm text-red-600 mt-2">Street address is required.</p>
+              }
+              @case (street?.errors?.['minlength']) {
+                <p class="text-sm text-red-600 mt-2">Street address should be at least 3 characters.</p>
+              }
+              @case (street?.errors?.['maxlength']) {
+                <p class="text-sm text-red-600 mt-2">Street address is too long.</p>
+              }
+              @default {
+                <p class="text-sm text-red-600 mt-2">Please enter a valid street address.</p>
+              }
+            }
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Store Branding Section -->
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold text-gray-700 mb-4">Store Branding</h3>
+
+      <!-- Logo URL -->
+      <div class="mb-6">
+        <label class="block mb-2 font-medium text-gray-700">
+          Store Logo URL <span class="text-red-500">*</span>
+        </label>
+        <input
+          formControlName="logoUrl"
+          type="url"
+          placeholder="https://example.com/logo.png"
+          [ngClass]="{
+            'bg-red-50 text-gray-800 border-red-500 ring-2 ring-red-300': logoUrl?.invalid && (logoUrl?.touched || logoUrl?.dirty),
+            'bg-green-50 text-gray-800 border-green-500 ring-2 ring-green-300': logoUrl?.valid && (logoUrl?.touched || logoUrl?.dirty),
+            'bg-gray-800 text-gray-100 border-gray-400': !logoUrl?.touched && !logoUrl?.dirty
+          }"
+          class="w-full px-4 py-4 rounded-lg focus:outline-none transition-all duration-300 shadow-sm placeholder-gray-400" />
+
+        @if (logoUrl?.invalid && (logoUrl?.dirty || logoUrl?.touched)) {
+          @switch (logoUrl?.errors) {
+            @case (logoUrl?.errors?.['required']) {
+              <p class="text-sm text-red-600 mt-2">Please provide a logo URL for your store.</p>
+            }
+            @case (logoUrl?.errors?.['pattern']) {
+              <p class="text-sm text-red-600 mt-2">Please enter a valid URL (e.g., https://example.com/logo.png).</p>
+            }
+            @default {
+              <p class="text-sm text-red-600 mt-2">Please check your logo URL format.</p>
+            }
+          }
+        }
+      </div>
+
+      <!-- Description -->
+      <div>
+        <label class="block mb-2 font-medium text-gray-700">
+          Store Description <span class="text-red-500">*</span>
+        </label>
+        <textarea
+          formControlName="description"
+          rows="4"
+          placeholder="Tell customers about your store, what makes it special, and what they can expect..."
+          [ngClass]="{
+            'bg-red-50 text-gray-800 border-red-500 ring-2 ring-red-300': description?.invalid && (description?.touched || description?.dirty),
+            'bg-green-50 text-gray-800 border-green-500 ring-2 ring-green-300': description?.valid && (description?.touched || description?.dirty),
+            'bg-gray-800 text-gray-100 border-gray-400': !description?.touched && !description?.dirty
+          }"
+          class="w-full px-4 py-4 rounded-lg focus:outline-none transition-all duration-300 shadow-sm resize-vertical placeholder-gray-400">
+        </textarea>
+
+        @if (description?.invalid && (description?.dirty || description?.touched)) {
+          @switch (description?.errors) {
+            @case (description?.errors?.['required']) {
+              <p class="text-sm text-red-600 mt-2">Please provide a description of your store.</p>
+            }
+            @case (description?.errors?.['minlength']) {
+              <p class="text-sm text-red-600 mt-2">Description should be at least 10 characters to help customers understand your store.</p>
+            }
+            @default {
+              <p class="text-sm text-red-600 mt-2">Please provide a valid store description.</p>
+            }
+          }
+        }
+      </div>
+    </div>
+
+    <!-- Store Policies Section -->
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold text-gray-700 mb-4">Store Policies</h3>
+      <div formGroupName="policies" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Shipping Policy -->
+        <div>
+          <label class="block mb-2 font-medium text-gray-700">
+            Shipping Policy <span class="text-red-500">*</span>
+          </label>
+          <textarea
+            formControlName="shipping"
+            rows="3"
+            placeholder="Describe your shipping options, delivery times, and costs..."
+            [ngClass]="{
+              'bg-red-50 text-gray-800 border-red-500 ring-2 ring-red-300': shipping?.invalid && (shipping?.touched || shipping?.dirty),
+              'bg-green-50 text-gray-800 border-green-500 ring-2 ring-green-300': shipping?.valid && (shipping?.touched || shipping?.dirty),
+              'bg-gray-800 text-gray-100 border-gray-400': !shipping?.touched && !shipping?.dirty
+            }"
+            class="w-full px-4 py-4 rounded-lg focus:outline-none transition-all duration-300 shadow-sm resize-vertical placeholder-gray-400">
+          </textarea>
+
+          @if (shipping?.invalid && (shipping?.dirty || shipping?.touched)) {
+            @switch (shipping?.errors) {
+              @case (shipping?.errors?.['required']) {
+                <p class="text-sm text-red-600 mt-2">Shipping policy is required to inform customers.</p>
+              }
+              @case (shipping?.errors?.['minlength']) {
+                <p class="text-sm text-red-600 mt-2">Please provide more details about your shipping policy.</p>
+              }
+              @default {
+                <p class="text-sm text-red-600 mt-2">Please enter a valid shipping policy.</p>
+              }
+            }
+          }
+        </div>
+
+        <!-- Return Policy -->
+        <div>
+          <label class="block mb-2 font-medium text-gray-700">
+            Return Policy <span class="text-red-500">*</span>
+          </label>
+          <textarea
+            formControlName="returns"
+            rows="3"
+            placeholder="Explain your return process, timeframes, and conditions..."
+            [ngClass]="{
+              'bg-red-50 text-gray-800 border-red-500 ring-2 ring-red-300': returns?.invalid && (returns?.touched || returns?.dirty),
+              'bg-green-50 text-gray-800 border-green-500 ring-2 ring-green-300': returns?.valid && (returns?.touched || returns?.dirty),
+              'bg-gray-800 text-gray-100 border-gray-400': !returns?.touched && !returns?.dirty
+            }"
+            class="w-full px-4 py-4 rounded-lg focus:outline-none transition-all duration-300 shadow-sm resize-vertical placeholder-gray-400">
+          </textarea>
+
+          @if (returns?.invalid && (returns?.dirty || returns?.touched)) {
+            @switch (returns?.errors) {
+              @case (returns?.errors?.['required']) {
+                <p class="text-sm text-red-600 mt-2">Return policy is required to set customer expectations.</p>
+              }
+              @case (returns?.errors?.['minlength']) {
+                <p class="text-sm text-red-600 mt-2">Please provide more details about your return policy.</p>
+              }
+              @default {
+                <p class="text-sm text-red-600 mt-2">Please enter a valid return policy.</p>
+              }
+            }
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Location & Status Section -->
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold text-gray-700 mb-4">Location & Status</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Location -->
+        <div>
+          <label class="block mb-2 font-medium text-gray-700">
+            GPS Coordinates
+            <span class="text-xs text-gray-500 block mt-1">Optional - Latitude, Longitude format</span>
+          </label>
+          <input
+            formGroupName="location"
+            type="text"
+            placeholder="25.2048, 55.2708"
+            [ngClass]="{
+              'bg-red-50 text-gray-800 border-red-500 ring-2 ring-red-300': location?.invalid && (location?.touched || location?.dirty),
+              'bg-green-50 text-gray-800 border-green-500 ring-2 ring-green-300': location?.valid && (location?.touched || location?.dirty),
+              'bg-gray-800 text-gray-100 border-gray-400': !location?.touched && !location?.dirty
+            }"
+            class="w-full px-4 py-4 rounded-lg focus:outline-none transition-all duration-300 shadow-sm placeholder-gray-400" />
+          <button
+            type="button"
+            (click)="getCurrentLocation()"
+            class="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+            📍 Use My Current Location
+          </button>
+          @if (location?.invalid && (location?.dirty || location?.touched)) {
+            @switch (location?.errors) {
+              @case (location?.errors?.['pattern']) {
+                <p class="text-sm text-red-600 mt-2">Please use the format: Latitude, Longitude (e.g., 25.2048, 55.2708).</p>
+              }
+              @default {
+                <p class="text-sm text-red-600 mt-2">Please enter valid GPS coordinates.</p>
+              }
+            }
+          }
+        </div>
+
+        <!-- Status -->
+        <div>
+          <label class="block mb-2 font-medium text-gray-700">
+            Store Status <span class="text-red-500">*</span>
+          </label>
+          <select
+            formControlName="status"
+            [ngClass]="{
+              'bg-red-50 text-gray-800 border-red-500 ring-2 ring-red-300': status?.invalid && (status?.touched || status?.dirty),
+              'bg-green-50 text-gray-800 border-green-500 ring-2 ring-green-300': status?.valid && (status?.touched || status?.dirty),
+              'bg-gray-800 text-gray-100 border-gray-400': !status?.touched && !status?.dirty
+            }"
+            class="w-full px-4 py-4 rounded-lg focus:outline-none transition-all duration-300 shadow-sm">
+            <option value="" disabled selected class="bg-gray-800 text-gray-400">Choose your store's current status</option>
+            @for (item of statusOptions; track item) {
+              <option [value]="item" class="bg-gray-800 text-gray-100">
+                {{ item | titlecase }}
+              </option>
+            }
+          </select>
+
+          @if (status?.invalid && (status?.dirty || status?.touched)) {
+            @switch (status?.errors) {
+              @case (status?.errors?.['required']) {
+                <p class="text-sm text-red-600 mt-2">Please select your store's current status.</p>
+              }
+              @default {
+                <p class="text-sm text-red-600 mt-2">Please select a valid store status.</p>
+              }
+            }
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Error Message -->
+    @if (storeDataForm.invalid && (storeDataForm.dirty || storeDataForm.touched) && !storeDataForm.pristine) {
+      <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+        <div class="flex items-center">
+          <span class="text-red-500 mr-2">⚠️</span>
+          <p class="text-red-700 font-medium">Please review and correct the errors above before creating your store.</p>
+        </div>
+        <p class="text-red-600 text-sm mt-1">All required fields must be completed with valid information.</p>
+      </div>
+    }
+
+    <!-- Submit Button -->
+    <div class="text-center pt-6 border-t border-gray-200">
+      <button
+        type="submit"
+        [disabled]="storeDataForm.invalid"
+        [ngClass]="{
+          'bg-orange-500 hover:bg-orange-600 cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105': storeDataForm.valid,
+          'bg-gray-400 cursor-not-allowed opacity-50': storeDataForm.invalid
+        }"
+        class="text-white font-bold text-lg px-12 py-4 rounded-lg transition-all duration-300">
+        Create Store
+      </button>
+      <p class="text-gray-500 text-sm mt-3">Your store will be reviewed and activated within 24 hours.</p>
+    </div>
+
+    <!-- Debug Info (remove in production) -->
+    <div class="mt-8 p-4 bg-gray-100 rounded-lg">
+      <details>
+        <summary class="cursor-pointer text-gray-600 font-medium">Form Debug Info</summary>
+        <pre class="mt-2 text-xs bg-white p-2 rounded border overflow-auto">{{ storeDataForm.value | json }}</pre>
+      </details>
+    </div>
+  </form>
+
+</div>
