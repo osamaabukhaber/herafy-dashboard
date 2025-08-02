@@ -3,6 +3,9 @@ import { MainComponent } from './features/main-component/main-component';
 import { Notfound } from './shared/components/notfound/notfound';
 import { User } from './features/user/user';
 import { ProductListComponent } from './features/products/components/product-list/product-list.component';
+import { StoreComponent } from './features/store/components/store-component/store-component';
+import { StoreAddedNewstoreComponent } from './features/store/components/store-added-newstore-component/store-added-newstore-component';
+import { StoreUpdateSroreComponent } from './features/store/components/store-update-srore-component/store-update-srore-component';
 // import { ProductFormComponent } from './features/products/components/product-form/product-form.component';
 // import { ProductDetailComponent } from './features/products/components/product-detail/product-detail.component';
 
@@ -13,6 +16,9 @@ export const routes: Routes = [
     children: [
       { path: 'user', component: User },
       { path: 'products', component: ProductListComponent },
+      {path:"store",component:StoreComponent ,title:"store"},
+      {path:"add-new-store", component:StoreAddedNewstoreComponent ,title:"add new store"},
+      {path: 'update/:id', component: StoreUpdateSroreComponent, title: "update store"},
       // { path: 'products/create',   },
       // { path: 'products/:id', component: ProductDetailComponent },
       // { path: 'products/:id/edit',  }
