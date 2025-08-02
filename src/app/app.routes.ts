@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { MainComponent } from './features/main-component/main-component';
-import { Notfound } from './shared/components/notfound/notfound';
+import {NotFoundComponent } from './shared/components/notfound/notfound';
 import { User } from './features/user/user';
 import { ProductListComponent } from './features/products/components/product-list/product-list.component';
 import { StoreComponent } from './features/store/components/store-component/store-component';
@@ -25,5 +25,5 @@ export const routes: Routes = [
     ],
   },
 
-  { path: '**', component: Notfound },
+  { path: '**', component: NotFoundComponent, title: 'Not Found' },
 ];
