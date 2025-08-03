@@ -11,7 +11,7 @@ import { ProductListBackendResponse } from '../../../shared/models/Api Responses
 })
 export class ProductApiService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiBaseUrl}/product`;
+  private apiUrl = `${environment.apiBaseUrl}/api/product`;
 
 
   getProducts(): Observable<ProductListBackendResponse> {

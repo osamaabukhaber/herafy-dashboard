@@ -1,5 +1,5 @@
 export const environment = {
-  apiBaseUrl: 'https://herafy-backend.up.railway.app/api',
+  apiBaseUrl: 'https://herafy-backend.up.railway.app',
   production: false,
 };
 
