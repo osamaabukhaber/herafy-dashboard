@@ -1,7 +1,7 @@
 <div class="flex gap-5">
   <label class="text-lg mx-[30px]">Filter user by role</label>
   <select class="border-2 rounded-sm" [(ngModel)]="filterByRole">
-    <option value="">All Roles</option> <!-- Default option -->
+    <option value="">All Roles</option>
     <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
   </select>
 </div>
