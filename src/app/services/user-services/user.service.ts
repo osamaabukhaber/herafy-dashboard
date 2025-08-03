@@ -9,7 +9,7 @@ import { UsersApiResponse } from '../../models/users-api-response';
   providedIn: 'root',
 })
 export class UserService {
-  private baseUrl = `${environment.apiBaseUrl}/api/users`;
+  private baseUrl = `${environment.apiBaseUrl}/users`;
 
   constructor(private http: HttpClient) {}
 
