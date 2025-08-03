@@ -31,7 +31,9 @@ export class UserService {
     return this.http.get<IUser[]>(this.baseUrl);
   } */
   getAllUsers(): Observable<UsersApiResponse> {
-    return this.http.get<UsersApiResponse>(this.baseUrl);
+    return this.http.get<UsersApiResponse>(this.baseUrl, {
+      withCredentials: true,
+    });
   }
 
   /**
@@ -39,14 +41,26 @@ export class UserService {
    * Admin: Get single user by ID
    */
   getUserById(id: string): Observable<IUser> {
-    return this.http.get<IUser>(`${this.baseUrl}/${id}`);
+    return this.http.get<IUser>(`${this.baseUrl}/${id}`, {
+      withCredentials: true,
+    });
   }
 
   updateUserByAdmin(id: string, updateData: Partial<IUser>): Observable<IUser> {
-    return this.http.patch<IUser>(`${this.baseUrl}/${id}`, updateData);
+    return this.http.patch<IUser>(`${this.baseUrl}/${id}`, updateData, {
+      withCredentials: true,
+    });
   }
 
   deleteUserByAdmin(id: string): Observable<{ message: string }> {
-    return this.http.delete<{ message: string }>(`${this.baseUrl}/${id}`);
+    return this.http.delete<{ message: string }>(`${this.baseUrl}/${id}`, {
+      withCredentials: true,
+    });
   }
+
+  filterUsersByRole(role: string): Observable<IUser[]> {
+  return this.http.get<IUser[]>(`${this.baseUrl}/filter/${role}`, {
+    withCredentials: true,
+  });
+}
 }
