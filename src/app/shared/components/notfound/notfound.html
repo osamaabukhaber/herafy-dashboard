@@ -1,1 +1,86 @@
-<p>notfound works!</p>
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-purple-700 p-4 relative overflow-hidden">
+
+  <!-- Background Elements -->
+  <div class="absolute inset-0 overflow-hidden">
+    <div class="absolute -top-40 -right-40 w-80 h-80 bg-white opacity-10 rounded-full animate-pulse"></div>
+    <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-white opacity-5 rounded-full animate-bounce"></div>
+    <div class="absolute top-1/4 left-1/4 w-32 h-32 bg-white opacity-10 rounded-full animate-ping"></div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="relative z-10 text-center max-w-2xl mx-auto">
+
+    <!-- Glass Card Container -->
+    <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 md:p-12 shadow-2xl border border-white/20">
+
+      <!-- Animated 404 -->
+      <div class="flex justify-center items-center space-x-4 mb-8">
+        <span class="text-8xl md:text-9xl font-black text-white animate-bounce error-number-1">4</span>
+        <div class="relative">
+          <span class="text-8xl md:text-9xl font-black text-white animate-bounce error-number-2">0</span>
+          <div class="absolute inset-0 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full blur-xl opacity-50 animate-pulse"></div>
+        </div>
+        <span class="text-8xl md:text-9xl font-black text-white animate-bounce error-number-3">4</span>
+      </div>
+
+      <!-- Error Message -->
+      <h1 class="text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
+        Page Not Found
+      </h1>
+
+      <p class="text-lg md:text-xl text-white/80 mb-8 leading-relaxed max-w-md mx-auto">
+        The page you're looking for doesn't exist or has been moved to another location.
+      </p>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+        <button
+          (click)="goHome()"
+          class="group relative px-8 py-4 bg-white text-purple-600 rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105 hover:shadow-xl flex items-center justify-center space-x-2">
+          <svg class="w-5 h-5 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+          </svg>
+          <span>Go Home</span>
+        </button>
+
+        <button
+          (click)="goBack()"
+          class="group px-8 py-4 bg-transparent border-2 border-white text-white rounded-xl font-semibold text-lg transition-all duration-300 hover:bg-white hover:text-purple-600 hover:scale-105 flex items-center justify-center space-x-2">
+          <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          <span>Go Back</span>
+        </button>
+      </div>
+
+      <!-- Help Section -->
+      <div class="border-t border-white/20 pt-6">
+        <p class="text-white/70 mb-4 font-medium">Need help? Try these options:</p>
+
+        <div class="flex flex-wrap justify-center gap-6">
+          <a href="/contact" class="text-white/80 hover:text-white transition-colors duration-200 flex items-center space-x-2 group">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+            </svg>
+            <span class="border-b border-transparent group-hover:border-white transition-colors duration-200">Contact Support</span>
+          </a>
+
+          <a href="/sitemap" class="text-white/80 hover:text-white transition-colors duration-200 flex items-center space-x-2 group">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+            <span class="border-b border-transparent group-hover:border-white transition-colors duration-200">Site Map</span>
+          </a>
+
+          <a href="/search" class="text-white/80 hover:text-white transition-colors duration-200 flex items-center space-x-2 group">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <span class="border-b border-transparent group-hover:border-white transition-colors duration-200">Search</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

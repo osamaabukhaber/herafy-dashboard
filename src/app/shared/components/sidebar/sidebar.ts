@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { SiderbarService } from '../../../services/siderbar-service/siderbar-service';
 
 @Component({
   selector: 'app-sidebar',
@@ -9,14 +10,20 @@ import { RouterModule } from '@angular/router';
   styleUrl: './sidebar.css',
 })
 export class Sidebar {
+
   adminIconDropDown: boolean = false;
   adminSideBare: boolean = false;
-  constructor(private eRef: ElementRef) {}
+  constructor(private eRef: ElementRef , private siderBarService:SiderbarService) {
+  }
   toggleUserDropDown() {
     this.adminIconDropDown = !this.adminIconDropDown;
   }
+  siderBarStatus(){
+    return this.siderBarStatus
+  }
   toggleAdminSideBare() {
     this.adminSideBare = !this.adminSideBare;
+    this.siderBarService.AssignSiderBareStatus(this.adminSideBare)
   }
 
   @HostListener('document:click', ['$event'])

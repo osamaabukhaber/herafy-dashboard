@@ -1,6 +1,6 @@
 // src/app/shared/models/category.interface.ts
 export interface Category {
-  _id?: string;
+  _id: string;
   name: string;
   slug?: string;
   description?: string;
