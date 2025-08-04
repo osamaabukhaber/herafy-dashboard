@@ -9,7 +9,7 @@ import { Category } from '../../shared/models/category.interface';
   providedIn: 'root'
 })
 export class CategoryService {
-  private baseUrl = `${environment.apiBaseUrl}/api/category`;
+  private baseUrl = `${environment.apiBaseUrl}/category`;
 
   constructor(private http: HttpClient){}
 

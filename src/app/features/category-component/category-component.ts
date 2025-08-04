@@ -20,7 +20,7 @@ export class CategoryComponent implements OnInit {
   ngOnInit(): void {
     this.categoryservice.getAllCategoty().subscribe({
       next: (res) => {
-        this.categories = res.data.category;
+        this.categories = res.data.allCategories;
         this.loading = false;
         this.cdr.detectChanges()
       },
