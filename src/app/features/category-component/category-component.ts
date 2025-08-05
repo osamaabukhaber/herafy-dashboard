@@ -15,7 +15,9 @@ export class CategoryComponent implements OnInit {
   error: string | null = null;
   categoryProps: Category = {} as Category;
   editingCategoryId: string | null = null;
-
+  filterByName: string = '';
+  names: string[] = ['mobiles', 'shirts', 'handmade'];
+  searchByName: string = '';
   constructor(private categoryservice: CategoryService, private cdr: ChangeDetectorRef){}
   ngOnInit(): void {
     this.categoryservice.getAllCategoty().subscribe({
@@ -67,7 +69,7 @@ export class CategoryComponent implements OnInit {
     const updateData = {
       name: this.categoryProps.name,
       image: this.categoryProps.image,
-      updatedDate: this.categoryProps.updatedAt
+      isActive: this.categoryProps.isActive
     };
     console.log("Saving Updated data", this.categoryProps._id, updateData);
     this.categoryservice.UpdateCategory(this.categoryProps._id, updateData).subscribe({
@@ -86,5 +88,20 @@ export class CategoryComponent implements OnInit {
         console.error("Error Updating Category", error)
       }
     })
+  }
+  // filter category
+  FilteredCategories(): Category[]{
+    console.log("Filtering for:", this.filterByName, this.searchByName);
+    let filterd = this.categories;
+    if(this.filterByName){
+      filterd = filterd.filter((category: Category) =>
+      category.name.toLowerCase().includes(this.filterByName.toLowerCase()))
+    }
+   
+    if(this.searchByName){
+      filterd = filterd.filter((category: Category) => 
+      category.name.toLowerCase().includes(this.searchByName.toLowerCase()))
+    }
+    return filterd
   }
 }

@@ -44,4 +44,16 @@ export class CategoryService {
       withCredentials: true
     })
   }
+  // filter category by name
+filterCategoryByName(name: string): Observable<Category[]> {
+  return this.http.get<Category[]>(`${this.baseUrl}/filter/${name}`, {
+    withCredentials: true
+  })
+}
+// search category
+searchCategoryByName(name: string): Observable<Category[]>{
+  return this.http.get<Category[]>(`${this.baseUrl}/search/${name}`, {
+    withCredentials: true
+  })
+}
 }
