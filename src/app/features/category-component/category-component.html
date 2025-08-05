@@ -1,6 +1,29 @@
+<!-- filter and search -->
+ <div class="flex justify-between"> 
+  <!-- filter -->
+  <div class="flex gap-5">
+    <label class="text-lg mx-[30px]" >Filter Category by Name: </label>
+    <select class="border-2 rounded-sm" [(ngModel)]="filterByName">
+      <option value="">Default</option>
+      <option *ngFor="let name of names" [value]="name">{{name}}</option>
+    </select>
+  </div>
+  <!-- search -->
+  <div class="flex mr-5">
+    <label class="text-lg mx-3">Search category by Name: </label>
+    <input
+    type="text" 
+    class="border-1 mr-2 rounded-l"
+    [(ngModel)]="searchByName"
+    />
+  </div>
+  <div class="flex mr-5">
+    <button>Add New Category</button>
+  </div>
+ </div>
 <div class="p-6">
     <table class="min-w-full divide-y divide-gray-200 overflow-x-auto">
-            <thead class="bg-gray-50">
+    <thead class="bg-gray-50">
       <tr>
         <th
           class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -50,7 +73,7 @@
             <td colspan="7" class="text-center py-6 text-sm text-red-500">No Category Available</td>
         </tr>
         <!-- get the data -->
-        <tr *ngFor="let category of categories">
+        <tr *ngFor="let category of FilteredCategories()">
             <!-- ID -->
             <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm text-gray-900">{{category._id}}</div>
