@@ -10,6 +10,8 @@ import { CategoryComponent } from './features/category-component/category-compon
 // import { ProductFormComponent } from './features/products/components/product-form/product-form.component';
 // import { ProductDetailComponent } from './features/products/components/product-detail/product-detail.component';
 import { CouponComponent } from './features/coupon-component/coupon-component/coupon-component';
+import { AuthGuard } from './core/guards/auth.guard';
+import { Login } from './shared/login/login';
 
 export const routes: Routes = [
   {
@@ -30,6 +32,6 @@ export const routes: Routes = [
       // { path: 'products/:id/edit',  }
     ],
   },
-
+    { path: 'login', component: Login },
   { path: '**', component: NotFoundComponent, title: 'Not Found' },
 ];
