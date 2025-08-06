@@ -1,148 +1,224 @@
-<!-- filter and search -->
- <div class="flex justify-between"> 
-  <!-- filter -->
-  <div class="flex gap-5">
-    <label class="text-lg mx-[30px]" >Filter Category by Name: </label>
-    <select class="border-2 rounded-sm" [(ngModel)]="filterByName">
-      <option value="">Default</option>
-      <option *ngFor="let name of names" [value]="name">{{name}}</option>
+<!-- Filter and Search -->
+<div class="flex justify-between items-center p-4">
+  <!-- Filter -->
+  <div class="flex items-center gap-5">
+    <label class="text-lg mx-5" for="filterSelect"
+      >Filter Category by Name:</label
+    >
+    <select
+      id="filterSelect"
+      class="border-2 rounded-sm p-1"
+      [(ngModel)]="filterByName"
+      (ngModelChange)="onFilterChange()"
+    >
+      <option value="">All Categories</option>
+      <option *ngFor="let name of names" [value]="name">{{ name }}</option>
     </select>
   </div>
-  <!-- search -->
-  <div class="flex mr-5">
-    <label class="text-lg mx-3">Search category by Name: </label>
+
+  <!-- Search -->
+  <div class="flex items-center mr-5">
+    <label class="text-lg mx-3" for="searchInput">Search by Name:</label>
     <input
-    type="text" 
-    class="border-1 mr-2 rounded-l"
-    [(ngModel)]="searchByName"
+      id="searchInput"
+      type="text"
+      class="border-2 rounded-sm p-1"
+      [(ngModel)]="searchByName"
+      (ngModelChange)="onSearchChange()"
+      placeholder="Search categories..."
     />
   </div>
-  <div class="flex mr-[30px]">
-    <button class="bg-blue-700 border-1 px-4 rounded-xl text-white">Add New</button>
+
+  <!-- Add New Category -->
+  <div class="flex mr-5">
+    <button
+      class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+      (click)="showAddCategoryRow()"
+    >
+      Add New Category
+    </button>
   </div>
- </div>
-<div class="p-6">
-    <table class="min-w-full divide-y divide-gray-200 overflow-x-auto">
+</div>
+
+<!-- Category Table -->
+<div class="p-6 overflow-x-auto">
+  <table class="min-w-full divide-y divide-gray-200">
     <thead class="bg-gray-50">
       <tr>
         <th
-          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
         >
-            ID
+          ID
         </th>
         <th
-          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
         >
           Category Image
         </th>
         <th
-          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
         >
           Category Name
         </th>
         <th
-          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
         >
-          Is Active
+          Created At
         </th>
         <th
-          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
         >
-          created at
+          Updated At
         </th>
         <th
-          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-        >
-          updated at
-        </th>
-        <th
-          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
         >
           Actions
         </th>
       </tr>
     </thead>
     <tbody class="bg-white divide-y divide-gray-200">
-        <tr *ngIf="loading">
-            <td colspan="7" class="text-center py-6 text-sm text-gray-500">Loading categories...</td>
-        </tr>
-        <tr *ngIf="error">
-            <td colspan="7" class="text-center py-6 text-sm text-red-500">{{ error }}</td>
-        </tr>
-        <tr *ngIf="!loading && !error && categories?.length===0">
-            <td colspan="7" class="text-center py-6 text-sm text-red-500">No Category Available</td>
-        </tr>
-        <!-- get the data -->
-        <tr *ngFor="let category of FilteredCategories()">
-            <!-- ID -->
-            <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{category._id}}</div>
-            </td>
-            <!-- image -->
-            <td class="px-6 py-4 whitespace-nowrap">
-                 <img 
-                    *ngIf="editingCategoryId !== category._id" 
-                    [src]="category.image" 
-                    alt="Category Image" 
-                    class="w-16 h-16 object-cover rounded" />
-                <input 
-                    *ngIf="editingCategoryId === category._id"
-                    type="text" 
-                    class="border rounded px-2 py-1 text-sm"
-                    [(ngModel)]="categoryProps.image" />
-            </td>
-            <!-- name -->
-            <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900" *ngIf="editingCategoryId !== category._id">
-                    {{category.name}}
-                </div>
-                <input 
-                    *ngIf="editingCategoryId === category._id"
-                    type="text" 
-                    class="border rounded px-2 py-1 text-sm"
-                    [(ngModel)]="categoryProps.name" />
-            </td>
-            <!-- is active -->
-            <td class="px-6 py-4 whitespace-nowrap">
-                <span [ngClass]="category.isActive ? 'text-green-600' : 'text-red-600'">
-                    {{ category.isActive ? 'Active' : 'Inactive' }}
-                </span>
-            </td>
-            <!-- created at -->
-            <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{category.createdAt | date:'medium'}}</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{category.updatedAt| date:'medium'}}</div>
-            </td>
-            <!-- actions -->
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <button 
-                    class="text-blue-600 hover:text-blue-900 mr-2"
-                    (click)="startEdit(category)"
-                    *ngIf="editingCategoryId !== category._id">
-                    Update
-                </button>
-                <button 
-                    class="text-green-600 hover:text-green-900 mr-2"
-                    (click)="UpdateCategory()"
-                    *ngIf="editingCategoryId === category._id">
-                    Save
-                </button>
-                <button 
-                    class="text-gray-600 hover:text-gray-900 mr-2"
-                    (click)="cancelEdit()"
-                    *ngIf="editingCategoryId === category._id">
-                    Cancel
-                </button>
-                <button 
-                    class="text-red-600 hover:text-red-900"
-                    (click)="deleteCategory(category._id)">
-                    Delete
-                </button>
-            </td>
-        </tr>
-        
+      <!-- Add New Row -->
+      <tr *ngIf="newCategoryRowVisible" class="bg-yellow-50">
+        <td class="px-6 py-4">—</td>
+        <td class="px-6 py-4">
+          <input
+            type="text"
+            [(ngModel)]="newCategory.image"
+            class="border-2 rounded-sm px-2 py-1 text-sm w-full"
+            placeholder="Image URL"
+            name="newImage"
+          />
+        </td>
+        <td class="px-6 py-4">
+          <input
+            type="text"
+            [(ngModel)]="newCategory.name"
+            class="border-2 rounded-sm px-2 py-1 text-sm w-full"
+            placeholder="Category Name"
+            name="newName"
+          />
+        </td>
+
+        <td class="px-6 py-4 text-gray-400">—</td>
+        <td class="px-6 py-4 text-gray-400">—</td>
+        <td class="px-6 py-4 flex gap-2">
+          <button
+            class="bg-green-500 text-white px-3 py-1 rounded text-sm"
+            (click)="addCategory()"
+            [disabled]="!newCategory.name"
+          >
+            Save
+          </button>
+          <button
+            class="bg-gray-500 text-white px-3 py-1 rounded text-sm"
+            (click)="cancelNewCategory()"
+          >
+            Cancel
+          </button>
+        </td>
+      </tr>
+
+      <!-- Loading State -->
+      <tr *ngIf="loading">
+        <td colspan="7" class="text-center py-6 text-sm text-gray-500">
+          Loading categories...
+        </td>
+      </tr>
+
+      <!-- Error State -->
+      <tr *ngIf="error">
+        <td colspan="7" class="text-center py-6 text-sm text-red-500">
+          {{ error }}
+        </td>
+      </tr>
+
+      <!-- Empty State -->
+      <tr *ngIf="!loading && !error && filteredCategories.length === 0">
+        <td colspan="7" class="text-center py-6 text-sm text-gray-500">
+          No Categories Available
+        </td>
+      </tr>
+
+      <!-- Category Rows -->
+      <tr *ngFor="let category of filteredCategories">
+        <td class="px-6 py-4 whitespace-nowrap">
+          <div class="text-sm text-gray-900">{{ category._id }}</div>
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap">
+          <img
+            *ngIf="editingCategoryId !== category._id"
+            [src]="category.image || 'assets/placeholder.png'"
+            alt="Category Image"
+            class="w-16 h-16 object-cover rounded"
+          />
+          <input
+            *ngIf="editingCategoryId === category._id"
+            type="text"
+            class="border-2 rounded-sm px-2 py-1 text-sm w-full"
+            [(ngModel)]="categoryProps.image"
+            name="editImage"
+            placeholder="Image URL"
+          />
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap">
+          <div
+            *ngIf="editingCategoryId !== category._id"
+            class="text-sm text-gray-900"
+          >
+            {{ category.name }}
+          </div>
+          <input
+            *ngIf="editingCategoryId === category._id"
+            type="text"
+            class="border-2 rounded-sm px-2 py-1 text-sm w-full"
+            [(ngModel)]="categoryProps.name"
+            name="editName"
+            required
+            placeholder="Category Name"
+          />
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap">
+          <div class="text-sm text-gray-900">
+            {{ category.createdAt | date: 'medium' }}
+          </div>
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap">
+          <div class="text-sm text-gray-900">
+            {{ category.updatedAt | date: 'medium' }}
+          </div>
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+          <button
+            *ngIf="editingCategoryId !== category._id"
+            class="text-blue-600 hover:text-blue-900 mr-2"
+            (click)="startEdit(category)"
+          >
+            Update
+          </button>
+          <button
+            *ngIf="editingCategoryId === category._id"
+            class="text-green-600 hover:text-green-900 mr-2"
+            (click)="updateCategory()"
+            [disabled]="!categoryProps.name"
+          >
+            Save
+          </button>
+          <button
+            *ngIf="editingCategoryId === category._id"
+            class="text-gray-600 hover:text-gray-900 mr-2"
+            (click)="cancelEdit()"
+          >
+            Cancel
+          </button>
+          <button
+            class="text-red-600 hover:text-red-900"
+            (click)="category._id && deleteCategory(category._id)"
+          >
+            Delete
+          </button>
+        </td>
+      </tr>
     </tbody>
-    </table>
+  </table>
 </div>
