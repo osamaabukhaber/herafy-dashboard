@@ -9,9 +9,8 @@ import { StoreUpdateSroreComponent } from './features/store/components/store-upd
 import { CategoryComponent } from './features/category-component/category-component';
 // import { ProductFormComponent } from './features/products/components/product-form/product-form.component';
 // import { ProductDetailComponent } from './features/products/components/product-detail/product-detail.component';
-import { AuthGuard } from './core/guards/auth.guard';
-import { AuthStatusResolver } from './core/resolvers/auth-status-resolver';
-import { Login } from './shared/login/login';
+import { CouponComponent } from './features/coupon-component/coupon-component/coupon-component';
+
 export const routes: Routes = [
   {
     path: '',
@@ -21,20 +20,16 @@ export const routes: Routes = [
     children: [
       { path: 'user', component: User },
       { path: 'products', component: ProductListComponent },
-      { path: 'store', component: StoreComponent, title: 'store' },
-      {
-        path: 'add-new-store',
-        component: StoreAddedNewstoreComponent,
-        title: 'add new store',
-      },
-      {
-        path: 'update/:id',
-        component: StoreUpdateSroreComponent,
-        title: 'update store',
-      },
-      { path: 'category', component: CategoryComponent },
+      { path:"store",component:StoreComponent ,title:"store"},
+      { path:"add-new-store", component:StoreAddedNewstoreComponent ,title:"add new store"},
+      { path: 'update/:id', component: StoreUpdateSroreComponent, title: "update store"},
+      {path: 'category', component: CategoryComponent},
+      {path: 'coupon', component: CouponComponent}
+      // { path: 'products/create',   },
+      // { path: 'products/:id', component: ProductDetailComponent },
+      // { path: 'products/:id/edit',  }
     ],
   },
-  { path: 'login', component: Login },
+
   { path: '**', component: NotFoundComponent, title: 'Not Found' },
 ];

@@ -1,0 +1,98 @@
+<!-- filter and search -->
+<div class="flex justify-between">
+  <!-- filter by code -->
+  <div class="flex gap-5">
+    <label class="text-lg mx-[30px]">Filter Coupon by Code: </label>
+    <select class="border-2 rounded-sm" [(ngModel)]="filterByCode">
+      <option value="">Default</option>
+      <option *ngFor="let coupon of coupons" [value]="coupon.code">{{ coupon.code }}</option>
+    </select>
+  </div>
+
+  <!-- search by active status -->
+  <div class="flex mr-5">
+    <label class="text-lg mx-3">Search by Active Status: </label>
+    <input 
+    type="text"
+    [(ngModel)] = "searchByActive"
+    class="border-1 mr-2 rounded-l"
+    />
+  </div>
+
+  <div class="flex mr-[30px]">
+    <button class="bg-blue-700 border-1 px-4 rounded-xl text-white">Add New</button>
+  </div>
+</div>
+
+<div class="p-6">
+  <table class="min-w-full divide-y divide-gray-200 overflow-x-auto">
+    <thead class="bg-gray-50">
+      <tr>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Value</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Active</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created At</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200">
+      <tr *ngIf="loading">
+        <td colspan="7" class="text-center py-6 text-sm text-gray-500">Loading coupons...</td>
+      </tr>
+      <tr *ngIf="error">
+        <td colspan="7" class="text-center py-6 text-sm text-red-500">{{ error }}</td>
+      </tr>
+      <tr *ngIf="!loading && !error && coupons?.length === 0">
+        <td colspan="7" class="text-center py-6 text-sm text-red-500">No Coupons Available</td>
+      </tr>
+
+      <!-- Render Coupons -->
+      <tr *ngFor="let coupon of FilteredCoupons()">
+        <!-- ID -->
+        <td class="px-6 py-4 whitespace-nowrap">
+          <div class="text-sm text-gray-900">{{ coupon._id }}</div>
+        </td>
+
+        <!-- Code -->
+        <td class="px-6 py-4 whitespace-nowrap">
+          <div class="text-sm text-gray-900" *ngIf="couponId !== coupon._id">{{ coupon.code }}</div>
+          <input *ngIf="couponId === coupon._id" type="text" class="border rounded px-2 py-1 text-sm" [(ngModel)]="couponProps.code" />
+        </td>
+
+        <!-- Type -->
+        <td class="px-6 py-4 whitespace-nowrap">
+          <div class="text-sm text-gray-900" *ngIf="couponId !== coupon._id">{{ coupon.type }}</div>
+          <input *ngIf="couponId === coupon._id" type="text" class="border rounded px-2 py-1 text-sm" [(ngModel)]="couponProps.type" />
+        </td>
+
+        <!-- Value -->
+        <td class="px-6 py-4 whitespace-nowrap">
+          <div class="text-sm text-gray-900" *ngIf="couponId !== coupon._id">{{ coupon.value }}</div>
+          <input *ngIf="couponId === coupon._id" type="number" class="border rounded px-2 py-1 text-sm" [(ngModel)]="couponProps.value" />
+        </td>
+
+        <!-- Active -->
+        <td class="px-6 py-4 whitespace-nowrap">
+          <span [ngClass]="coupon.active ? 'text-green-600' : 'text-red-600'">
+            {{ coupon.active ? 'Active' : 'Inactive' }}
+          </span>
+        </td>
+
+        <!-- Created At -->
+        <td class="px-6 py-4 whitespace-nowrap">
+          <div class="text-sm text-gray-900">{{ coupon.expiryDate| date:'medium' }}</div>
+        </td>
+
+        <!-- Actions -->
+        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+          <button class="text-blue-600 hover:text-blue-900 mr-2" (click)="startEdit(coupon)" *ngIf="couponId !== coupon._id">Update</button>
+          <button class="text-green-600 hover:text-green-900 mr-2" (click)="updateCoupon()" *ngIf="couponId === coupon._id">Save</button>
+          <button class="text-gray-600 hover:text-gray-900 mr-2" (click)="cancelEdit()" *ngIf="couponId === coupon._id">Cancel</button>
+          <button class="text-red-600 hover:text-red-900" (click)="deleteCoupon(coupon._id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
