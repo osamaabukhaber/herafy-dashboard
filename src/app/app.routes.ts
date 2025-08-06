@@ -9,6 +9,7 @@ import { StoreUpdateSroreComponent } from './features/store/components/store-upd
 import { CategoryComponent } from './features/category-component/category-component';
 // import { ProductFormComponent } from './features/products/components/product-form/product-form.component';
 // import { ProductDetailComponent } from './features/products/components/product-detail/product-detail.component';
+import { CouponComponent } from './features/coupon-component/coupon-component/coupon-component';
 
 export const routes: Routes = [
   {
@@ -20,7 +21,8 @@ export const routes: Routes = [
       { path:"store",component:StoreComponent ,title:"store"},
       { path:"add-new-store", component:StoreAddedNewstoreComponent ,title:"add new store"},
       { path: 'update/:id', component: StoreUpdateSroreComponent, title: "update store"},
-      {path: 'category', component: CategoryComponent}
+      {path: 'category', component: CategoryComponent},
+      {path: 'coupon', component: CouponComponent}
       // { path: 'products/create',   },
       // { path: 'products/:id', component: ProductDetailComponent },
       // { path: 'products/:id/edit',  }

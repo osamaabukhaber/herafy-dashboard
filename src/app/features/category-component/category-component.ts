@@ -91,7 +91,7 @@ export class CategoryComponent implements OnInit {
   }
   // filter category
   FilteredCategories(): Category[]{
-    console.log("Filtering for:", this.filterByName, this.searchByName);
+   
     let filterd = this.categories;
     if(this.filterByName){
       filterd = filterd.filter((category: Category) =>
