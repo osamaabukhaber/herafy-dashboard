@@ -1,147 +1,144 @@
-<div class="flex gap-5">
-  <label class="text-lg mx-[30px]">Filter user by role</label>
-  <select class="border-2 rounded-sm" [(ngModel)]="filterByRole">
+<div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-sm mb-5">
+  <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+  <label class="text-lg font-medium text-gray-700">Filter user by role:</label>
+  <select class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" [(ngModel)]="filterByRole">
     <option value="">All Roles</option>
-    <!-- <option *ngFor="let role of roles" [value]="role">{{ role }}</option> -->
-    <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+    @for (role of roles; track role) {
+      <option [value]="role">{{ role }}</option>
+    }
   </select>
 </div>
-<div class="p-6">
-  <table class="min-w-full divide-y divide-gray-200 overflow-x-auto">
-    <thead class="bg-gray-50">
+</div> 
+
+<div class="overflow-x-auto px-4">
+  <table class="min-w-full divide-y divide-gray-200 shadow-md rounded-lg">
+    <thead class="bg-gray-100">
       <tr>
-        <th
-          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-        >
-          User ID
-        </th>
-        <th
-          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-        >
-          Name
-        </th>
-        <th
-          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-        >
-          Address
-        </th>
-        <th
-          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-        >
-          Phone
-        </th>
-        <th
-          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-        >
-          Role
-        </th>
-        <th
-          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-        >
-          Email
-        </th>
-        <th
-          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-        >
-          Actions
-        </th>
+        <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">User ID</th>
+        <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Name</th>
+        <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Address</th>
+        <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Phone</th>
+        <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Role</th>
+        <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Email</th>
+        <th class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Actions</th>
       </tr>
     </thead>
 
-  <tbody class="bg-white divide-y divide-gray-200">
-  <tr *ngIf="loading">
-    <td colspan="7" class="text-center py-6 text-sm text-gray-500">Loading users...</td>
-  </tr>
-  <tr *ngIf="error">
-    <td colspan="7" class="text-center py-6 text-sm text-red-500">{{ error }}</td>
-  </tr>
-  <tr *ngIf="!loading && !error && users?.length === 0">
-    <td colspan="7" class="text-center py-6 text-sm text-gray-500">No users found.</td>
-  </tr>
-  
-  <tr *ngFor="let user of filterRole(filterByRole)">
-    <!-- ID -->
-    <td class="px-6 py-4 whitespace-nowrap">
-      <div class="text-sm text-gray-900">{{ user._id }}</div>
-    </td>
+    <tbody class="bg-white divide-y divide-gray-100">
+      @if (loading) {
+        <tr>
+          <td colspan="7" class="text-center py-6 text-sm text-gray-500">Loading users...</td>
+        </tr>
+      }
+      @if (error) {
+        <tr>
+          <td colspan="7" class="text-center py-6 text-sm text-red-500">{{ error }}</td>
+        </tr>
+      }
+      @if (!loading && !error && users?.length === 0) {
+        <tr>
+          <td colspan="7" class="text-center py-6 text-sm text-gray-500">No users found.</td>
+        </tr>
+      }
 
-    <!-- Name -->
-    <td class="px-6 py-4 whitespace-nowrap">
-      <ng-container *ngIf="editingUserId === user._id; else viewName">
-        <input type="text" [(ngModel)]="userProps.firstName" placeholder="First Name" class="border px-2 py-1 mr-1" />
-        <input type="text" [(ngModel)]="userProps.lastName" placeholder="Last Name" class="border px-2 py-1" />
-      </ng-container>
-      <ng-template #viewName>
-        <div class="flex items-center">
-          <div class="flex-shrink-0 h-10 w-10">
-            <img class="h-10 w-10 rounded-full" src="https://i.pravatar.cc/150?u={{ user._id }}" alt="{{ user.userName }}" />
-          </div>
-          <div class="ml-4">
-            <div class="text-sm font-medium text-gray-900">{{ user.firstName }} {{ user.lastName }}</div>
-            <div class="text-sm text-gray-500">{{ user.email }}</div>
-          </div>
-        </div>
-      </ng-template>
-    </td>
+      @for (user of filterRole(filterByRole); track user._id) {
+        <tr class="hover:bg-gray-50 transition">
+          <!-- ID -->
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ user._id }}</td>
 
-    <!-- Address (read-only) -->
-    <td class="px-6 py-4 whitespace-nowrap">
-      <div class="text-sm text-gray-900">{{ user.addresses?.[0]?.country || '—' }}</div>
-      <div class="text-sm text-gray-500">{{ user.addresses?.[0]?.city || 'N/A' }}</div>
-    </td>
+          <!-- Name -->
+          <td class="px-6 py-4 whitespace-nowrap">
+            @if (editingUserId === user._id) {
+              <div class="flex gap-2">
+                <input type="text" [(ngModel)]="userProps.firstName" placeholder="First Name" class="border px-2 py-1 rounded w-24" />
+                <input type="text" [(ngModel)]="userProps.lastName" placeholder="Last Name" class="border px-2 py-1 rounded w-24" />
+              </div>
+            } @else {
+              <div class="flex items-center gap-3">
+                <img class="h-10 w-10 rounded-full" src="https://i.pravatar.cc/150?u={{ user._id }}" alt="{{ user.userName }}" />
+                <div>
+                  <div class="text-sm font-medium text-gray-900">{{ user.firstName }} {{ user.lastName }}</div>
+                  <div class="text-sm text-gray-500">{{ user.email }}</div>
+                </div>
+              </div>
+            }
+          </td>
 
-    <!-- Phone -->
-    <td class="px-6 py-4 whitespace-nowrap">
-      <ng-container *ngIf="editingUserId === user._id; else viewPhone">
-        <input type="text" [(ngModel)]="userProps.phone" placeholder="Phone" class="border px-2 py-1" />
-      </ng-container>
-      <ng-template #viewPhone>
-        <div class="text-sm text-gray-900">{{ user.phone || '—' }}</div>
-      </ng-template>
-    </td>
+          <!-- Address -->
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+            <div>{{ user.addresses?.[0]?.country || '—' }}</div>
+            <div class="text-sm text-gray-400">{{ user.addresses?.[0]?.city || 'N/A' }}</div>
+          </td>
 
-    <!-- Role -->
-    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 capitalize">
-      <ng-container *ngIf="editingUserId === user._id; else viewRole">
-        <select [(ngModel)]="userProps.role" class="border px-2 py-1">
-          <option value="user">User</option>
-          <option value="admin">Admin</option>
-          <option value="Vendor">Vendor</option>
-        </select>
-      </ng-container>
-      <ng-template #viewRole>
-        {{ user.role }}
-      </ng-template>
-    </td>
+          <!-- Phone -->
+          <td class="px-6 py-4 whitespace-nowrap text-sm">
+            @if (editingUserId === user._id) {
+              <input type="text" [(ngModel)]="userProps.phone" placeholder="Phone" class="border px-2 py-1 rounded w-32" />
+            } @else {
+              {{ user.phone || '—' }}
+            }
+          </td>
 
-    <!-- Email -->
-    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-      <ng-container *ngIf="editingUserId === user._id; else viewEmail">
-        <input type="email" [(ngModel)]="userProps.email" placeholder="Email" class="border px-2 py-1" />
-      </ng-container>
-      <ng-template #viewEmail>
-        {{ user.email }}
-      </ng-template>
-    </td>
+          <!-- Role -->
+          <td class="px-6 py-4 whitespace-nowrap capitalize text-sm">
+            @if (editingUserId === user._id) {
+              <select [(ngModel)]="userProps.role" class="border px-2 py-1 rounded">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+                <option value="Vendor">Vendor</option>
+              </select>
+            } @else {
+              {{ user.role }}
+            }
+          </td>
 
-    <!-- Actions -->
-    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-      <ng-container *ngIf="editingUserId === user._id; else defaultButtons">
-        <button (click)="updateUser()" class="text-green-600 hover:text-green-900 mr-2">Save</button>
-        <button (click)="cancelEdit()" class="text-gray-600 hover:text-gray-900">Cancel</button>
-      </ng-container>
-      <ng-template #defaultButtons>
-        <button (click)="startEdit(user)" class="text-blue-600 hover:text-blue-900 mr-2">Edit</button>
-        <button (click)="deleteUser(user._id)" class="text-red-600 hover:text-red-900">Delete</button>
-      </ng-template>
-    </td>
-  </tr>
-</tbody>
+          <!-- Email -->
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+            @if (editingUserId === user._id) {
+              <input type="email" [(ngModel)]="userProps.email" placeholder="Email" class="border px-2 py-1 rounded w-44" />
+            } @else {
+              {{ user.email }}
+            }
+          </td>
 
+          <!-- Actions -->
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            @if (editingUserId === user._id) {
+              <button (click)="updateUser()" class="text-green-600 hover:text-green-800 hover:bg-green-50 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200">
+                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Save
+              </button>
+              <button (click)="cancelEdit()" class="text-gray-600 hover:text-gray-800 hover:bg-gray-50 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200" >
+                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                    Cancel
+              </button>
+            } @else {
+              <button (click)="startEdit(user)"class="text-blue-600 hover:text-blue-800 hover:bg-blue-50 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200">
+                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                    Edit
+              </button>
+              <button (click)="deleteUser(user._id)" class="text-red-600 hover:text-red-800 hover:bg-red-50 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200">
+                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+              </button>
+            }
+          </td>
+        </tr>
+      }
+    </tbody>
   </table>
-   <div class="flex justify-center items-center gap-4 mt-6">
+
+  <!-- Pagination -->
+  <div class="flex justify-center items-center gap-4 mt-6">
     <button
-      class="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+      class="px-4 py-2 bg-gray-100 border rounded hover:bg-gray-200 disabled:opacity-50"
       (click)="previousPage()"
       [disabled]="currentPage === 1"
     >
@@ -153,7 +150,7 @@
     </span>
 
     <button
-      class="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+      class="px-4 py-2 bg-gray-100 border rounded hover:bg-gray-200 disabled:opacity-50"
       (click)="nextPage()"
       [disabled]="!canPaginate()"
     >
