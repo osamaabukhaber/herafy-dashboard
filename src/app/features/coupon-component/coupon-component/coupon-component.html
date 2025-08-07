@@ -1,0 +1,289 @@
+<!-- Search and Add Button -->
+<div class="flex justify-between items-center p-4">
+  <!-- Search -->
+  <div class="flex items-center">
+    <label class="text-lg mx-3" for="searchInput">Search by Code:</label>
+    <input
+      id="searchInput"
+      type="text"
+      class="border-2 rounded-sm p-1"
+      [(ngModel)]="searchTerm"
+      placeholder="Search coupons..."
+    />
+  </div>
+
+  <!-- Add New Coupon -->
+  <div class="flex mr-5">
+    <button
+      class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+      (click)="addingNew = true"
+      *ngIf="!addingNew"
+    >
+      Add New Coupon
+    </button>
+  </div>
+</div>
+
+<div class="overflow-x-auto">
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-50">
+      <tr>
+        <th
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          ID
+        </th>
+        <th
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          Code
+        </th>
+        <th
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          Type
+        </th>
+        <th
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          Value
+        </th>
+        <th
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          Min Cart
+        </th>
+        <th
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          Max Discount
+        </th>
+        <th
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          Expiry
+        </th>
+        <th
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          Usage Limit
+        </th>
+        <th
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          Active
+        </th>
+        <th
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          Used Count
+        </th>
+        <th
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          Actions
+        </th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200">
+      <!-- Add New Row -->
+      <tr *ngIf="addingNew">
+        <td class="px-6 py-4">Auto</td>
+        <td class="px-6 py-4">
+          <input
+            [(ngModel)]="newCoupon.code"
+            class="border px-2 py-1 text-sm w-full"
+            placeholder="Enter code"
+          />
+        </td>
+        <td class="px-6 py-4">
+          <select
+            [(ngModel)]="newCoupon.type"
+            class="border px-2 py-1 text-sm w-full"
+          >
+            <option value="fixed">Fixed</option>
+            <option value="percentage">Percentage</option>
+          </select>
+        </td>
+        <td class="px-6 py-4">
+          <input
+            type="number"
+            [(ngModel)]="newCoupon.value"
+            class="border px-2 py-1 text-sm w-full"
+            placeholder="0"
+          />
+        </td>
+        <td class="px-6 py-4">
+          <input
+            type="number"
+            [(ngModel)]="newCoupon.minCartTotal"
+            class="border px-2 py-1 text-sm w-full"
+            placeholder="0"
+          />
+        </td>
+        <td class="px-6 py-4">
+          <input
+            type="number"
+            [(ngModel)]="newCoupon.maxDiscount"
+            class="border px-2 py-1 text-sm w-full"
+            placeholder="0"
+          />
+        </td>
+        <td class="px-6 py-4">
+          <input
+            type="date"
+            [(ngModel)]="newCoupon.expiryDate"
+            class="border px-2 py-1 text-sm w-full"
+          />
+        </td>
+        <td class="px-6 py-4">
+          <input
+            type="number"
+            [(ngModel)]="newCoupon.usageLimit"
+            class="border px-2 py-1 text-sm w-full"
+            placeholder="1"
+          />
+        </td>
+        <td class="px-6 py-4 text-center">
+          <input type="checkbox" [(ngModel)]="newCoupon.active" />
+        </td>
+        <td class="px-6 py-4 text-gray-400">0</td>
+        <td class="px-6 py-4">
+          <div class="flex gap-2">
+            <button
+              class="text-green-600 hover:text-green-900 px-2 py-1"
+              (click)="addCoupon()"
+            >
+              Add
+            </button>
+            <button
+              class="text-gray-600 hover:text-gray-900 px-2 py-1"
+              (click)="cancelAdd()"
+            >
+              Cancel
+            </button>
+          </div>
+        </td>
+      </tr>
+
+      <!-- Existing Coupons -->
+      <tr *ngFor="let coupon of FilteredCoupons()">
+        <td class="px-6 py-4">{{ coupon._id }}</td>
+        <td class="px-6 py-4">
+          <input
+            *ngIf="editCouponId === coupon._id"
+            [(ngModel)]="coupon.code"
+            class="border px-2 py-1 text-sm w-full"
+          />
+          <span *ngIf="editCouponId !== coupon._id">{{ coupon.code }}</span>
+        </td>
+        <td class="px-6 py-4">
+          <select
+            *ngIf="editCouponId === coupon._id"
+            [(ngModel)]="coupon.type"
+            class="border px-2 py-1 text-sm w-full"
+          >
+            <option value="fixed">Fixed</option>
+            <option value="percentage">Percentage</option>
+          </select>
+          <span *ngIf="editCouponId !== coupon._id">{{ coupon.type }}</span>
+        </td>
+        <td class="px-6 py-4">
+          <input
+            *ngIf="editCouponId === coupon._id"
+            type="number"
+            [(ngModel)]="coupon.value"
+            class="border px-2 py-1 text-sm w-full"
+          />
+          <span *ngIf="editCouponId !== coupon._id">{{ coupon.value }}</span>
+        </td>
+        <td class="px-6 py-4">
+          <input
+            *ngIf="editCouponId === coupon._id"
+            type="number"
+            [(ngModel)]="coupon.minCartTotal"
+            class="border px-2 py-1 text-sm w-full"
+          />
+          <span *ngIf="editCouponId !== coupon._id"
+            >{{ coupon.minCartTotal }}</span
+          >
+        </td>
+        <td class="px-6 py-4">
+          <input
+            *ngIf="editCouponId === coupon._id"
+            type="number"
+            [(ngModel)]="coupon.maxDiscount"
+            class="border px-2 py-1 text-sm w-full"
+          />
+          <span *ngIf="editCouponId !== coupon._id"
+            >{{ coupon.maxDiscount }}</span
+          >
+        </td>
+        <td class="px-6 py-4">
+          <input
+            *ngIf="editCouponId === coupon._id"
+            type="date"
+            [(ngModel)]="coupon.expiryDate"
+            class="border px-2 py-1 text-sm w-full"
+          />
+          <span *ngIf="editCouponId !== coupon._id"
+            >{{ coupon.expiryDate | date }}</span
+          >
+        </td>
+        <td class="px-6 py-4">
+          <input
+            *ngIf="editCouponId === coupon._id"
+            type="number"
+            [(ngModel)]="coupon.usageLimit"
+            class="border px-2 py-1 text-sm w-full"
+          />
+          <span *ngIf="editCouponId !== coupon._id"
+            >{{ coupon.usageLimit }}</span
+          >
+        </td>
+        <td class="px-6 py-4 text-center">
+          <input
+            type="checkbox"
+            [(ngModel)]="coupon.active"
+            [disabled]="editCouponId !== coupon._id"
+          />
+        </td>
+        <td class="px-6 py-4">{{ coupon.usedCount }}</td>
+        <td class="px-6 py-4">
+          <ng-container *ngIf="editCouponId === coupon._id; else actionButtons">
+            <div class="flex gap-2">
+              <button
+                class="text-green-600 hover:text-green-900 px-2 py-1"
+                (click)="updateCoupon(coupon)"
+              >
+                Save
+              </button>
+              <button
+                class="text-gray-600 hover:text-gray-900 px-2 py-1"
+                (click)="cancelEdit()"
+              >
+                Cancel
+              </button>
+            </div>
+          </ng-container>
+          <ng-template #actionButtons>
+            <div class="flex gap-2">
+              <button
+                class="text-blue-600 hover:text-blue-900 px-2 py-1"
+                (click)="editCoupon(coupon)"
+              >
+                Update
+              </button>
+              <button
+                class="text-red-600 hover:text-red-900 px-2 py-1"
+                (click)="deleteCoupon(coupon._id)"
+              >
+                Delete
+              </button>
+            </div>
+          </ng-template>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
