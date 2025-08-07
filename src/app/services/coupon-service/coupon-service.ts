@@ -12,9 +12,13 @@ export class CouponService {
 
   constructor(private http: HttpClient) {}
 
-  getAllCupons(): Observable<CouponListResponse> {
+  getAllCupons(Page: number = 1, limit: number = 10): Observable<CouponListResponse> {
     return this.http.get<CouponListResponse>(this.baseUrl, {
-      withCredentials: true
+      withCredentials: true,
+      params:{
+        page: Page.toString(),
+        limit: limit.toString()
+      }
     });
   }
 

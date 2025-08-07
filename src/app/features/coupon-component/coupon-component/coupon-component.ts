@@ -26,7 +26,9 @@ export class CouponComponent implements OnInit {
   // For adding new coupon
   addingNew: boolean = false;
   newCoupon: Partial<ICoupon> = this.getEmptyCoupon();
-
+  // pagination
+  currentPage: number = 1;
+  limit: number = 10;
   constructor(
     private couponService: CouponService,
     private cdr: ChangeDetectorRef
@@ -34,8 +36,38 @@ export class CouponComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchCoupons();
+    this.couponpagination()
   }
-
+  // pagination
+  couponpagination(): void{
+    this.loading = true;
+    this.couponService.getAllCupons(this.currentPage, this.limit).subscribe({
+      next: (res) => {
+        this.coupons = res.data.allCupons;
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.error = err?.error?.message || 'Falied';
+        this.loading = false
+      }
+    })
+  }
+  // next page
+  nextPage(): void{
+    this.currentPage++;
+    this.couponpagination()
+  }
+  // previous pagination
+  previousPage(): void{
+    if(this.currentPage > 1){
+      this.currentPage--;
+      this.couponpagination()
+    }
+  }
+  canPaginate(): boolean{
+    return this.coupons.length === this.limit
+  }
   private getEmptyCoupon(): Partial<ICoupon> {
     return {
       code: '',

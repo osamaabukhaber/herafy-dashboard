@@ -2,6 +2,7 @@
   <label class="text-lg mx-[30px]">Filter user by role</label>
   <select class="border-2 rounded-sm" [(ngModel)]="filterByRole">
     <option value="">All Roles</option>
+    <!-- <option *ngFor="let role of roles" [value]="role">{{ role }}</option> -->
     <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
   </select>
 </div>
@@ -138,4 +139,25 @@
 </tbody>
 
   </table>
+   <div class="flex justify-center items-center gap-4 mt-6">
+    <button
+      class="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+      (click)="previousPage()"
+      [disabled]="currentPage === 1"
+    >
+      Previous
+    </button>
+
+    <span class="text-gray-700 text-sm font-medium">
+      Page {{ currentPage }}
+    </span>
+
+    <button
+      class="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+      (click)="nextPage()"
+      [disabled]="!canPaginate()"
+    >
+      Next
+    </button>
+  </div>
 </div>

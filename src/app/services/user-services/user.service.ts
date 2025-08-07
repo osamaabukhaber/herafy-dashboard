@@ -30,9 +30,13 @@ export class UserService {
   /*   getAllUsers(): Observable<IUser[]> {
     return this.http.get<IUser[]>(this.baseUrl);
   } */
-  getAllUsers(): Observable<UsersApiResponse> {
+  getAllUsers(page: number = 1, limit: number = 15): Observable<UsersApiResponse> {
     return this.http.get<UsersApiResponse>(this.baseUrl, {
       withCredentials: true,
+      params:{
+        page: page.toString(),
+        limit: limit.toString()
+      }
     });
   }
 

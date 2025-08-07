@@ -20,6 +20,8 @@ export class CategoryComponent implements OnInit {
   editingCategoryId: string | null = null;
   filterByName: string = '';
   searchByName: string = '';
+  currentPage: number = 1;
+  limit: number = 10;
   showAddModal = false;
   newCategory: Partial<Category> = {
     name: '',
@@ -35,6 +37,7 @@ export class CategoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCategories();
+    this.categoryPagination()
   }
   showAddNew = false;
 
@@ -54,8 +57,38 @@ export class CategoryComponent implements OnInit {
       },
     });
   }
-
-  openAddCategoryModal(): void {
+  // paganition
+  categoryPagination(): void{
+    this.loading = true;
+    this.categoryService.getAllCategories(this.currentPage, this.limit).subscribe({
+      next: (res) => {
+        this.categories = res.data.allCategories;
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.error = err?.error?.message || 'Failed';
+        this.loading = false
+      }
+    })
+  }
+  // next page
+  nextPage(): void{
+    this.currentPage++;
+    this.categoryPagination()
+} 
+// previous page
+previousPage():void{
+  if(this.currentPage > 1){
+    this.currentPage--;
+    this.categoryPagination()
+  }
+}
+// can paginate
+canPaginate(): boolean{
+  return this.categories.length === this.limit;
+}
+openAddCategoryModal(): void {
     this.newCategory = {
       name: '',
       image: '',

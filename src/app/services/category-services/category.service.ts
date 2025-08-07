@@ -16,9 +16,13 @@ export class CategoryService {
 
   constructor(private http: HttpClient) {}
 
-  getAllCategories(): Observable<CategoryResponse> {
+  getAllCategories(page: number = 1, limit:number = 10): Observable<CategoryResponse> {
     return this.http.get<CategoryResponse>(this.baseUrl, {
       withCredentials: true,
+      params:{
+        page: page.toString(),
+        limit: limit.toString()
+      }
     });
   }
 
