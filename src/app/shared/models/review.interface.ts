@@ -1,6 +1,6 @@
 import { User } from "./user.interface";
 export interface Review {
-  _id?: string;
+  _id: string;
   user: string | User;           
   entityId: string;
   entityType: 'PRODUCT' | 'STORE'; 
@@ -13,10 +13,7 @@ export interface Review {
 export interface ReviewApiResponse {
   status: string;
   data: {
-    addReview?: Review;
-    updatedReview?: Review;
-    message?: string;
-    allReviews?: Review[];
+    allReviews: Review[];
   };
   results?: number;
   pagination?: {

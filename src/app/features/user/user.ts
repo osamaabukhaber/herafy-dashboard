@@ -21,7 +21,7 @@ export class User implements OnInit {
   filterByRole:string=''
   roles: string[] = ['admin', 'User', 'Vendor'];
   currentPage: number = 1;
-  limit: number = 10;
+  limit: number = 5;
   totalPages: number = 1;
   constructor(private userService: UserService, private cdr: ChangeDetectorRef) {}
 

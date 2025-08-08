@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
   ReviewApiResponse,
@@ -11,65 +11,92 @@ import { environment } from '../../environment/environment.developemnt';
   providedIn: 'root',
 })
 export class ReviewService {
-  private baseUrl = `${environment.apiBaseUrl}/review`; // Update base URL if needed
+  private baseUrl = `${environment.apiBaseUrl}/review`;
 
   constructor(private http: HttpClient) {}
 
-  // ✅ Get all reviews (optional filters)
-  getAllReviews(
-    entityId?: string,
-    entityType?: string
-  ): Observable<ReviewApiResponse> {
-    let params = new HttpParams();
-    if (entityId) params = params.set('entityId', entityId);
-    if (entityType) params = params.set('entityType', entityType);
+  getAllReviews(page: string, limit: string): Observable<ReviewApiResponse> {
+    const params = new HttpParams().set('page', page).set('limit', limit);
+    const headers = this.getAuthHeaders();
 
-    return this.http.get<ReviewApiResponse>(`${this.baseUrl}`, { params });
+    return this.http.get<ReviewApiResponse>(this.baseUrl, {
+      withCredentials: true,
+      params,
+      headers,
+    });
   }
 
-  // 🗑️ Delete a review by ID
   deleteReview(reviewId: string): Observable<ReviewApiResponse> {
-    return this.http.delete<ReviewApiResponse>(`${this.baseUrl}/${reviewId}`);
+    const headers = this.getAuthHeaders();
+    return this.http.delete<ReviewApiResponse>(`${this.baseUrl}/${reviewId}`, {
+      headers,
+      withCredentials: true,
+    });
   }
 
-  // 📊 Get review summary
   getReviewSummary(
     entityId: string,
     entityType: string
   ): Observable<ReviewSummary> {
+    const headers = this.getAuthHeaders();
     return this.http.get<ReviewSummary>(
-      `${this.baseUrl}/summary/${entityId}/${entityType}`
+      `${this.baseUrl}/summary/${entityId}/${entityType}`,
+      { headers }
     );
   }
-  // GET filtered product reviews (by productId)
+
   getProductReviews(
     productId: string,
     page = 1,
     limit = 10
   ): Observable<ReviewApiResponse> {
-    const params = {
-      productId,
-      page,
-      limit,
-    };
+    const params = new HttpParams()
+      .set('productId', productId)
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+    const headers = this.getAuthHeaders();
+
     return this.http.get<ReviewApiResponse>(`${this.baseUrl}/filter`, {
       params,
+      headers,
     });
   }
 
-  // GET filtered shop reviews (by shopId)
   getShopReviews(
     shopId: string,
     page = 1,
     limit = 10
   ): Observable<ReviewApiResponse> {
-    const params = {
-      shopId,
-      page,
-      limit,
-    };
+    const params = new HttpParams()
+      .set('shopId', shopId)
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+    const headers = this.getAuthHeaders();
+
     return this.http.get<ReviewApiResponse>(`${this.baseUrl}/filter`, {
       params,
+      headers,
     });
+  }
+
+  private getAuthHeaders(): HttpHeaders {
+    const token =
+      localStorage.getItem('authToken') ||
+      localStorage.getItem('token') ||
+      sessionStorage.getItem('authToken') ||
+      sessionStorage.getItem('token');
+
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+      console.log('🔐 Auth token added');
+    } else {
+      console.warn('⚠️ No auth token found');
+    }
+
+    return headers;
   }
 }

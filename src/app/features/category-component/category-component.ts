@@ -21,7 +21,7 @@ export class CategoryComponent implements OnInit {
   filterByName: string = '';
   searchByName: string = '';
   currentPage: number = 1;
-  limit: number = 10;
+  limit: number = 5;
   showAddModal = false;
   newCategory: Partial<Category> = {
     name: '',

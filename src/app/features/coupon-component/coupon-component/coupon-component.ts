@@ -28,7 +28,7 @@ export class CouponComponent implements OnInit {
   newCoupon: Partial<ICoupon> = this.getEmptyCoupon();
   // pagination
   currentPage: number = 1;
-  limit: number = 10;
+  limit: number = 5;
   constructor(
     private couponService: CouponService,
     private cdr: ChangeDetectorRef

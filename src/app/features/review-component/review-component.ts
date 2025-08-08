@@ -84,6 +84,9 @@ export class ReviewComponent implements OnInit, OnDestroy {
   }
 
   loadReviews(): void {
+     console.log('🔄 Loading reviews started...');
+    console.log('Current page:', this.currentPage());
+    console.log('Items per page:', this.itemsPerPage);
     this.loading.set(true);
 
     // Convert numbers to strings to match expected type
@@ -187,46 +190,49 @@ export class ReviewComponent implements OnInit, OnDestroy {
   }
 
   deleteReview(reviewId: string): void {
-    if (
-      confirm(
-        'Are you sure you want to delete this review? This action cannot be undone.'
-      )
-    ) {
-      this.deletingReviewId.set(reviewId);
+  if (
+    confirm(
+      'Are you sure you want to delete this review? This action cannot be undone.'
+    )
+  ) {
+    this.deletingReviewId.set(reviewId);
 
-      this.reviewService
-        .deleteReview(reviewId)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (response) => {
-            if (response.status === 'success') {
-              this.reviews.update((reviews) =>
-                reviews.filter((review) => review._id !== reviewId)
-              );
+    this.reviewService
+      .deleteReview(reviewId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          if (response.status === 'success') {
+            const updatedReviews = this.reviews().filter(
+              (review) => review._id !== reviewId
+            );
+            this.reviews.set(updatedReviews);
 
-              this.totalReviews.update((count) => count - 1);
+            const updatedTotal = this.totalReviews() - 1;
+            this.totalReviews.set(updatedTotal);
 
-              this.totalPages.set(
-                Math.ceil(this.totalReviews() / this.itemsPerPage)
-              );
+            this.totalPages.set(
+              Math.ceil(updatedTotal / this.itemsPerPage)
+            );
 
-              if (this.reviews().length === 0 && this.currentPage() > 1) {
-                this.previousPage();
-              } else {
-                this.loadReviews();
-              }
-
-              console.log('Review deleted successfully');
+            if (updatedReviews.length === 0 && this.currentPage() > 1) {
+              this.previousPage();
+            } else {
+              this.loadReviews();
             }
-            this.deletingReviewId.set(null);
-          },
-          error: (error) => {
-            console.error('Failed to delete review:', error);
-            this.deletingReviewId.set(null);
-          },
-        });
-    }
+
+            console.log('Review deleted successfully');
+          }
+          this.deletingReviewId.set(null);
+        },
+        error: (error) => {
+          console.error('Failed to delete review:', error);
+          this.deletingReviewId.set(null);
+        },
+      });
   }
+}
+
 
   toggleReviewExpansion(reviewId: string): void {
     if (this.expandedReviews.has(reviewId)) {
