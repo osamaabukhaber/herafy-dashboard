@@ -7,6 +7,7 @@ import { ProductFormComponent } from './features/products/components/product-for
 import { StoreComponent } from './features/store/components/store-component/store-component';
 import { StoreAddedNewstoreComponent } from './features/store/components/store-added-newstore-component/store-added-newstore-component';
 import { StoreUpdateSroreComponent } from './features/store/components/store-update-srore-component/store-update-srore-component';
+import { CategoryComponent } from './features/category-component/category-component';
 // import { ProductDetailComponent } from './features/products/components/product-detail/product-detail.component';
 
 export const routes: Routes = [
@@ -17,11 +18,10 @@ export const routes: Routes = [
       { path: 'user', component: User },
       { path: 'products', component: ProductListComponent },
       { path: 'products/create', component: ProductFormComponent, title: 'Create Product' },
-      {path:"store",component:StoreComponent ,title:"store"},
-      {path:"add-new-store", component:StoreAddedNewstoreComponent ,title:"add new store"},
-      {path: 'update/:id', component: StoreUpdateSroreComponent, title: "update store"},
-      // { path: 'products/:id', component: ProductDetailComponent },
-      // { path: 'products/:id/edit',  }
+      { path: "store", component: StoreComponent, title: "store" },
+      { path: "add-new-store", component: StoreAddedNewstoreComponent, title: "add new store" },
+      { path: 'update/:id', component: StoreUpdateSroreComponent, title: "update store" },
+      { path: 'category', component: CategoryComponent }
     ],
   },
 

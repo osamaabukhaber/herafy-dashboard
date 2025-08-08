@@ -10,7 +10,7 @@
 }
  */
 export interface IUser {
-  _id?: string;
+  _id: string;
   userName: string;
   firstName: string;
   lastName: string;
