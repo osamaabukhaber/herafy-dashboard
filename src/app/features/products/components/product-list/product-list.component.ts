@@ -1,5 +1,5 @@
 // src/app/product/product-list/product-list.component.ts
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ProductApiService } from '../../services/product-api.service';
@@ -15,6 +15,7 @@ import { CustomCurrencyPipe } from '../../../../shared/pipes/currency.pipe';
 })
 export class ProductListComponent implements OnInit {
   private productApi = inject(ProductApiService);
+  private cdr = inject(ChangeDetectorRef);
 
   products: Product[] = [];
   loading = true;
@@ -27,6 +28,7 @@ export class ProductListComponent implements OnInit {
         console.log('Data received:', res);
         this.products = res.products;
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error(err);

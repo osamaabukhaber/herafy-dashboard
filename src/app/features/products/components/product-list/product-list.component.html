@@ -5,7 +5,7 @@
       <p class="mt-1 text-sm text-gray-500">Manage all products in your store.</p>
     </div>
     <div class="mt-4 sm:mt-0">
-      <a routerLink="/dashboard/products/new"
+      <a routerLink="/products/create"
         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
         Add Product
       </a>
@@ -47,7 +47,7 @@
           <tr>
             <td colspan="6" class="px-6 py-12 text-center text-sm text-gray-500">
               <p>No products found.</p>
-              <a routerLink="/dashboard/products/new" class="mt-2 text-indigo-600 hover:text-indigo-800 font-medium">Add your first product</a>
+              <a routerLink="/products/create" class="mt-2 text-indigo-600 hover:text-indigo-800 font-medium">Add your first product</a>
             </td>
           </tr>
         }
@@ -62,7 +62,7 @@
                   </div>
                   <div class="ml-4">
                     <div class="text-sm font-medium text-gray-900">{{ product.name }}</div>
-                    <div class="text-sm text-gray-500">ID: {{ product._id | slice:0:8 }}...</div>
+                    <!-- <div class="text-sm text-gray-500">ID: {{ product._id | slice:0:8 }}...</div> -->
                   </div>
                 </div>
               </td>
@@ -75,7 +75,7 @@
                 </span> -->
               </td>
               <td class="px-2 py-4  whitespace-nowrap  text-sm font-medium">
-                <a [routerLink]="['/products', product._id, 'edit']" class="ml-4 text-green-600 hover:text-green-900">View</a>l
+                <a [routerLink]="['/products', product._id, 'edit']" class="ml-4 text-green-600 hover:text-green-900">View</a>
                 <a [routerLink]="['/products', product._id, 'edit']" class=" ml-4 text-indigo-600 hover:text-indigo-900">Edit</a>
                 <button (click)="deleteProduct(product._id)" class="ml-4 text-red-600 hover:text-red-900">Delete</button>
               </td>
@@ -248,7 +248,7 @@
 </div> -->
 
 
-//*!
+
 <!-- <div class="container mx-auto p-6">
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-3xl font-bold">Products</h1>

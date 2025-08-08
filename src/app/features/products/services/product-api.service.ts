@@ -1,9 +1,11 @@
 // src/app/services/product-api.service.ts
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { environment } from '../../../environment/environment.developemnt';
 import { ProductListBackendResponse } from '../../../shared/models/Api Responses/productResponse';
+import { Product } from '../../../shared/models/product.interface.js';
+import { Category } from '../../../shared/models/category.interface.js';
 
 
 @Injectable({
@@ -21,6 +23,31 @@ export class ProductApiService {
   deleteProduct(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+    // Create product - sends FormData (files + JSON fields)
+    createProduct(formData: FormData): Observable<Product> {
+      return this.http.post<Product>(`${this.apiUrl}`, formData);
+    }
+
+    // For now: fake stores list
+  // GET /api/store
+  getStores(): Observable<{ _id: string; name: string }[]> {
+    // return this.http.get<{ _id: string; name: string }[]>(`${this.baseUrl}/store`);
+    return of([
+      { _id: '68906db92b1ddddcb879cee5', name: 'Tech Gear' },
+      { _id: '68906db92b1ddddcb879cee7', name: 'Book Town' }
+    ]);
+  }
+
+  // For now: fake categories.
+  getCategories(): Observable<Category[]> {
+    // return this.http.get<Category[]>(`${this.baseUrl}/category`);
+    return of([
+      { _id: '68895bd225e59a1915813ce4', name: 'rayzen', isActive: true, sortOrder: 1 },
+      { _id: '6893b07e7718b30fbeb16997', name: 'Hand Made', isActive: true, sortOrder: 2 }
+    ] as Category[]);
+  }
+
 }
 
 // // / src/app/features/products/services/product-api.service.ts
