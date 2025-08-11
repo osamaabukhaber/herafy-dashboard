@@ -1,1 +1,292 @@
-<p class="text-3xl">category-component works!</p>
+<!-- Filter and Search -->
+<div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-sm">
+  <!-- Filter -->
+  <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+    <label class="text-sm font-semibold text-gray-700" for="filterSelect">
+      Filter Category:
+    </label>
+    <select
+      id="filterSelect"
+      class="min-w-48 border border-gray-300 rounded-lg px-4 py-2 bg-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+      [(ngModel)]="filterByName"
+      (ngModelChange)="onFilterChange()"
+    >
+      <option value="">All Categories</option>
+      @for (name of names; track name) {
+        <option [value]="name">{{ name }}</option>
+      }
+    </select>
+  </div>
+
+  <!-- Search -->
+  <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+    <label class="text-sm font-semibold text-gray-700" for="searchInput">
+      Search:
+    </label>
+    <input
+      id="searchInput"
+      type="text"
+      class="min-w-64 border border-gray-300 rounded-lg px-4 py-2 bg-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+      [(ngModel)]="searchByName"
+      (ngModelChange)="onSearchChange()"
+      placeholder="Search categories..."
+    />
+  </div>
+
+  <!-- Add New Category -->
+  <button
+    class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-2.5 rounded-lg font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+    (click)="showAddCategoryRow()"
+  >
+    <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+    </svg>
+    Add Category
+  </button>
+</div>
+
+<!-- Category Table -->
+<div class="p-6 overflow-x-auto">
+  <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
+        <tr>
+          @for (header of ['ID', 'Category Image', 'Category Name', 'Created At', 'Updated At', 'Actions']; track header) {
+            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
+              {{ header }}
+            </th>
+          }
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-100">
+        <!-- Add New Row -->
+        @if (newCategoryRowVisible) {
+          <tr class="bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-400">
+            <td class="px-6 py-4 text-gray-400 font-medium">—</td>
+            <td class="px-6 py-4">
+              <input
+                type="text"
+                [(ngModel)]="newCategory.image"
+                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                placeholder="Image URL"
+                name="newImage"
+              />
+            </td>
+            <td class="px-6 py-4">
+              <input
+                type="text"
+                [(ngModel)]="newCategory.name"
+                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                placeholder="Category Name"
+                name="newName"
+              />
+            </td>
+            <td class="px-6 py-4 text-gray-400 font-medium">—</td>
+            <td class="px-6 py-4 text-gray-400 font-medium">—</td>
+            <td class="px-6 py-4">
+              <div class="flex gap-2">
+                <button
+                  class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  (click)="addCategory()"
+                  [disabled]="!newCategory.name"
+                >
+                  Save
+                </button>
+                <button
+                  class="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:shadow-lg transition-all duration-200"
+                  (click)="cancelNewCategory()"
+                >
+                  Cancel
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+
+        <!-- Loading State -->
+        @if (loading) {
+          <tr>
+            <td colspan="6" class="text-center py-12">
+              <div class="flex flex-col items-center">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-3"></div>
+                <p class="text-sm text-gray-500 font-medium">Loading categories...</p>
+              </div>
+            </td>
+          </tr>
+        }
+
+        <!-- Error State -->
+        @if (error) {
+          <tr>
+            <td colspan="6" class="text-center py-12">
+              <div class="flex flex-col items-center">
+                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-3">
+                  <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                </div>
+                <p class="text-sm text-red-600 font-medium">{{ error }}</p>
+              </div>
+            </td>
+          </tr>
+        }
+
+        <!-- Empty State -->
+        @if (!loading && !error && filteredCategories.length === 0) {
+          <tr>
+            <td colspan="6" class="text-center py-12">
+              <div class="flex flex-col items-center">
+                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                  <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                  </svg>
+                </div>
+                <p class="text-lg font-medium text-gray-700 mb-2">No Categories Found</p>
+                <p class="text-sm text-gray-500">Try adjusting your search or filter criteria</p>
+              </div>
+            </td>
+          </tr>
+        }
+
+        <!-- Category Rows -->
+        @for (category of filteredCategories; track category._id) {
+          <tr class="hover:bg-gray-50 transition-colors duration-150">
+            <td class="px-6 py-4">
+              <div class="text-sm font-mono text-gray-600 bg-gray-100 px-2 py-1 rounded">
+                {{ category._id }}
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              @if (editingCategoryId !== category._id) {
+                <img
+                  [src]="category.image || 'assets/placeholder.png'"
+                  alt="Category Image"
+                  class="w-16 h-16 object-cover rounded-lg shadow-md border border-gray-200"
+                />
+              } @else {
+                <input
+                  type="text"
+                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  [(ngModel)]="categoryProps.image"
+                  name="editImage"
+                  placeholder="Image URL"
+                />
+              }
+            </td>
+            <td class="px-6 py-4">
+              @if (editingCategoryId !== category._id) {
+                <div class="text-sm font-medium text-gray-900">
+                  {{ category.name }}
+                </div>
+              } @else {
+                <input
+                  type="text"
+                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  [(ngModel)]="categoryProps.name"
+                  name="editName"
+                  required
+                  placeholder="Category Name"
+                />
+              }
+            </td>
+            <td class="px-6 py-4">
+              <div class="text-sm text-gray-600">
+                {{ category.createdAt | date: 'MMM d, y' }}
+                <div class="text-xs text-gray-400">
+                  {{ category.createdAt | date: 'h:mm a' }}
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="text-sm text-gray-600">
+                {{ category.updatedAt | date: 'MMM d, y' }}
+                <div class="text-xs text-gray-400">
+                  {{ category.updatedAt | date: 'h:mm a' }}
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                @if (editingCategoryId !== category._id) {
+                  <button
+                    class="text-blue-600 hover:text-blue-800 hover:bg-blue-50 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200"
+                    (click)="startEdit(category)"
+                  >
+                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                    Edit
+                  </button>
+                } @else {
+                  <button
+                    class="text-green-600 hover:text-green-800 hover:bg-green-50 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    (click)="updateCategory()"
+                    [disabled]="!categoryProps.name"
+                  >
+                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Save
+                  </button>
+                  <button
+                    class="text-gray-600 hover:text-gray-800 hover:bg-gray-50 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200"
+                    (click)="cancelEdit()"
+                  >
+                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                    Cancel
+                  </button>
+                }
+                <button
+                  class="text-red-600 hover:text-red-800 hover:bg-red-50 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200"
+                  (click)="category._id && deleteCategory(category._id)"
+                >
+                  <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                  </svg>
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mt-8 p-6 bg-gray-50 rounded-xl">
+    <div class="text-sm text-gray-600 font-medium">
+      Showing page {{ currentPage }}
+    </div>
+    
+    <div class="flex items-center gap-3">
+      <button
+        class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm"
+        (click)="previousPage()"
+        [disabled]="currentPage === 1"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Previous
+      </button>
+
+      <div class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-bold">
+        {{ currentPage }}
+      </div>
+
+      <button
+        class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm"
+        (click)="nextPage()"
+        [disabled]="!canPaginate()"
+      >
+        Next
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>

@@ -15,7 +15,7 @@ import { IUser } from '../../models/iuser';
 export class LoginService {
   private readonly document = inject(DOCUMENT);
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly baseUrl = `${environment.apiBaseUrl}/api/auth`;
+  private readonly baseUrl = `${environment.apiBaseUrl}/auth`;
 
   private userSubject = new BehaviorSubject<IUser | null>(null);
   user$ = this.userSubject.asObservable();

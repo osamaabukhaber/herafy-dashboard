@@ -20,6 +20,9 @@ export class User implements OnInit {
   editingUserId: string | null = null
   filterByRole:string=''
   roles: string[] = ['admin', 'User', 'Vendor'];
+  currentPage: number = 1;
+  limit: number = 5;
+  totalPages: number = 1;
   constructor(private userService: UserService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
@@ -34,8 +37,37 @@ export class User implements OnInit {
         this.loading = false;
       },
     });
+    // fetch users and pagination
+    this.userPagination();
   }
- 
+ userPagination(): void{
+  this.loading = true;
+  this.userService.getAllUsers(this.currentPage, this.limit).subscribe({
+    next:(res)=>{
+      this.users = res.data.users;
+      this.loading = false;
+      this.cdr.detectChanges();
+    },
+    error:(err) => {
+      this.error = err?.error?.message || 'Falied';
+      this.loading = false
+      
+    }
+  })
+ }
+ nextPage() :void{
+  this.currentPage++;
+  this.userPagination();
+ }
+ previousPage():void{
+  if(this.currentPage > 1){
+    this.currentPage--;
+    this.userPagination()
+  }
+ }
+ canPaginate():boolean{
+  return this.users.length === this.limit;
+ }
   deleteUser(id: string) {
     if (!id) {
       console.error('User ID is undefined');
