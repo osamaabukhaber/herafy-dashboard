@@ -41,8 +41,8 @@ createProduct(formData: FormData): Observable<Product> {
   // For now: fake categories
   getCategories(): Observable<Category[]> {
     return of([
-      { _id: '68895bd225e59a1915813ce4', name: 'rayzen', isActive: true, sortOrder: 1 },
-      { _id: '6893b07e7718b30fbeb16997', name: 'Hand Made', isActive: true, sortOrder: 2 }
+      { _id: '68895bd225e59a1915813ce4', name: 'rayzen',  sortOrder: 1 },
+      { _id: '6893b07e7718b30fbeb16997', name: 'Hand Made', sortOrder: 2 }
     ] as Category[]);
   }
 
