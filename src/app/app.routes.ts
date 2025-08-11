@@ -3,9 +3,11 @@ import { MainComponent } from './features/main-component/main-component';
 import {NotFoundComponent } from './shared/components/notfound/notfound';
 import { User } from './features/user/user';
 import { ProductListComponent } from './features/products/components/product-list/product-list.component';
+import { ProductFormComponent } from './features/products/components/product-form/product-form.component';
 import { StoreComponent } from './features/store/components/store-component/store-component';
 import { StoreAddedNewstoreComponent } from './features/store/components/store-added-newstore-component/store-added-newstore-component';
 import { StoreUpdateSroreComponent } from './features/store/components/store-update-srore-component/store-update-srore-component';
+
 import { StoreViewComponent } from './features/store/components/store-view-component/store-view-component';
 import { CartMainComponent } from './features/cart/components/cart-main-component/cart-main-component';
 import { AdminCartFormComponent } from './features/cart/components/cart-create-component/cart-create-component';
@@ -14,6 +16,7 @@ import { CartViewComponent } from './features/cart/components/cart-view-componen
 import { AdminPaymentManagementComponent } from './features/payments/components/payments-main-component/payments-main-component';
 import { PaymentsViewComponent } from './features/payments/components/payments-view-component/payments-view-component';
 // import { ProductFormComponent } from './features/products/components/product-form/product-form.component';
+import { CategoryComponent } from './features/category-component/category-component';
 // import { ProductDetailComponent } from './features/products/components/product-detail/product-detail.component';
 
 export const routes: Routes = [
@@ -36,6 +39,11 @@ export const routes: Routes = [
       // { path: 'products/create',   },
       // { path: 'products/:id', component: ProductDetailComponent },
       // { path: 'products/:id/edit',  }
+      { path: 'products/create', component: ProductFormComponent, title: 'Create Product' },
+      { path: "store", component: StoreComponent, title: "store" },
+      { path: "add-new-store", component: StoreAddedNewstoreComponent, title: "add new store" },
+      { path: 'update/:id', component: StoreUpdateSroreComponent, title: "update store" },
+      { path: 'category', component: CategoryComponent }
     ],
   },
 

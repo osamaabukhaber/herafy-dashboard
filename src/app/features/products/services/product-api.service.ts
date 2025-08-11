@@ -1,18 +1,19 @@
-// src/app/services/product-api.service.ts
-import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from '../../../environment/environment.developemnt';
-import { ProductListBackendResponse } from '../../../shared/models/Api Responses/productResponse';
 
+import { Injectable, inject } from '@angular/core';
+import { HttpClient,HttpHeaders ,HttpEvent, HttpEventType, HttpResponse, HttpRequest } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { ProductListBackendResponse } from '../../../shared/models/Api Responses/productResponse';
+import { Product } from '../../../shared/models/product.interface';
+import { Category } from '../../../shared/models/category.interface';
+import { environment } from '../../../environment/environment.developemnt.js';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductApiService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiBaseUrl}/product`;
-
+  private apiUrl = `${environment.apiBaseUrl}/api/product`;
 
   getProducts(): Observable<ProductListBackendResponse> {
     return this.http.get<ProductListBackendResponse>(this.apiUrl);
@@ -21,7 +22,98 @@ export class ProductApiService {
   deleteProduct(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  // Create product - sends FormData (files + JSON fields)
+// Create product - sends FormData
+createProduct(formData: FormData): Observable<Product> {
+  return this.http.post<Product>(`${this.apiUrl}`, formData, { withCredentials: true });
 }
+
+  // For now: fake stores list
+  // GET /api/store
+  getStores(): Observable<{ _id: string; name: string }[]> {
+    return of([
+      { _id: '68906db92b1ddddcb879cee5', name: 'Tech Gear' },
+      { _id: '68906db92b1ddddcb879cee7', name: 'Book Town' }
+    ]);
+  }
+
+  // For now: fake categories
+  getCategories(): Observable<Category[]> {
+    return of([
+      { _id: '68895bd225e59a1915813ce4', name: 'rayzen', isActive: true, sortOrder: 1 },
+      { _id: '6893b07e7718b30fbeb16997', name: 'Hand Made', isActive: true, sortOrder: 2 }
+    ] as Category[]);
+  }
+
+
+  // getStores(): Observable<{ _id: string; name: string }[]> {
+  //   return this.http.get<{ _id: string; name: string }[]>(`${this.apiUrl}/store`);
+  // }
+
+  // getCategories(): Observable<Category[]> {
+  //   return this.http.get<Category[]>(`${this.apiUrl}/category`);
+  // }
+
+
+
+}
+
+
+// import { Injectable, inject } from '@angular/core';
+// import { HttpClient, HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
+// import { Observable, of } from 'rxjs';
+// import { filter, map } from 'rxjs/operators';
+// import { ProductListBackendResponse } from '../../../shared/models/Api Responses/productResponse';
+// import { Product } from '../../../shared/models/product.interface';
+// import { Category } from '../../../shared/models/category.interface';
+// import { environment } from '../../../environment/environment.developemnt.js';
+
+// @Injectable({
+//   providedIn: 'root'
+// })
+// export class ProductApiService {
+//   private http = inject(HttpClient);
+//   private apiUrl = `${environment.apiBaseUrl}/api/product`;
+
+//   getProducts(): Observable<ProductListBackendResponse> {
+//     return this.http.get<ProductListBackendResponse>(this.apiUrl);
+//   }
+
+//   deleteProduct(id: string): Observable<void> {
+//     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+//   }
+
+//   // Create product - sends FormData (files + JSON fields)
+//   createProduct(formData: FormData): Observable<Product> {
+//     const req = new HttpRequest('POST', `${this.apiUrl}`, formData, {
+//       reportProgress: true,
+//       observe: 'events'
+//     });
+//     return this.http.request(req).pipe(
+//       filter((event: HttpEvent<any>) => event.type === HttpEventType.Response),
+//       map((event: HttpResponse<Product>) => event.body as Product)
+//     );
+//   }
+
+//   // For now: fake stores list
+//   // GET /api/store
+//   getStores(): Observable<{ _id: string; name: string }[]> {
+//     return of([
+//       { _id: '68906db92b1ddddcb879cee5', name: 'Tech Gear' },
+//       { _id: '68906db92b1ddddcb879cee7', name: 'Book Town' }
+//     ]);
+//   }
+
+//   // For now: fake categories
+//   getCategories(): Observable<Category[]> {
+//     return of([
+//       { _id: '68895bd225e59a1915813ce4', name: 'rayzen', isActive: true, sortOrder: 1 },
+//       { _id: '6893b07e7718b30fbeb16997', name: 'Hand Made', isActive: true, sortOrder: 2 }
+//     ] as Category[]);
+//   }
+// }
+
 
 // // / src/app/features/products/services/product-api.service.ts
 
