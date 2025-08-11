@@ -160,7 +160,7 @@ export interface Product {
   discountEnd?: string | Date;
   category: Category;
   images: string[];
-  variants: ProductVariant;
+  variants: ProductVariant[];
   // options: ProductVariantOption;
   averageRating?: number;
   reviewCount?: number;
