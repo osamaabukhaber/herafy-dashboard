@@ -22,7 +22,7 @@ export class NotFoundComponent implements OnInit {
    * Navigate to home page
    */
   goHome(): void {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/']);
   }
 
   /**
@@ -30,12 +30,13 @@ export class NotFoundComponent implements OnInit {
    */
   goBack(): void {
     // Check if there's history to go back to
-    // if (window.history.length > 1) {
-    //   this.location.back();
-    // } else {
-    //   // If no history, go to home page
-    //   this.goHome();
-    // }
+    if (window.history.length > 1) {
+      this.router.navigate(['..']);
+
+    } else {
+      // If no history, go to home page
+      this.goHome();
+    }
   }
 
   /**
