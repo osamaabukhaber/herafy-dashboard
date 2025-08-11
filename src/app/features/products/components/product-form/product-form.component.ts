@@ -51,7 +51,7 @@ export class ProductFormComponent implements OnInit {
       basePrice: [0, [Validators.required, Validators.min(0.01)]],
       discountPrice: [null, [Validators.min(0)]],
       category: ['', Validators.required],
-      store: ['', Validators.required], // تأكد من وجوده وتحديثه
+      store: ['', Validators.required],
       variants: this.fb.array([]),
       images: [],
       isActive: [true],
