@@ -15,7 +15,7 @@ import { IUser } from '../../models/iuser';
 export class LoginService {
   private readonly document = inject(DOCUMENT);
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly baseUrl = `${environment.apiBaseUrl}/auth`;
+  private readonly baseUrl = `${environment.apiBaseUrl}`;
 
   private userSubject = new BehaviorSubject<IUser | null>(null);
   user$ = this.userSubject.asObservable();
@@ -30,7 +30,7 @@ export class LoginService {
     password: string;
   }): Observable<{ user: IUser }> {
     return this.http
-      .post<{ user: IUser }>(`${this.baseUrl}/signin`, credentials, {
+      .post<{ user: IUser }>(`${this.baseUrl}/auth/signin`, credentials, {
         withCredentials: true,
       })
       .pipe(
@@ -42,7 +42,7 @@ export class LoginService {
 
   signOut(): void {
     this.http
-      .post(`${this.baseUrl}/signout`, {}, { withCredentials: true })
+      .post(`${this.baseUrl}/api/signout`, {}, { withCredentials: true })
       .subscribe({
         complete: () => {
           this.tokenSubject.next(null);
