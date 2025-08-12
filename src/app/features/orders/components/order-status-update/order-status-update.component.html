@@ -1,0 +1,130 @@
+<div class="fixed inset-0 z-50 overflow-y-auto">
+  <!-- Overlay -->
+  <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+       (click)="cancel.emit()"></div>
+
+  <!-- Dialog -->
+  <div class="flex items-center justify-center min-h-screen p-4">
+    <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-auto">
+      <form [formGroup]="statusForm" (ngSubmit)="handleSubmit()">
+        <div class="p-6">
+          <!-- Header -->
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-medium text-gray-900">Update Order Status</h3>
+            <button
+              type="button"
+              (click)="cancel.emit()"
+              class="text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Order Info -->
+          <div class="bg-gray-50 rounded-lg p-4 mb-4">
+            <h4 class="text-sm font-medium text-gray-900 mb-2">
+              Order #{{ order()._id?.slice(-8)?.toUpperCase() }}
+            </h4>
+            <div class="flex items-center space-x-2 mb-2">
+              <span class="text-sm text-gray-600">Current Status:</span>
+              <span [class]="orderService.getStatusColor(order().status)"
+                    class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium">
+                {{ orderService.getStatusIcon(order().status) }}
+                {{ order().status | titlecase }}
+              </span>
+            </div>
+            <p class="text-sm text-gray-600">
+              Total: {{ orderService.formatCurrency(order().totalAmount) }}
+            </p>
+          </div>
+
+          <!-- Status Selection -->
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              New Status
+            </label>
+            <select
+              formControlName="status"
+              class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            >
+              @for (status of availableStatuses(); track status.value) {
+                <option [value]="status.value">
+                  {{ status.icon }} {{ status.label }}
+                </option>
+              }
+            </select>
+            @if (statusForm.get('status')?.invalid && statusForm.get('status')?.touched) {
+              <p class="mt-1 text-sm text-red-600">Please select a status</p>
+            }
+          </div>
+
+          <!-- Status Description -->
+          @if (selectedStatusDescription(); as description) {
+            <div class="mb-4 p-3 bg-blue-50 rounded-lg">
+              <p class="text-sm text-blue-800">{{ description }}</p>
+            </div>
+          }
+
+          <!-- Warning for irreversible actions -->
+          @if (isIrreversibleAction()) {
+            <div class="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div class="flex">
+                <svg class="h-5 w-5 text-yellow-400 mt-0.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
+                <p class="text-sm text-yellow-800">
+                  <strong>Warning:</strong> This action cannot be undone and may affect inventory and customer notifications.
+                </p>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Actions -->
+        <div class="bg-gray-50 px-6 py-3 flex justify-end space-x-3 rounded-b-lg">
+          <button
+            type="button"
+            (click)="cancel.emit()"
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            [disabled]="!statusForm.valid || updating()"
+            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            @if (updating()) {
+              <div class="flex items-center">
+                <svg class="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Updating...
+              </div>
+            } @else {
+              Update Status
+            }
+          </button>
+        </div>
+      </form>
+
+      <!-- Error Display -->
+      @if (error()) {
+        <div class="px-6 pb-4">
+          <div class="bg-red-50 border border-red-200 rounded-md p-3">
+            <div class="flex">
+              <svg class="h-5 w-5 text-red-400 mt-0.5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+              </svg>
+              <p class="text-sm text-red-800">{{ error() }}</p>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+

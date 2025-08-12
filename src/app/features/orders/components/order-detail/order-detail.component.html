@@ -1,0 +1,277 @@
+<div class="max-w-4xl mx-auto space-y-6">
+  <!-- Loading State -->
+  @if (loading()) {
+    <app-loading-spinner message="Loading order details..." />
+  }
+
+  <!-- Error State -->
+  @else if (error()) {
+    <div class="bg-red-50 border border-red-200 rounded-md p-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">Error loading order</h3>
+          <p class="mt-1 text-sm text-red-700">{{ error() }}</p>
+          <button
+            (click)="loadOrder()"
+            class="mt-2 text-sm text-red-600 hover:text-red-500 underline"
+          >
+            Try again
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Order Details -->
+  @else if (order()) {
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="flex items-start justify-between mb-4">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 mb-2">
+            Order #{{ order()!._id?.slice(-8).toUpperCase() }}
+          </h1>
+          <div class="flex items-center space-x-3">
+            <span [class]="orderService.getStatusColor(order()!.status)"
+                  class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium">
+              {{ orderService.getStatusIcon(order()!.status) }}
+              {{ order()!.status | titlecase }}
+            </span>
+            <span class="text-sm text-gray-600">
+              Placed on {{ order()!.createdAt | date:'full' }}
+            </span>
+          </div>
+        </div>
+        <div class="text-right">
+          <p class="text-2xl font-bold text-gray-900">
+            {{ orderService.formatCurrency(order()!.totalAmount) }}
+          </p>
+          <p class="text-sm text-gray-600">
+            {{ order()!.orderItems.length }} item{{ order()!.orderItems.length === 1 ? '' : 's' }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Order Timeline -->
+      <div class="border-t border-gray-200 pt-4">
+        <h3 class="text-lg font-medium text-gray-900 mb-3">Order Timeline</h3>
+        <div class="flow-root">
+          <ul class="-mb-8">
+            @for (timeline of orderTimeline(); track timeline.step) {
+              <li>
+                <div class="relative pb-8" [class.pb-0]="$last">
+                  @if (!$last) {
+                    <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200"></span>
+                  }
+                  <div class="relative flex space-x-3">
+                    <div>
+                      <span [class]="timeline.completed ? 'bg-green-500' : 'bg-gray-300'"
+                            class="h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white">
+                        @if (timeline.completed) {
+                          <svg class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                          </svg>
+                        } @else {
+                          <span class="text-xs font-medium text-gray-600">{{ timeline.step }}</span>
+                        }
+                      </span>
+                    </div>
+                    <div class="min-w-0 flex-1 pt-1.5">
+                      <p [class]="timeline.completed ? 'text-gray-900' : 'text-gray-500'"
+                         class="text-sm font-medium">{{ timeline.label }}</p>
+                      @if (timeline.date) {
+                        <p class="text-sm text-gray-500">{{ timeline.date | date:'medium' }}</p>
+                      }
+                    </div>
+                  </div>
+                </div>
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="border-t border-gray-200 pt-4 flex space-x-3">
+        <button
+          (click)="router.navigate(['/orders'])"
+          class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+        >
+          ← Back to Orders
+        </button>
+
+        @if (canCancelOrder()) {
+          <button
+            (click)="handleCancelOrder()"
+            [disabled]="cancelling()"
+            class="inline-flex items-center px-4 py-2 border border-red-300 shadow-sm text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            @if (cancelling()) {
+              <svg class="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Cancelling...
+            } @else {
+              Cancel Order
+            }
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Order Items -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-lg font-medium text-gray-900 mb-4">Order Items</h2>
+      <div class="space-y-4">
+        @for (item of order()!.orderItems; track item._id) {
+          <div class="flex items-start space-x-4 p-4 border border-gray-200 rounded-lg">
+            @if (item.image) {
+              <img [src]="item.image" [alt]="item.name"
+                   class="w-16 h-16 object-cover rounded-md flex-shrink-0">
+            } @else {
+              <div class="w-16 h-16 bg-gray-200 rounded-md flex items-center justify-center flex-shrink-0">
+                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+              </div>
+            }
+
+            <div class="flex-1 min-w-0">
+              @if (editingItemId() === item._id) {
+                <!-- Edit Mode -->
+                <form [formGroup]="editForm!" (ngSubmit)="handleUpdateItem(item._id!)">
+                  <div class="space-y-3">
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700">Product Name</label>
+                      <input
+                        type="text"
+                        formControlName="name"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      >
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700">Quantity</label>
+                      <input
+                        type="number"
+                        min="1"
+                        formControlName="quantity"
+                        class="mt-1 block w-32 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      >
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700">Image</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        (change)="onImageSelect($event)"
+                        class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                      >
+                    </div>
+                    <div class="flex space-x-2">
+                      <button
+                        type="submit"
+                        [disabled]="updating()"
+                        class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      >
+                        @if (updating()) {
+                          <svg class="animate-spin -ml-1 mr-1 h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Updating...
+                        } @else {
+                          Save Changes
+                        }
+                      </button>
+                      <button
+                        type="button"
+                        (click)="cancelEdit()"
+                        class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              } @else {
+                <!-- View Mode -->
+                <div>
+                  <h3 class="text-base font-medium text-gray-900">{{ item.name }}</h3>
+                  <p class="text-sm text-gray-600 mt-1">
+                    Quantity: {{ item.quantity }} × {{ orderService.formatCurrency(item.price) }}
+                  </p>
+                  <p class="text-sm font-medium text-gray-900 mt-1">
+                    Subtotal: {{ orderService.formatCurrency(item.price * item.quantity) }}
+                  </p>
+
+                  @if (canEditOrder()) {
+                    <button
+                      (click)="startEdit(item)"
+                      class="mt-2 text-sm text-blue-600 hover:text-blue-500 font-medium"
+                    >
+                      Edit Item
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-lg font-medium text-gray-900 mb-4">Order Summary</h2>
+      <div class="space-y-3">
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-600">Subtotal</span>
+          <span class="text-gray-900">{{ orderService.formatCurrency(order()!.subtotal) }}</span>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-600">Tax</span>
+          <span class="text-gray-900">{{ orderService.formatCurrency(order()!.tax) }}</span>
+        </div>
+        <div class="flex justify-between text-sm">
+          <span class="text-gray-600">Shipping Fee</span>
+          <span class="text-gray-900">{{ orderService.formatCurrency(order()!.shippingFee) }}</span>
+        </div>
+        <div class="border-t border-gray-200 pt-3">
+          <div class="flex justify-between text-base font-medium">
+            <span class="text-gray-900">Total Amount</span>
+            <span class="text-gray-900">{{ orderService.formatCurrency(order()!.totalAmount) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shipping Address -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-lg font-medium text-gray-900 mb-4">Shipping Address</h2>
+      <div class="text-sm text-gray-600 space-y-1">
+        <p>{{ order()!.shippingAddress.street }}</p>
+        <p>{{ order()!.shippingAddress.city }}, {{ order()!.shippingAddress.postalCode }}</p>
+        <p>{{ order()!.shippingAddress.country }}</p>
+      </div>
+    </div>
+
+    <!-- Confirm Dialog -->
+    @if (showConfirmDialog()) {
+      <app-confirm-dialog
+        title="Cancel Order"
+        message="Are you sure you want to cancel this order? This action cannot be undone."
+        confirmText="Cancel Order"
+        cancelText="Keep Order"
+        (confirm)="confirmCancelOrder()"
+        (cancel)="showConfirmDialog.set(false)"
+      />
+    }
+  }
+</div>
+

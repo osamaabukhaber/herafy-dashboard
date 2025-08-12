@@ -266,28 +266,85 @@ export class ProductFormComponent implements OnInit {
     });
   }
 
-
   prepareFormData(formValue: any): FormData {
     const formData = new FormData();
 
-    for (const key in formValue) {
-      if (!formValue.hasOwnProperty(key)) continue;
+    Object.keys(formValue).forEach(key => {
+      const value = formValue[key];
 
-      if (key === 'images' && Array.isArray(formValue[key])) {
-        formValue[key].forEach((file: File) => {
-          formData.append('images', file);
+      if (value === null || value === undefined) return;
+
+      if (key === 'images' && Array.isArray(value)) {
+        value.forEach((file: File) => {
+          if (file instanceof File) {
+            formData.append('images', file);
+          }
         });
-      } else if (typeof formValue[key] === 'boolean') {
-        formData.append(key, formValue[key] ? 'true' : 'false');
-      } else if (Array.isArray(formValue[key]) || typeof formValue[key] === 'object') {
-        formData.append(key, JSON.stringify(formValue[key]));
-      } else {
-        formData.append(key, formValue[key]);
       }
-    }
+      else if (key === 'variants') {
+        formData.append('variants', JSON.stringify(value));
+      }
+      else if (typeof value === 'number') {
+        formData.append(key, value.toString());
+      }
+      else {
+        formData.append(key, value);
+      }
+    });
 
     return formData;
   }
+
+
+  // prepareFormData(formValue: any): FormData {
+  //   const formData = new FormData();
+
+  //   for (const key in formValue) {
+  //     if (!formValue.hasOwnProperty(key)) continue;
+  //     const value = formValue[key];
+  //     if (value === null || value === undefined) continue;
+  //     if (key === 'images') {
+  //       const files = Array.isArray(value) ? value : Array.from(value as FileList);
+  //       files.forEach((file: File) => {
+  //         formData.append('images', file);
+  //       });
+  //     }
+  //     else if (key === 'variants') {
+  //       formData.append('variants', JSON.stringify(value));
+  //     }
+  //     else if (typeof value === 'number') {
+  //       formData.append(key, value.toString());
+  //     }
+  //     else {
+  //       formData.append(key, value);
+  //     }
+  //   }
+  //   return formData;
+  // }
+
+
+
+  // prepareFormData(formValue: any): FormData {
+  //   const formData = new FormData();
+
+  //   for (const key in formValue) {
+  //     if (!formValue.hasOwnProperty(key)) continue;
+
+  //     if (key === 'images' && Array.isArray(formValue[key])) {
+  //       formValue[key].forEach((file: File) => {
+  //         formData.append('images', file);
+  //       });
+  //     } else if (typeof formValue[key] === 'boolean') {
+  //       formData.append(key, formValue[key] ? 'true' : 'false');
+  //     } else if (Array.isArray(formValue[key]) || typeof formValue[key] === 'object') {
+  //       formData.append(key, JSON.stringify(formValue[key]));
+  //     } else {
+  //       formData.append(key, formValue[key]);
+  //     }
+  //   }
+
+  //   return formData;
+  // }
 
   // prepareFormData(formValue: any): FormData {
   //   const formData = new FormData();

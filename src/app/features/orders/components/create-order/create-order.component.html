@@ -1,0 +1,292 @@
+<div class="max-w-4xl mx-auto space-y-6">
+  <!-- Header -->
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div class="flex items-center justify-between">
+      <h1 class="text-2xl font-bold text-gray-900">Create New Order</h1>
+      <button
+        (click)="router.navigate(['/orders'])"
+        class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+      >
+        ← Back to Orders
+      </button>
+    </div>
+  </div>
+
+  <form [formGroup]="orderForm" (ngSubmit)="handleSubmit()">
+    <!-- Order Items -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-medium text-gray-900">Order Items</h2>
+        <button
+          type="button"
+          (click)="addOrderItem()"
+          class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+        >
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          Add Item
+        </button>
+      </div>
+
+      <div formArrayName="orderItems" class="space-y-4">
+        @for (item of orderItemsArray.controls; track $index; let i = $index) {
+          <div [formGroupName]="i" class="p-4 border border-gray-200 rounded-lg">
+            <div class="flex items-start space-x-4">
+              <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Product Selection -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Product</label>
+                  <select
+                    formControlName="productId"
+                    (change)="onProductChange(i, $event)"
+                    class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  >
+                    <option value="">Select a product</option>
+                    @for (product of availableProducts(); track product._id) {
+                      <option [value]="product._id">
+                        {{ product.name }} ({{ orderService.formatCurrency(product.basePrice) }})
+                      </option>
+                    }
+                  </select>
+                  @if (item.get('productId')?.invalid && item.get('productId')?.touched) {
+                    <p class="mt-1 text-sm text-red-600">Product is required</p>
+                  }
+                </div>
+
+                <!-- Quantity -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                  <input
+                    type="number"
+                    min="1"
+                    formControlName="quantity"
+                    [max]="getProductStock(i)"
+                    class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    placeholder="1"
+                  >
+                  @if (item.get('quantity')?.invalid && item.get('quantity')?.touched) {
+                    <p class="mt-1 text-sm text-red-600">
+                      @if (item.get('quantity')?.errors?.['required']) {
+                        Quantity is required
+                      }
+                      @if (item.get('quantity')?.errors?.['min']) {
+                        Minimum quantity is 1
+                      }
+                      @if (item.get('quantity')?.errors?.['max']) {
+                        Insufficient stock
+                      }
+                    </p>
+                  }
+                  @if (getProductStock(i) > 0) {
+                    <p class="mt-1 text-xs text-gray-500">Stock: {{ getProductStock(i) }}</p>
+                  }
+                </div>
+
+                <!-- Item Total -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Item Total</label>
+                  <div class="flex items-center h-10">
+                    <span class="text-lg font-medium text-gray-900">
+                      {{ getItemTotal(i) | currency }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Remove Button -->
+              <button
+                type="button"
+                (click)="removeOrderItem(i)"
+                class="flex-shrink-0 p-2 text-red-400 hover:text-red-600 transition-colors"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Product Preview -->
+            @if (getSelectedProduct(i); as product) {
+              <div class="mt-3 flex items-center space-x-3 p-3 bg-gray-50 rounded-md">
+                @if (product.images?.[0]) {
+                  <img [src]="product.images[0]" [alt]="product.name"
+                       class="w-12 h-12 object-cover rounded-md">
+                } @else {
+                  <div class="w-12 h-12 bg-gray-200 rounded-md flex items-center justify-center">
+                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                  </div>
+                }
+                <div>
+                  <p class="text-sm font-medium text-gray-900">{{ product.name }}</p>
+                  <p class="text-sm text-gray-600">{{ orderService.formatCurrency(product.basePrice) }} each</p>
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        @if (orderItemsArray.length === 0) {
+          <div class="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">No items added</h3>
+            <p class="mt-1 text-sm text-gray-500">Get started by adding your first item to the order.</p>
+            <button
+              type="button"
+              (click)="addOrderItem()"
+              class="mt-3 inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+            >
+              Add First Item
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Shipping Address -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h2 class="text-lg font-medium text-gray-900 mb-4">Shipping Address</h2>
+      <div formGroupName="shippingAddress" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Street Address</label>
+          <input
+            type="text"
+            formControlName="street"
+            class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            placeholder="Enter street address"
+          >
+          @if (orderForm.get('shippingAddress.street')?.invalid && orderForm.get('shippingAddress.street')?.touched) {
+            <p class="mt-1 text-sm text-red-600">Street address is required</p>
+          }
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">City</label>
+          <input
+            type="text"
+            formControlName="city"
+            class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            placeholder="Enter city"
+          >
+          @if (orderForm.get('shippingAddress.city')?.invalid && orderForm.get('shippingAddress.city')?.touched) {
+            <p class="mt-1 text-sm text-red-600">City is required</p>
+          }
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Postal Code</label>
+          <input
+            type="text"
+            formControlName="postalCode"
+            class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            placeholder="Enter postal code"
+          >
+          @if (orderForm.get('shippingAddress.postalCode')?.invalid && orderForm.get('shippingAddress.postalCode')?.touched) {
+            <p class="mt-1 text-sm text-red-600">Postal code is required</p>
+          }
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Country</label>
+          <select
+            formControlName="country"
+            class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          >
+            <option value="">Select country</option>
+            <option value="Egypt">Egypt</option>
+            <option value="USA">United States</option>
+            <option value="Canada">Canada</option>
+            <option value="UK">United Kingdom</option>
+            <option value="Germany">Germany</option>
+            <option value="France">France</option>
+            <option value="Australia">Australia</option>
+          </select>
+          @if (orderForm.get('shippingAddress.country')?.invalid && orderForm.get('shippingAddress.country')?.touched) {
+            <p class="mt-1 text-sm text-red-600">Country is required</p>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    @if (orderItemsArray.length > 0) {
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 class="text-lg font-medium text-gray-900 mb-4">Order Summary</h2>
+        <div class="space-y-3">
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600">Subtotal ({{ orderItemsArray.length }} item{{ orderItemsArray.length === 1 ? '' : 's' }})</span>
+            <span class="text-gray-900">{{ calculateSubtotal() | currency }}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600">Tax (10%)</span>
+            <span class="text-gray-900">{{ calculateTax() | currency }}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600">Shipping Fee</span>
+            <span class="text-gray-900">{{ calculateShipping() | currency }}</span>
+          </div>
+          <div class="border-t border-gray-200 pt-3">
+            <div class="flex justify-between text-base font-medium">
+              <span class="text-gray-900">Total Amount</span>
+              <span class="text-gray-900">{{ calculateTotal() | currency }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Form Actions -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="flex justify-end space-x-3">
+        <button
+          type="button"
+          (click)="router.navigate(['/orders'])"
+          class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="!orderForm.valid || submitting() || orderItemsArray.length === 0"
+          class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          @if (submitting()) {
+            <svg class="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Creating Order...
+          } @else {
+            Create Order
+          }
+        </button>
+      </div>
+
+      @if (error()) {
+        <div class="mt-4 bg-red-50 border border-red-200 rounded-md p-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">Error creating order</h3>
+              <p class="mt-1 text-sm text-red-700">{{ error() }}</p>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </form>
+
+  <!-- Loading overlay -->
+  @if (loadingProducts()) {
+    <app-loading-spinner message="Loading products..." />
+  }
+</div>
+

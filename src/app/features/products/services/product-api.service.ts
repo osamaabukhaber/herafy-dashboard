@@ -13,14 +13,14 @@ import { environment } from '../../../environment/environment.developemnt.js';
 })
 export class ProductApiService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiBaseUrl}/api/product`;
+  private apiUrl = `${environment.apiBaseUrl}/product`;
 
   getProducts(): Observable<ProductListBackendResponse> {
     return this.http.get<ProductListBackendResponse>(this.apiUrl);
   }
 
   deleteProduct(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, { withCredentials: true });
   }
 
   // Create product - sends FormData (files + JSON fields)
@@ -28,6 +28,29 @@ export class ProductApiService {
 createProduct(formData: FormData): Observable<Product> {
   return this.http.post<Product>(`${this.apiUrl}`, formData, { withCredentials: true });
 }
+
+getProductById(id: string): Observable<Product> {
+// test fake data
+  return of({
+    _id: id,
+    store: '68906db92b1ddddcb879cee5',
+    name: 'test prod',
+    description:'prod description',
+    basePrice: 100,
+    category: '68895bd225e59a1915813ce4',
+    images: [],
+    variants: [],
+    createdBy: 'user123',
+  });
+}
+
+// getProductById(id: string): Observable<Product> {
+//   return this.http.get<Product>(`${this.apiUrl}/${id}`);
+// }
+
+// getProductById(id: string): Observable<Product> {
+//   return this.http.get<Product>(`${this.apiUrl}/${id}`);
+// }
 
   // For now: fake stores list
   // GET /api/store

@@ -24,7 +24,7 @@ export interface Product {
   discountPrice?: number;
   discountStart?: string | Date;
   discountEnd?: string | Date;
-  category: Category;
+  category: Category | string;
   images: string[];
   variants: ProductVariant[];
   // options: ProductVariantOption;

@@ -22,6 +22,10 @@ import { CouponComponent } from './features/coupon-component/coupon-component/co
 import { AuthGuard } from './core/guards/auth.guard';
 import { Login } from './shared/login/login';
 import { ReviewComponent } from './features/review-component/review-component';
+import { OrderListComponent } from './features/orders/components/order-list/order-list.component.js';
+import { OrderDetailComponent } from './features/orders/components/order-detail/order-detail.component.js';
+import { CreateOrderComponent } from './features/orders/components/create-order/create-order.component.js';
+import { ProductDetailComponent } from './features/products/components/product-detail/product-detail.component.js';
 
 export const routes: Routes = [
   {
@@ -30,8 +34,7 @@ export const routes: Routes = [
     /* resolve: { loggedIn: AuthStatusResolver }, */
     canActivate: [AuthGuard], // optional now, could be removed
     children: [
-      { path: 'user', component: User },
-      { path: 'products', component: ProductListComponent },
+      {path: 'user', component: User },
       {path:"store",component:StoreComponent ,title:"store mangement"},
       {path:"add-new-store", component:StoreAddedNewstoreComponent ,title:"add new store"},
       {path: 'update-store/:id', component: StoreUpdateSroreComponent, title: "update store"},
@@ -44,14 +47,20 @@ export const routes: Routes = [
       { path: 'view-payment/:id', component: PaymentsViewComponent, title: 'view payment' },
       { path: 'coupon', component: CouponComponent },
       { path: 'reviews', component: ReviewComponent },
-      // { path: 'products/create',   },
-      // { path: 'products/:id', component: ProductDetailComponent },
+      { path: 'products', component: ProductListComponent },
+      { path: 'products/:id/edit', component: ProductDetailComponent },
+      { path: 'products/:id/view', component: ProductDetailComponent },
       // { path: 'products/:id/edit',  }
       { path: 'products/create', component: ProductFormComponent, title: 'Create Product' },
       { path: "store", component: StoreComponent, title: "store" },
       { path: "add-new-store", component: StoreAddedNewstoreComponent, title: "add new store" },
       { path: 'update/:id', component: StoreUpdateSroreComponent, title: "update store" },
-      { path: 'category', component: CategoryComponent }
+      { path: 'category', component: CategoryComponent },
+
+      { path: 'orders', component: OrderListComponent, title: "orders" },
+      { path: 'orders/create', component: CreateOrderComponent, title: "order" },
+      { path: 'order-detail', component: OrderDetailComponent, title: "order detail" },
+      // { path: 'create-order', component: CreateOrderComponent, title: "create order" },
     ],
   },
   { path: 'login', component: Login },

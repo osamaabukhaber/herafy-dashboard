@@ -1,361 +1,473 @@
- <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
-  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="max-w-4xl mx-auto">
-      <!-- Header -->
-      <div class="mb-8">
-        <div class="flex items-center justify-between">
-          <div>
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Create New Product</h1>
-            <p class="text-gray-600">Add a new product to your catalog</p>
-          </div>
-          <button
-            (click)="onCancel()"
-            class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-          >
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-4 sm:py-6 lg:py-8">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header Section -->
+    <div class="mb-8 text-center sm:text-left">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mb-4 shadow-lg">
+            <svg class="w-6 h-6 sm:w-8 sm:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
             </svg>
-            Back to Products
-          </button>
-        </div>
-      </div>
-
-      <!-- Loading State -->
-      @if (loading) {
-        <div class="bg-white rounded-xl shadow-lg p-8 text-center">
-          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p class="text-gray-600">Loading form data...</p>
-        </div>
-      } @else {
-        <!-- Form -->
-        <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="bg-white rounded-xl shadow-lg overflow-hidden">
-          <!-- Form Header -->
-          <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
-            <h2 class="text-xl font-semibold text-white">Product Information</h2>
-            <p class="text-blue-100 text-sm mt-1">Fill in the details below to create your product</p>
           </div>
+          <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 animate-slide-up">Create New Product</h1>
+          <p class="text-sm sm:text-base text-gray-600 animate-slide-up [animation-delay:100ms] max-w-2xl mx-auto sm:mx-0">
+            Add a new product to your catalog
+          </p>
+          <div class="flex items-center justify-center sm:justify-start mt-4">
+            <div class="flex items-center text-sm text-gray-500">
+              <span class="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
+              Required fields are marked with an asterisk
+            </div>
+          </div>
+        </div>
+        <button
+          (click)="onCancel()"
+          class="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-300 animate-slide-up [animation-delay:200ms]">
+          <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          Back to Products
+        </button>
+      </div>
+    </div>
 
-          <div class="p-6 space-y-8">
-            <!-- Basic Information -->
-            <div class="space-y-6">
-              <div class="border-b border-gray-200 pb-4">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                  <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                  </svg>
-                  Basic Information
-                </h3>
+    <!-- Loading State -->
+    @if (loading) {
+      <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-8 text-center animate-fade-in">
+        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-blue-600 mx-auto mb-4"></div>
+        <p class="text-gray-600 text-sm">Loading form data...</p>
+      </div>
+    } @else {
+      <!-- Form -->
+      <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-fade-in [animation-delay:100ms]">
+        <!-- Form Header -->
+        <div class="bg-gradient-to-r from-blue-500 to-purple-600 h-2"></div>
+        <div class="p-6 sm:p-8 space-y-8 sm:space-y-10">
+          <!-- Basic Information -->
+          <div class="relative">
+            <div class="flex items-center mb-6">
+              <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mr-4">
+                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
               </div>
-
-              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div>
+                <h3 class="text-lg sm:text-xl font-bold text-gray-900">Basic Information</h3>
+                <p class="text-gray-600 text-sm">Details about your product</p>
+              </div>
+            </div>
+            <div class="bg-gray-50/50 rounded-2xl p-4 sm:p-6 border border-gray-100">
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 <!-- Product Name -->
                 <div class="lg:col-span-2">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Product Name *
+                  <label class="block mb-3">
+                    <span class="text-sm font-semibold text-gray-700 flex items-center">
+                      Product Name
+                      <span class="text-red-500 ml-1">*</span>
+                    </span>
+                    <input
+                      type="text"
+                      formControlName="name"
+                      placeholder="Enter product name (e.g., Wireless Headphones)"
+                      [ngClass]="{
+                        'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': isFieldInvalid('name'),
+                        'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': productForm.get('name')?.valid && (productForm.get('name')?.touched || productForm.get('name')?.dirty),
+                        'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !productForm.get('name')?.touched && !productForm.get('name')?.dirty
+                      }"
+                      class="mt-2 w-full px-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 placeholder-gray-400 text-gray-900 shadow-sm"
+                    >
+                    @if (getFieldError('name')) {
+                      <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                        <p class="text-sm text-red-700 flex items-center">
+                          <svg class="w-4 h-4 mr-2 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                          </svg>
+                          {{ getFieldError('name') }}
+                        </p>
+                      </div>
+                    }
                   </label>
-                  <input
-                    type="text"
-                    formControlName="name"
-                    placeholder="Enter product name"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                    [class.border-red-300]="isFieldInvalid('name')"
-                    [class.ring-red-200]="isFieldInvalid('name')"
-                  >
-                  @if (getFieldError('name')) {
-                    <p class="mt-2 text-sm text-red-600 flex items-center">
-                      <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                      </svg>
-                      {{ getFieldError('name') }}
-                    </p>
-                  }
                 </div>
-
                 <!-- Description -->
                 <div class="lg:col-span-2">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Description *
+                  <label class="block mb-3">
+                    <span class="text-sm font-semibold text-gray-700 flex items-center">
+                      Description
+                      <span class="text-red-500 ml-1">*</span>
+                    </span>
+                    <textarea
+                      formControlName="description"
+                      rows="4"
+                      placeholder="Enter detailed product description"
+                      [ngClass]="{
+                        'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': isFieldInvalid('description'),
+                        'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': productForm.get('description')?.valid && (productForm.get('description')?.touched || productForm.get('description')?.dirty),
+                        'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !productForm.get('description')?.touched && !productForm.get('description')?.dirty
+                      }"
+                      class="mt-2 w-full px-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 placeholder-gray-400 text-gray-900 shadow-sm resize-vertical"
+                    ></textarea>
+                    @if (getFieldError('description')) {
+                      <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                        <p class="text-sm text-red-700 flex items-center">
+                          <svg class="w-4 h-4 mr-2 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                          </svg>
+                          {{ getFieldError('description') }}
+                        </p>
+                      </div>
+                    }
                   </label>
-                  <textarea
-                    formControlName="description"
-                    rows="4"
-                    placeholder="Enter detailed product description"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-colors"
-                    [class.border-red-300]="isFieldInvalid('description')"
-                    [class.ring-red-200]="isFieldInvalid('description')"
-                  ></textarea>
-                  @if (getFieldError('description')) {
-                    <p class="mt-2 text-sm text-red-600 flex items-center">
-                      <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                      </svg>
-                      {{ getFieldError('description') }}
-                    </p>
-                  }
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- Pricing Section -->
-            <div class="space-y-6">
-              <div class="border-b border-gray-200 pb-4">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                  <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
-                  </svg>
-                  Pricing
-                </h3>
+          <!-- Pricing Section -->
+          <div class="relative">
+            <div class="flex items-center mb-6">
+              <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mr-4">
+                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                </svg>
               </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h3 class="text-lg sm:text-xl font-bold text-gray-900">Pricing</h3>
+                <p class="text-gray-600 text-sm">Set product pricing details</p>
+              </div>
+            </div>
+            <div class="bg-gray-50/50 rounded-2xl p-4 sm:p-6 border border-gray-100">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <!-- Base Price -->
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Base Price (EGP) *
+                  <label class="block mb-3">
+                    <span class="text-sm font-semibold text-gray-700 flex items-center">
+                      Base Price (EGP)
+                      <span class="text-red-500 ml-1">*</span>
+                    </span>
+                    <div class="relative">
+                      <span class="absolute left-3 top-3 text-gray-500">EGP</span>
+                      <input
+                        type="number"
+                        formControlName="basePrice"
+                        min="0.01"
+                        step="0.01"
+                        placeholder="0.00"
+                        [ngClass]="{
+                          'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': isFieldInvalid('basePrice'),
+                          'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': productForm.get('basePrice')?.valid && (productForm.get('basePrice')?.touched || productForm.get('basePrice')?.dirty),
+                          'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !productForm.get('basePrice')?.touched && !productForm.get('basePrice')?.dirty
+                        }"
+                        class="mt-2 w-full pl-12 pr-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 placeholder-gray-400 text-gray-900 shadow-sm"
+                      >
+                    </div>
+                    @if (getFieldError('basePrice')) {
+                      <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                        <p class="text-sm text-red-700 flex items-center">
+                          <svg class="w-4 h-4 mr-2 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                          </svg>
+                          {{ getFieldError('basePrice') }}
+                        </p>
+                      </div>
+                    }
                   </label>
-                  <div class="relative">
-                    <span class="absolute left-3 top-3 text-gray-500">EGP</span>
-                    <input
-                      type="number"
-                      formControlName="basePrice"
-                      min="0.01"
-                      step="0.01"
-                      placeholder="0.00"
-                      class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                      [class.border-red-300]="isFieldInvalid('basePrice')"
-                      [class.ring-red-200]="isFieldInvalid('basePrice')"
-                    >
-                  </div>
-                  @if (getFieldError('basePrice')) {
-                    <p class="mt-2 text-sm text-red-600 flex items-center">
-                      <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                      </svg>
-                      {{ getFieldError('basePrice') }}
-                    </p>
-                  }
                 </div>
-
                 <!-- Discount Price -->
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Discount Price (EGP)
+                  <label class="block mb-3">
+                    <span class="text-sm font-semibold text-gray-700">Discount Price (EGP)</span>
+                    <div class="relative">
+                      <span class="absolute left-3 top-3 text-gray-500">EGP</span>
+                      <input
+                        type="number"
+                        formControlName="discountPrice"
+                        min="0"
+                        step="0.01"
+                        placeholder="0.00"
+                        [ngClass]="{
+                          'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': productForm.get('discountPrice')?.valid && (productForm.get('discountPrice')?.touched || productForm.get('discountPrice')?.dirty),
+                          'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !productForm.get('discountPrice')?.touched && !productForm.get('discountPrice')?.dirty
+                        }"
+                        class="mt-2 w-full pl-12 pr-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 placeholder-gray-400 text-gray-900 shadow-sm"
+                      >
+                    </div>
+                    @if (getDiscountPercentage() > 0) {
+                      <p class="mt-3 text-sm text-green-600 flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        {{ getDiscountPercentage() }}% discount
+                      </p>
+                    }
                   </label>
-                  <div class="relative">
-                    <span class="absolute left-3 top-3 text-gray-500">EGP</span>
-                    <input
-                      type="number"
-                      formControlName="discountPrice"
-                      min="0"
-                      step="0.01"
-                      placeholder="0.00"
-                      class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                    >
-                  </div>
-                  @if (getDiscountPercentage() > 0) {
-                    <p class="mt-2 text-sm text-green-600 flex items-center">
-                      <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                      </svg>
-                      {{ getDiscountPercentage() }}% discount
-                    </p>
-                  }
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- Category & Store Section -->
-            <div class="space-y-6">
-              <div class="border-b border-gray-200 pb-4">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                  <svg class="w-5 h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                  </svg>
-                  Category & Store
-                </h3>
+          <!-- Category & Store Section -->
+          <div class="relative">
+            <div class="flex items-center mb-6">
+              <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center mr-4">
+                <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                </svg>
               </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h3 class="text-lg sm:text-xl font-bold text-gray-900">Category & Store</h3>
+                <p class="text-gray-600 text-sm">Assign product to a category and store</p>
+              </div>
+            </div>
+            <div class="bg-gray-50/50 rounded-2xl p-4 sm:p-6 border border-gray-100">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <!-- Category -->
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Category *
+                  <label class="block mb-3">
+                    <span class="text-sm font-semibold text-gray-700 flex items-center">
+                      Category
+                      <span class="text-red-500 ml-1">*</span>
+                    </span>
+                    <select
+                      formControlName="category"
+                      [ngClass]="{
+                        'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': isFieldInvalid('category'),
+                        'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': productForm.get('category')?.valid && (productForm.get('category')?.touched || productForm.get('category')?.dirty),
+                        'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !productForm.get('category')?.touched && !productForm.get('category')?.dirty
+                      }"
+                      class="mt-2 w-full px-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 text-gray-900 shadow-sm"
+                    >
+                      <option value="" disabled selected class="text-gray-400">Select a category</option>
+                      @for (category of categories; track category) {
+                        <option [value]="category._id || ''" class="text-gray-900">
+                          {{ category.name }}
+                        </option>
+                      }
+                    </select>
+                    @if (getFieldError('category')) {
+                      <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                        <p class="text-sm text-red-700 flex items-center">
+                          <svg class="w-4 h-4 mr-2 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                          </svg>
+                          {{ getFieldError('category') }}
+                        </p>
+                      </div>
+                    }
                   </label>
-                  <select
-                    formControlName="category"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                    [class.border-red-300]="isFieldInvalid('category')"
-                    [class.ring-red-200]="isFieldInvalid('category')"
-                  >
-                    <option value="">Select a category</option>
-                    <option *ngFor="let category of categories" [value]="category._id || ''">
-                      {{ category.name }}
-                    </option>
-                  </select>
-                  @if (getFieldError('category')) {
-                    <p class="mt-2 text-sm text-red-600 flex items-center">
-                      <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                      </svg>
-                      {{ getFieldError('category') }}
-                    </p>
-                  }
                 </div>
-
                 <!-- Store -->
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Store *
+                  <label class="block mb-3">
+                    <span class="text-sm font-semibold text-gray-700 flex items-center">
+                      Store
+                      <span class="text-red-500 ml-1">*</span>
+                    </span>
+                    <select
+                      formControlName="store"
+                      [ngClass]="{
+                        'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': isFieldInvalid('store'),
+                        'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': productForm.get('store')?.valid && (productForm.get('store')?.touched || productForm.get('store')?.dirty),
+                        'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !productForm.get('store')?.touched && !productForm.get('store')?.dirty
+                      }"
+                      class="mt-2 w-full px-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 text-gray-900 shadow-sm"
+                    >
+                      <option value="" disabled selected class="text-gray-400">Select a store</option>
+                      @for (store of stores; track store) {
+                        <option [value]="store._id" class="text-gray-900">
+                          {{ store.name }}
+                        </option>
+                      }
+                    </select>
+                    @if (getFieldError('store')) {
+                      <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                        <p class="text-sm text-red-700 flex items-center">
+                          <svg class="w-4 h-4 mr-2 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                          </svg>
+                          {{ getFieldError('store') }}
+                        </p>
+                      </div>
+                    }
                   </label>
-                  <select
-                    formControlName="store"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                    [class.border-red-300]="isFieldInvalid('store')"
-                    [class.ring-red-200]="isFieldInvalid('store')"
-                  >
-                    <option value="">Select a store</option>
-                    <option *ngFor="let store of stores" [value]="store._id">
-                      {{ store.name }}
-                    </option>
-                  </select>
-                  @if (getFieldError('store')) {
-                    <p class="mt-2 text-sm text-red-600 flex items-center">
-                      <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                      </svg>
-                      {{ getFieldError('store') }}
-                    </p>
-                  }
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- Variants Section -->
-            <div class="space-y-6">
-              <div class="border-b border-gray-200 pb-4">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                  <svg class="w-5 h-5 mr-2 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                  </svg>
-                  Product Variants
-                </h3>
-                <button
-                  type="button"
-                  (click)="addVariant()"
-                  class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                >
-                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                  </svg>
-                  Add Variant
-                </button>
+          <!-- Variants Section -->
+          <div class="relative">
+            <div class="flex items-center mb-6">
+              <div class="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center mr-4">
+                <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                </svg>
               </div>
-
-              <!-- Variants List -->
+              <div>
+                <h3 class="text-lg sm:text-xl font-bold text-gray-900">Product Variants</h3>
+                <p class="text-gray-600 text-sm">Define product variants and options</p>
+              </div>
+            </div>
+            <div class="bg-gray-50/50 rounded-2xl p-4 sm:p-6 border border-gray-100 space-y-6">
+              <button
+                type="button"
+                (click)="addVariant()"
+                class="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-300 shadow-sm"
+              >
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                Add Variant
+              </button>
               <div formArrayName="variants" class="space-y-6">
                 @for (variant of variants.controls; let variantIndex = $index; track variantIndex) {
-                  <div [formGroupName]="variantIndex" class="bg-gray-50 p-4 rounded-lg">
+                  <div [formGroupName]="variantIndex" class="bg-white rounded-xl p-4 sm:p-6 border border-gray-100">
                     <div class="flex justify-between items-center mb-4">
-                      <h4 class="text-sm font-medium text-gray-700">Variant {{variantIndex + 1}}</h4>
+                      <h4 class="text-sm sm:text-base font-semibold text-gray-700">Variant {{variantIndex + 1}}</h4>
                       <button
                         type="button"
                         (click)="removeVariant(variantIndex)"
-                        class="text-red-600 hover:text-red-800"
+                        class="text-red-600 hover:text-red-800 transition-colors duration-200"
                       >
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                       </button>
                     </div>
-
                     <!-- Variant Name -->
                     <div class="mb-4">
-                      <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Variant Name *
+                      <label class="block mb-3">
+                        <span class="text-sm font-semibold text-gray-700 flex items-center">
+                          Variant Name
+                          <span class="text-red-500 ml-1">*</span>
+                        </span>
+                        <input
+                          type="text"
+                          formControlName="name"
+                          placeholder="e.g., Color, Size"
+                          [ngClass]="{
+                            'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': variant.get('name')?.invalid && variant.get('name')?.touched,
+                            'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': variant.get('name')?.valid && (variant.get('name')?.touched || variant.get('name')?.dirty),
+                            'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !variant.get('name')?.touched && !variant.get('name')?.dirty
+                          }"
+                          class="mt-2 w-full px-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 placeholder-gray-400 text-gray-900 shadow-sm"
+                        >
+                        @if (variant.get('name')?.invalid && variant.get('name')?.touched) {
+                          <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                            <p class="text-sm text-red-700">Variant name is required</p>
+                          </div>
+                        }
                       </label>
-                      <input
-                        type="text"
-                        formControlName="name"
-                        placeholder="e.g., Color, Size"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                        [class.border-red-300]="variant.get('name')?.invalid && variant.get('name')?.touched"
-                      >
-                      @if (variant.get('name')?.invalid && variant.get('name')?.touched) {
-                        <p class="mt-2 text-sm text-red-600">Variant name is required</p>
-                      }
                     </div>
-
                     <!-- Options -->
                     <div formArrayName="options" class="space-y-4">
                       @for (option of getOptions(variantIndex).controls; let optionIndex = $index; track optionIndex) {
                         <div [formGroupName]="optionIndex" class="border-t border-gray-200 pt-4">
                           <div class="flex justify-between items-center mb-4">
-                            <h5 class="text-sm font-medium text-gray-700">Option {{optionIndex + 1}}</h5>
+                            <h5 class="text-sm font-semibold text-gray-700">Option {{optionIndex + 1}}</h5>
                             <button
                               type="button"
                               (click)="removeOption(variantIndex, optionIndex)"
-                              class="text-red-600 hover:text-red-800"
+                              class="text-red-600 hover:text-red-800 transition-colors duration-200"
                             >
                               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                               </svg>
                             </button>
                           </div>
-                          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
                             <!-- Option Value -->
                             <div>
-                              <label class="block text-sm font-medium text-gray-700 mb-2">Value *</label>
-                              <input
-                                type="text"
-                                formControlName="value"
-                                placeholder="e.g., Red, Large"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                                [class.border-red-300]="option.get('value')?.invalid && option.get('value')?.touched"
-                              >
-                              @if (option.get('value')?.invalid && option.get('value')?.touched) {
-                                <p class="mt-2 text-sm text-red-600">Option value is required</p>
-                              }
+                              <label class="block mb-3">
+                                <span class="text-sm font-semibold text-gray-700 flex items-center">
+                                  Value
+                                  <span class="text-red-500 ml-1">*</span>
+                                </span>
+                                <input
+                                  type="text"
+                                  formControlName="value"
+                                  placeholder="e.g., Red, Large"
+                                  [ngClass]="{
+                                    'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': option.get('value')?.invalid && option.get('value')?.touched,
+                                    'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': option.get('value')?.valid && (option.get('value')?.touched || option.get('value')?.dirty),
+                                    'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !option.get('value')?.touched && !option.get('value')?.dirty
+                                  }"
+                                  class="mt-2 w-full px-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 placeholder-gray-400 text-gray-900 shadow-sm"
+                                >
+                                @if (option.get('value')?.invalid && option.get('value')?.touched) {
+                                  <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                                    <p class="text-sm text-red-700">Option value is required</p>
+                                  </div>
+                                }
+                              </label>
                             </div>
                             <!-- Price Modifier -->
                             <div>
-                              <label class="block text-sm font-medium text-gray-700 mb-2">Price Modifier (EGP)</label>
-                              <input
-                                type="number"
-                                formControlName="priceModifier"
-                                min="0"
-                                step="0.01"
-                                placeholder="0.00"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                              >
+                              <label class="block mb-3">
+                                <span class="text-sm font-semibold text-gray-700">Price Modifier (EGP)</span>
+                                <input
+                                  type="number"
+                                  formControlName="priceModifier"
+                                  min="0"
+                                  step="0.01"
+                                  placeholder="0.00"
+                                  [ngClass]="{
+                                    'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': option.get('priceModifier')?.valid && (option.get('priceModifier')?.touched || option.get('priceModifier')?.dirty),
+                                    'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !option.get('priceModifier')?.touched && !option.get('priceModifier')?.dirty
+                                  }"
+                                  class="mt-2 w-full px-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 placeholder-gray-400 text-gray-900 shadow-sm"
+                                >
+                              </label>
                             </div>
                             <!-- Stock -->
                             <div>
-                              <label class="block text-sm font-medium text-gray-700 mb-2">Stock *</label>
-                              <input
-                                type="number"
-                                formControlName="stock"
-                                min="0"
-                                placeholder="0"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                                [class.border-red-300]="option.get('stock')?.invalid && option.get('stock')?.touched"
-                              >
-                              @if (option.get('stock')?.invalid && option.get('stock')?.touched) {
-                                <p class="mt-2 text-sm text-red-600">Stock is required</p>
-                              }
+                              <label class="block mb-3">
+                                <span class="text-sm font-semibold text-gray-700 flex items-center">
+                                  Stock
+                                  <span class="text-red-500 ml-1">*</span>
+                                </span>
+                                <input
+                                  type="number"
+                                  formControlName="stock"
+                                  min="0"
+                                  placeholder="0"
+                                  [ngClass]="{
+                                    'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': option.get('stock')?.invalid && option.get('stock')?.touched,
+                                    'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': option.get('stock')?.valid && (option.get('stock')?.touched || option.get('stock')?.dirty),
+                                    'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !option.get('stock')?.touched && !option.get('stock')?.dirty
+                                  }"
+                                  class="mt-2 w-full px-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 placeholder-gray-400 text-gray-900 shadow-sm"
+                                >
+                                @if (option.get('stock')?.invalid && option.get('stock')?.touched) {
+                                  <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                                    <p class="text-sm text-red-700">Stock is required</p>
+                                  </div>
+                                }
+                              </label>
                             </div>
                             <!-- SKU -->
                             <div>
-                              <label class="block text-sm font-medium text-gray-700 mb-2">SKU *</label>
-                              <input
-                                type="text"
-                                formControlName="sku"
-                                placeholder="Enter SKU"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                                [class.border-red-300]="option.get('sku')?.invalid && option.get('sku')?.touched"
-                              >
-                              @if (option.get('sku')?.invalid && option.get('sku')?.touched) {
-                                <p class="mt-2 text-sm text-red-600">SKU is required</p>
-                              }
+                              <label class="block mb-3">
+                                <span class="text-sm font-semibold text-gray-700 flex items-center">
+                                  SKU
+                                  <span class="text-red-500 ml-1">*</span>
+                                </span>
+                                <input
+                                  type="text"
+                                  formControlName="sku"
+                                  placeholder="Enter SKU"
+                                  [ngClass]="{
+                                    'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': option.get('sku')?.invalid && option.get('sku')?.touched,
+                                    'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': option.get('sku')?.valid && (option.get('sku')?.touched || option.get('sku')?.dirty),
+                                    'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !option.get('sku')?.touched && !option.get('sku')?.dirty
+                                  }"
+                                  class="mt-2 w-full px-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 placeholder-gray-400 text-gray-900 shadow-sm"
+                                >
+                                @if (option.get('sku')?.invalid && option.get('sku')?.touched) {
+                                  <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                                    <p class="text-sm text-red-700">SKU is required</p>
+                                  </div>
+                                }
+                              </label>
                             </div>
                           </div>
                         </div>
@@ -363,10 +475,10 @@
                       <button
                         type="button"
                         (click)="addOption(variantIndex)"
-                        class="mt-4 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                        class="mt-4 inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-300 shadow-sm"
                       >
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                         </svg>
                         Add Option
                       </button>
@@ -375,105 +487,212 @@
                 }
               </div>
             </div>
+          </div>
 
-            <!-- Images Section -->
-            <div class="space-y-6">
-              <div class="border-b border-gray-200 pb-4">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                  <svg class="w-5 h-5 mr-2 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                  </svg>
-                  Product Images
-                </h3>
+          <!-- Images Section -->
+          <div class="relative">
+            <div class="flex items-center mb-6">
+              <div class="w-10 h-10 bg-pink-100 rounded-xl flex items-center justify-center mr-4">
+                <svg class="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
               </div>
-
-              <!-- File Input -->
-              <div class="space-y-4">
-                <div class="flex gap-3">
-                  <input
-                    #fileInput
-                    type="file"
-                    multiple
-                    (change)="onFileChange($event)"
-                    accept="image/*"
-                    class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                  >
-                  <button
-                    type="button"
-                    (click)="triggerFileInput()"
-                    class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                  >
-                    Upload Images
-                  </button>
+              <div>
+                <h3 class="text-lg sm:text-xl font-bold text-gray-900">Product Images</h3>
+                <p class="text-gray-600 text-sm">Upload product images</p>
+              </div>
+            </div>
+            <div class="bg-gray-50/50 rounded-2xl p-4 sm:p-6 border border-gray-100 space-y-4 sm:space-y-6">
+              <div class="flex flex-col sm:flex-row gap-3">
+                <input
+                  #fileInput
+                  type="file"
+                  multiple
+                  (change)="onFileChange($event)"
+                  accept="image/*"
+                  class="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-200 text-gray-900 shadow-sm"
+                >
+                <button
+                  type="button"
+                  (click)="triggerFileInput()"
+                  class="px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-300 shadow-sm"
+                >
+                  Upload Images
+                </button>
+              </div>
+              @if (productForm.get('images')?.value?.length > 0) {
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  @for (file of productForm.get('images')?.value; let i = $index; track i) {
+                    <div class="relative group">
+                      <img
+                        [src]="getImageUrl(i)"
+                        [alt]="'Product image ' + (i + 1)"
+                        class="w-full h-24 sm:h-32 object-cover rounded-lg border border-gray-200 shadow-sm"
+                        (error)="$event.target.style.display='none'"
+                      >
+                      <button
+                        type="button"
+                        (click)="removeImage(i)"
+                        class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600"
+                      >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                      </button>
+                    </div>
+                  }
                 </div>
-
-                <!-- Image Preview Grid -->
-                @if (productForm.get('images')?.value?.length > 0) {
-                  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    @for (file of productForm.get('images')?.value; let i = $index; track i) {
-                      <div class="relative group">
-                        <img
-                          [src]="getImageUrl(i)"
-                          [alt]="'Product image ' + (i + 1)"
-                          class="w-full h-32 object-cover rounded-lg border border-gray-200"
-                          (error)="$event.target.style.display='none'"
-                        >
-                        <button
-                          type="button"
-                          (click)="removeImage(i)"
-                          class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
-                        >
-                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                          </svg>
-                        </button>
-                      </div>
-                    }
-                  </div>
-                } @else {
-                  <div class="text-center py-8 text-gray-500">
-                    <svg class="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                    </svg>
-                    <p class="text-sm">No images uploaded yet.</p>
-                  </div>
-                }
-              </div>
+              } @else {
+                <div class="text-center py-6 sm:py-8 text-gray-500">
+                  <svg class="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  <p class="text-sm">No images uploaded yet.</p>
+                </div>
+              }
             </div>
           </div>
 
+          <!-- Form Validation Summary -->
+          @if (productForm.invalid && (productForm.dirty || productForm.touched) && !productForm.pristine) {
+            <div class="bg-gradient-to-r from-red-50 to-red-100 border-l-4 border-red-500 rounded-xl p-4 sm:p-6 shadow-sm">
+              <div class="flex items-start">
+                <div class="flex-shrink-0">
+                  <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+                <div class="ml-4">
+                  <h3 class="text-base sm:text-lg font-semibold text-red-800">Form Validation Required</h3>
+                  <p class="text-red-700 mt-1 text-sm sm:text-base">Please review and correct the errors above before creating your product.</p>
+                  <p class="text-red-600 text-sm mt-2">All required fields must be completed with valid information.</p>
+                </div>
+              </div>
+            </div>
+          }
+
           <!-- Form Actions -->
-          <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
-            <div class="flex items-center justify-end space-x-4">
+          <div class="bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-4 sm:p-6 border border-gray-100">
+            <div class="flex flex-col sm:flex-row items-center justify-end gap-3 sm:gap-4">
               <button
                 type="button"
                 (click)="onCancel()"
-                class="px-6 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                class="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-300 shadow-sm"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 [disabled]="productForm.invalid || submitting"
-                class="px-6 py-3 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
+                [ngClass]="{
+                  'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:scale-105 cursor-pointer': productForm.valid,
+                  'bg-gray-300 cursor-not-allowed opacity-60': productForm.invalid || submitting
+                }"
+                class="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-medium text-white rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-300 flex items-center justify-center"
               >
                 @if (submitting) {
-                  <svg class="animate-spin -ml-1 mr-3 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                  <svg class="animate-spin -ml-1 mr-3 h-4 w-4 sm:h-5 sm:w-5 text-white" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
                   Creating...
                 } @else {
-                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                  <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                   </svg>
                   Create Product
                 }
               </button>
             </div>
           </div>
-        </form>
-      }
-    </div>
+        </div>
+      </form>
+    }
   </div>
-</div>
+
+  <style>
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slide-up {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .animate-fade-in {
+      animation: fade-in 0.6s ease-out forwards;
+    }
+
+    .animate-slide-up {
+      animation: slide-up 0.5s ease-out forwards;
+    }
+
+    .animate-pulse {
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    @media (max-width: 640px) {
+      .max-w-6xl {
+        max-width: 100%;
+      }
+
+      input, select, textarea {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.75rem;
+      }
+
+      .text-sm {
+        font-size: 0.75rem;
+      }
+
+      .text-lg {
+        font-size: 1rem;
+      }
+
+      .text-xl {
+        font-size: 1.125rem;
+      }
+
+      .text-2xl {
+        font-size: 1.25rem;
+      }
+
+      .text-3xl {
+        font-size: 1.5rem;
+      }
+
+      .rounded-xl {
+        border-radius: 0.5rem;
+      }
+
+      .p-6 {
+        padding: 1rem;
+      }
+
+      .p-8 {
+        padding: 1.25rem;
+      }
+
+      .space-y-8 {
+        margin-top: 1rem;
+      }
+
+      .h-32 {
+        height: 6rem;
+      }
+    }
+
+    @media (min-width: 641px) and (max-width: 767px) {
+      input, select, textarea {
+        font-size: 0.875rem;
+        padding: 0.75rem 1rem;
+      }
+    }
+  </style>

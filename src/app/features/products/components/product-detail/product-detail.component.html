@@ -1,77 +1,320 @@
-
-<!--
-<div class="container mx-auto p-6" *ngIf="product">
-  <div class="max-w-4xl mx-auto">
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-bold">{{ product.name }}</h1>
-      <div class="space-x-2">
-        <button
-          (click)="editProduct()"
-          class="bg-blue-600 text-white px-4 py-2 rounded">
-          Edit
-        </button>
-        <button
-          (click)="deleteProduct()"
-          class="bg-red-600 text-white px-4 py-2 rounded">
-          Delete
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-4 sm:py-6 lg:py-8">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-8 text-center sm:text-left">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mb-4 shadow-lg">
+            <svg class="w-6 h-6 sm:w-8 sm:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+          </div>
+          <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 animate-slide-up">Product Details</h1>
+          <p class="text-sm sm:text-base text-gray-600 animate-slide-up [animation-delay:100ms] max-w-2xl mx-auto sm:mx-0">
+            View product information
+          </p>
+        </div>
+        <button (click)="onCancel()" class="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-300 animate-slide-up [animation-delay:200ms]">
+          <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          Back to Products
         </button>
       </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow p-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-        <div>
-          <img [src]="product.images[0]" [alt]="product.name" class="w-full rounded-lg">
-        </div>
-
-        <div class="space-y-4">
-          <div>
-            <h2 class="text-2xl font-semibold">{{ product.name }}</h2>
-            <p class="text-gray-600">{{ product.description }}</p>
-          </div>
-
-          <div class="space-y-2">
-            <div class="flex justify-between">
-              <span class="font-medium">Base Price:</span>
-              <span class="text-xl font-bold">${{ product.basePrice }}</span>
+    <!-- Loading State -->
+    @if (loading) {
+      <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-8 text-center animate-fade-in">
+        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-blue-600 mx-auto mb-4"></div>
+        <p class="text-gray-600 text-sm">Loading product data...</p>
+      </div>
+    } @else if (product) {
+      <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-fade-in [animation-delay:100ms]">
+        <div class="bg-gradient-to-r from-blue-500 to-purple-600 h-2"></div>
+        <div class="p-6 sm:p-8 space-y-8 sm:space-y-10">
+          <!-- Basic Information -->
+          <div class="relative">
+            <div class="flex items-center mb-6">
+              <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mr-4">
+                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-lg sm:text-xl font-bold text-gray-900">Basic Information</h3>
+                <p class="text-gray-600 text-sm">Details about your product</p>
+              </div>
             </div>
-            <div *ngIf="product.discountPrice && product.discountPrice > 0" class="flex justify-between">
-              <span class="text-gray-500">Discount Price:</span>
-              <span class="text-red-600 font-bold">${{ product.discountPrice }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-medium">Category:</span>
-              <span>{{ product.category }}</span>
-
-              <!-- <span class="font-medium">SKU:</span>
-              <span>{{ product.sku }}</span> -->
-            </div>
-            <div class="flex justify-between">
-              <span class="font-medium">Rating:</span>
-              <span>{{ product.averageRating }}/5 ({{ product.reviewCount }} reviews)</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-medium">Status:</span>
-              <span [class]="!product.isDeleted ? 'text-green-600' : 'text-red-600'">
-                {{ !product.isDeleted ? 'Active' : 'Deleted' }}
-              </span>
-            </div>
-          </div>
-
-          <div *ngIf="product.variants && product.variants.length > 0">
-            <h3 class="font-medium mb-2">Variants:</h3>
-            <div class="space-y-2">
-              <div *ngFor="let variant of product.variants" class="border p-2 rounded">
-                <div class="font-medium">{{ variant.name }}</div>
-                <div *ngFor="let option of variant.options" class="text-sm text-gray-600">
-                  {{ option.value }}: {{ option.stock }} in stock
+            <div class="bg-gray-50/50 rounded-2xl p-4 sm:p-6 border border-gray-100">
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                <div class="lg:col-span-2">
+                  <label class="block mb-3">
+                    <span class="text-sm font-semibold text-gray-700">Product Name</span>
+                    <p class="mt-2 w-full px-4 py-3 rounded-xl border bg-white text-gray-900 shadow-sm">{{ product.name }}</p>
+                  </label>
+                </div>
+                <div class="lg:col-span-2">
+                  <label class="block mb-3">
+                    <span class="text-sm font-semibold text-gray-700">Description</span>
+                    <p class="mt-2 w-full px-4 py-3 rounded-xl border bg-white text-gray-900 shadow-sm whitespace-pre-wrap">{{ product.description }}</p>
+                  </label>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+
+          <!-- Pricing -->
+<!-- Pricing -->
+<div class="relative">
+  <div class="flex items-center mb-6">
+    <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mr-4">
+      <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+      </svg>
+    </div>
+    <div>
+      <h3 class="text-lg sm:text-xl font-bold text-gray-900">Pricing</h3>
+      <p class="text-gray-600 text-sm">Product pricing details</p>
+    </div>
+  </div>
+  <div class="bg-gray-50/50 rounded-2xl p-4 sm:p-6 border border-gray-100">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+      <div>
+        <label class="block mb-3">
+          <span class="text-sm font-semibold text-gray-700">Base Price (EGP)</span>
+          <p class="mt-2 w-full px-4 py-3 rounded-xl border bg-white text-gray-900 shadow-sm">
+            EGP {{ product.basePrice != null ? product.basePrice.toFixed(2) : '0.00' }}
+          </p>
+        </label>
+      </div>
+      <div>
+        <label class="block mb-3">
+          <span class="text-sm font-semibold text-gray-700">Discount Price (EGP)</span>
+          <p class="mt-2 w-full px-4 py-3 rounded-xl border bg-white text-gray-900 shadow-sm">
+            EGP {{ product.discountPrice != null ? product.discountPrice.toFixed(2) : '0.00' }}
+          </p>
+          @if (getDiscountPercentage() > 0) {
+            <p class="mt-3 text-sm text-green-600">{{ getDiscountPercentage() }}% discount</p>
+          }
+        </label>
       </div>
     </div>
   </div>
-</div> -->
+</div>
+
+<!-- Category & Store -->
+
+<div class="relative">
+  <div class="flex items-center mb-6">
+    <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center mr-4">
+      <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+      </svg>
+    </div>
+    <div>
+      <h3 class="text-lg sm:text-xl font-bold text-gray-900">Category & Store</h3>
+      <p class="text-gray-600 text-sm">Product category and store</p>
+    </div>
+  </div>
+  <div class="bg-gray-50/50 rounded-2xl p-4 sm:p-6 border border-gray-100">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+      <div>
+        <label class="block mb-3">
+          <span class="align-middle text-sm font-semibold text-gray-700">Category</span>
+          <p class="mt-2 w-full px-4 py-3 rounded-xl border bg-white text-gray-900 shadow-sm">
+            {{ product.category?.name ?? 'no category' }}
+          </p>
+        </label>
+      </div>
+      <div>
+        <label class="block mb-3">
+          <span class="text-sm font-semibold text-gray-700">Store</span>
+          <p class="mt-2 w-full px-4 py-3 rounded-xl border bg-white text-gray-900 shadow-sm">{{ getStoreName() }}</p>
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+          <!-- Variants -->
+          <div class="relative">
+            <div class="flex items-center mb-6">
+              <div class="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center mr-4">
+                <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-lg sm:text-xl font-bold text-gray-900">Product Variants</h3>
+                <p class="text-gray-600 text-sm">Product variants and options</p>
+              </div>
+            </div>
+            <div class="bg-gray-50/50 rounded-2xl p-4 sm:p-6 border border-gray-100 space-y-6">
+              @for (variant of product.variants; let variantIndex = $index; track variantIndex) {
+                <div class="bg-white rounded-xl p-4 sm:p-6 border border-gray-100">
+                  <h4 class="text-sm sm:text-base font-semibold text-gray-700 mb-4">Variant {{variantIndex + 1}}</h4>
+                  <div class="mb-4">
+                    <label class="block mb-3">
+                      <span class="text-sm font-semibold text-gray-700">Variant Name</span>
+                      <p class="mt-2 w-full px-4 py-3 rounded-xl border bg-white text-gray-900 shadow-sm">{{ variant.name }}</p>
+                    </label>
+                  </div>
+                  <div class="space-y-4">
+                    @for (option of variant.options; let optionIndex = $index; track optionIndex) {
+                      <div class="border-t border-gray-200 pt-4">
+                        <h5 class="text-sm font-semibold text-gray-700 mb-4">Option {{optionIndex + 1}}</h5>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                          <div>
+                            <label class="block mb-3">
+                              <span class="text-sm font-semibold text-gray-700">Value</span>
+                              <p class="mt-2 w-full px-4 py-3 rounded-xl border bg-white text-gray-900 shadow-sm">{{ option.value }}</p>
+                            </label>
+                          </div>
+                          <div>
+                            <label class="block mb-3">
+                              <span class="text-sm font-semibold text-gray-700">Price Modifier (EGP)</span>
+                              <p class="mt-2 w-full px-4 py-3 rounded-xl border bg-white text-gray-900 shadow-sm">{{ (option.priceModifier ?? 0).toFixed(2) }}</p>
+                            </label>
+                          </div>
+                          <div>
+                            <label class="block mb-3">
+                              <span class="text-sm font-semibold text-gray-700">Stock</span>
+                              <p class="mt-2 w-full px-4 py-3 rounded-xl border bg-white text-gray-900 shadow-sm">{{ option.stock }}</p>
+                            </label>
+                          </div>
+                          <div>
+                            <label class="block mb-3">
+                              <span class="text-sm font-semibold text-gray-700">SKU</span>
+                              <p class="mt-2 w-full px-4 py-3 rounded-xl border bg-white text-gray-900 shadow-sm">{{ option.sku }}</p>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Images -->
+          <div class="relative">
+            <div class="flex items-center mb-6">
+              <div class="w-10 h-10 bg-pink-100 rounded-xl flex items-center justify-center mr-4">
+                <svg class="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-lg sm:text-xl font-bold text-gray-900">Product Images</h3>
+                <p class="text-gray-600 text-sm">Product images</p>
+              </div>
+            </div>
+            <div class="bg-gray-50/50 rounded-2xl p-4 sm:p-6 border border-gray-100 space-y-4 sm:space-y-6">
+              @if (product.images && product.images.length > 0) {
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  @for (image of product.images; let i = $index; track i) {
+                    <div class="relative group">
+                      <img [src]="image" [alt]="'Product image ' + (i + 1)" class="w-full h-24 sm:h-32 object-cover rounded-lg border border-gray-200 shadow-sm">
+                    </div>
+                  }
+                </div>
+              } @else {
+                <div class="text-center py-6 sm:py-8 text-gray-500">
+                  <svg class="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  <p class="text-sm">No images available.</p>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-4 sm:p-6 border border-gray-100">
+            <div class="flex flex-col sm:flex-row items-center justify-end gap-3 sm:gap-4">
+              <button (click)="editProduct()" class="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-300 shadow-sm">
+                Edit Product
+              </button>
+              <button (click)="deleteProduct()" class="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-200 transition-all duration-300 shadow-sm">
+                Delete Product
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+<style>
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slide-up {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.6s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.5s ease-out forwards;
+  }
+
+  @media (max-width: 640px) {
+    .max-w-6xl {
+      max-width: 100%;
+    }
+
+    input, select, textarea, p {
+      font-size: 0.75rem;
+      padding: 0.5rem 0.75rem;
+    }
+
+    .text-sm {
+      font-size: 0.75rem;
+    }
+
+    .text-lg {
+      font-size: 1rem;
+    }
+
+    .text-xl {
+      font-size: 1.125rem;
+    }
+
+    .text-2xl {
+      font-size: 1.25rem;
+    }
+
+    .text-3xl {
+      font-size: 1.5rem;
+    }
+
+    .rounded-xl {
+      border-radius: 0.5rem;
+    }
+
+    .p-6 {
+      padding: 1rem;
+    }
+
+    .p-8 {
+      padding: 1.25rem;
+    }
+
+    .space-y-8 {
+      margin-top: 1rem;
+    }
+
+    .h-32 {
+      height: 6rem;
+    }
+  }
+</style>
