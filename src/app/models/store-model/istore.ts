@@ -14,7 +14,7 @@ export interface storeAddress {
   street: string;
 }
 export interface IStore {
-  _id?: string;
+  _id: string;
   owner?: string;
   name: string;
   slug?: string;

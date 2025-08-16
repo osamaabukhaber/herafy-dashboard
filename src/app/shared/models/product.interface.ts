@@ -1,3 +1,4 @@
+import { IStore } from "../../models/store-model/istore";
 import { Category } from "./category.interface";
 
 
@@ -16,15 +17,16 @@ export interface ProductVariant {
 
 export interface Product {
   _id: string;
-  store: string;
+  store: IStore;
   name: string;
   slug?: string;
+  status:string;
   description: string;
   basePrice: number;
   discountPrice?: number;
   discountStart?: string | Date;
   discountEnd?: string | Date;
-  category: Category | string;
+  category: Category;
   images: string[];
   variants: ProductVariant[];
   // options: ProductVariantOption;

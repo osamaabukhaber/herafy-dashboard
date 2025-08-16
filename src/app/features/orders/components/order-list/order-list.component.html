@@ -1,191 +1,316 @@
-<div class="space-y-6">
-  <!-- Header -->
-  <div class="flex items-center justify-between">
-    <div>
-      <h2 class="text-2xl font-bold text-gray-900">
-        @switch (listType()) {
-          @case ('admin') { All Orders }
-          @case ('seller') { My Store Orders }
-          @default { My Orders }
-        }
-      </h2>
-      <p class="text-sm text-gray-600 mt-1">
-        @if (totalOrders() > 0) {
-          Showing {{ orders()?.length }} of {{ totalOrders() }} orders
-        }
-      </p>
-    </div>
+<!-- Modern Order List Template with Frosted Glass Design -->
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden">
+  <!-- Background Pattern -->
+  <div class="absolute inset-0 bg-white/20 backdrop-blur-3xl"></div>
+  <div class="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
+  <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-to-r from-pink-400/20 to-orange-400/20 rounded-full blur-3xl"></div>
 
-    @if (listType() === 'user') {
-      <button
-        (click)="router.navigate(['/orders/create'])"
-        class="inline-flex items-center my-5 px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-      >
-        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-        </svg>
-        New Order
-      </button>
-    }
-  </div>
-
-  <!-- Loading State -->
-  @if (loading()) {
-    <app-loading-spinner message="Loading orders..." />
-  }
-
-  <!-- Error State -->
-  @else if (error()) {
-    <div class="bg-red-50 border border-red-200 rounded-md p-4">
-      <div class="flex">
-        <div class="flex-shrink-0">
-          <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-          </svg>
+  <div class="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header Section with Glassmorphism -->
+    <div class="bg-white/30 backdrop-blur-xl rounded-2xl border border-white/20 shadow-xl p-6 mb-8">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div class="space-y-2">
+          <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
+            @switch (listType()) {
+              @case ('admin') {
+                <div class="flex items-center gap-3">
+                  <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                  </svg>
+                  All Orders Management
+                </div>
+              }
+              @case ('seller') {
+                <div class="flex items-center gap-3">
+                  <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                  </svg>
+                  My Store Orders
+                </div>
+              }
+              @default {
+                <div class="flex items-center gap-3">
+                  <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                  </svg>
+                  My Orders
+                </div>
+              }
+            }
+          </h1>
+          @if (totalOrders() > 0) {
+            <div class="flex items-center gap-2 text-slate-600">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 00-2-2z"></path>
+              </svg>
+              <span class="text-sm">Showing {{ orders()?.length }} of {{ totalOrders() }} orders</span>
+            </div>
+          }
         </div>
-        <div class="ml-3">
-          <h3 class="text-sm font-medium text-red-800">Error loading orders</h3>
-          <p class="mt-1 text-sm text-red-700">{{ error() }}</p>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-3">
+          @if (listType() === 'user') {
+            <button
+              (click)="router.navigate(['/orders/create'])"
+              class="group relative px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 overflow-hidden"
+            >
+              <div class="absolute inset-0 bg-gradient-to-r from-blue-700 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+              <div class="relative flex items-center gap-2">
+                <svg class="w-5 h-5 group-hover:rotate-90 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Create New Order
+              </div>
+            </button>
+          }
+
+          <!-- Refresh Button -->
           <button
-            (click)="loadOrders()"
-            class="mt-2 text-sm text-red-600 hover:text-red-500 underline"
+            (click)="loadOrders(currentPage())"
+            [disabled]="loading()"
+            class="group relative px-6 py-3 bg-white/40 backdrop-blur-md border border-white/30 text-slate-700 font-medium rounded-xl shadow-lg hover:shadow-xl hover:bg-white/50 transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >
-            Try again
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 group-hover:rotate-180 transition-transform duration-300" [class.animate-spin]="loading()" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+              </svg>
+              {{ loading() ? 'Refreshing...' : 'Refresh' }}
+            </div>
           </button>
         </div>
       </div>
     </div>
-  }
 
-  <!-- Empty State -->
-  @else if (orders()?.length === 0) {
-    <app-empty-state
-      title="No orders found"
-      [description]="emptyStateDescription()"
-      icon="📦"
-      [actionText]="listType() === 'user' ? 'Create Order' : undefined"
-      (actionClick)="listType() === 'user' && router.navigate(['/orders/create'])"
-    />
-  }
+    <!-- Loading State -->
+    @if (loading()) {
+      <div class="bg-white/20 backdrop-blur-xl rounded-2xl border border-white/20 shadow-xl p-12">
+        <div class="flex flex-col items-center justify-center space-y-4">
+          <div class="relative">
+            <div class="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+              </svg>
+            </div>
+          </div>
+          <p class="text-slate-600 font-medium">Loading your orders...</p>
+          <p class="text-slate-500 text-sm">Please wait while we fetch your data</p>
+        </div>
+      </div>
+    }
 
-  <!-- Orders Grid -->
-  @else {
-    <div class="grid gap-4 md:gap-6">
-      @for (order of orders(); track order._id) {
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-          <div class="p-6">
-            <!-- Order Header -->
-            <div class="flex items-start justify-between mb-4">
-              <div class="flex-1">
-                <div class="flex items-center space-x-3">
-                  <h3 class="text-lg font-semibold text-gray-900">
-                    Order #{{ order._id?.slice(-8)?.toUpperCase() }}
-                  </h3>
-                  <span [class]="orderService.getStatusColor(order.status)"
-                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
-                    {{ orderService.getStatusIcon(order.status) }}
-                    {{ order.status | titlecase }}
-                  </span>
+    <!-- Error State -->
+    @else if (error()) {
+      <div class="bg-red-50/80 backdrop-blur-xl rounded-2xl border border-red-200/50 shadow-xl p-6">
+        <div class="flex items-start gap-4">
+          <div class="flex-shrink-0">
+            <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+              <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="flex-1">
+            <h3 class="text-lg font-semibold text-red-800 mb-2">Unable to Load Orders</h3>
+            <p class="text-red-700 mb-4">{{ error() }}</p>
+            <button
+              (click)="loadOrders()"
+              class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+            >
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+              </svg>
+              Try Again
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Empty State -->
+    @else if (orders()?.length === 0) {
+      <div class="bg-white/20 backdrop-blur-xl rounded-2xl border border-white/20 shadow-xl p-12">
+        <div class="text-center space-y-6">
+          <div class="w-24 h-24 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center mx-auto">
+            <svg class="w-12 h-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M7.5 10.5L17 4"></path>
+            </svg>
+          </div>
+          <div class="space-y-2">
+            <h3 class="text-xl font-semibold text-slate-800">No Orders Found</h3>
+            <p class="text-slate-600 max-w-md mx-auto">{{ emptyStateDescription() }}</p>
+          </div>
+          @if (listType() === 'user') {
+            <button
+              (click)="router.navigate(['/orders/create'])"
+              class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+            >
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+              </svg>
+              Create Your First Order
+            </button>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Orders Grid -->
+    @else {
+      <div class="grid gap-6">
+        @for (order of orders(); track order._id) {
+          <div class="group bg-white/30 backdrop-blur-xl rounded-2xl border border-white/20 shadow-xl hover:shadow-2xl hover:bg-white/40 transition-all duration-300 overflow-hidden">
+            <div class="p-6">
+              <!-- Order Header -->
+              <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-4 mb-6">
+                <div class="flex-1 space-y-3">
+                  <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                    <h3 class="text-xl font-bold text-slate-800">
+                      Order #{{ order._id?.slice(-8)?.toUpperCase() }}
+                    </h3>
+                    <span [class]="'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ' + orderService.getStatusColor(order.status)"
+                          class="backdrop-blur-sm">
+                      <span class="mr-1">{{ orderService.getStatusIcon(order.status) }}</span>
+                      {{ order.status | titlecase }}
+                    </span>
+                  </div>
+                  <div class="flex items-center gap-2 text-slate-600">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="text-sm">Ordered on {{ order.createdAt | date:'medium' }}</span>
+                  </div>
                 </div>
-                <p class="text-sm text-gray-600 mt-1">
-                  Ordered on {{ order.createdAt | date:'medium' }}
-                </p>
+                <div class="text-right space-y-1">
+                  <p class="text-2xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
+                    {{ orderService.formatCurrency(order.totalAmount) }}
+                  </p>
+                  <p class="text-sm text-slate-600 flex items-center justify-end gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M7.5 10.5L17 4"></path>
+                    </svg>
+                    {{ order.orderItems.length }} item{{ order.orderItems.length === 1 ? '' : 's' }}
+                  </p>
+                </div>
               </div>
-              <div class="text-right">
-                <p class="text-lg font-bold text-gray-900">
-                  {{ orderService.formatCurrency(order.totalAmount) }}
-                </p>
-                <p class="text-sm text-gray-600">
-                  {{ order.orderItems.length }} item{{ order.orderItems.length === 1 ? '' : 's' }}
-                </p>
-              </div>
-            </div>
 
-            <!-- Order Items Preview -->
-            <div class="mb-4">
-              <div class="flex space-x-3 overflow-x-auto pb-2">
-                @for (item of order.orderItems.slice(0, 3); track item._id) {
-                  <div class="flex-shrink-0 flex items-center space-x-3 bg-gray-50 rounded-lg p-3 min-w-[200px]">
-                    @if (item.image) {
-                      <img [src]="item.image" [alt]="item.name"
-                           class="w-12 h-12 object-cover rounded-md">
-                    } @else {
-                      <div class="w-12 h-12 bg-gray-200 rounded-md flex items-center justify-center">
-                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
+              <!-- Order Items Preview -->
+              <div class="mb-6">
+                <div class="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+                  @for (item of order.orderItems.slice(0, 4); track item._id) {
+                    <div class="flex-shrink-0 bg-white/40 backdrop-blur-sm rounded-xl p-4 min-w-[240px] border border-white/20">
+                      <div class="flex items-center gap-3">
+                        @if (item.image) {
+                          <img [src]="item.image" [alt]="item.name"
+                               class="w-14 h-14 object-cover rounded-lg shadow-md">
+                        } @else {
+                          <div class="w-14 h-14 bg-gradient-to-br from-slate-200 to-slate-300 rounded-lg flex items-center justify-center shadow-md">
+                            <svg class="w-7 h-7 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                          </div>
+                        }
+                        <div class="flex-1 min-w-0">
+                          <p class="font-semibold text-slate-800 truncate mb-1">{{ item.name }}</p>
+                          <p class="text-sm text-slate-600">
+                            Qty: {{ item.quantity }} × {{ orderService.formatCurrency(item.price) }}
+                          </p>
+                        </div>
                       </div>
-                    }
-                    <div class="flex-1 min-w-0">
-                      <p class="text-sm font-medium text-gray-900 truncate">{{ item.name }}</p>
-                      <p class="text-sm text-gray-600">
-                        Qty: {{ item.quantity }} × {{ orderService.formatCurrency(item.price) }}
-                      </p>
                     </div>
-                  </div>
-                }
-                @if (order.orderItems.length > 3) {
-                  <div class="flex-shrink-0 flex items-center justify-center bg-gray-100 rounded-lg p-3 min-w-[80px]">
-                    <span class="text-sm text-gray-600">+{{ order.orderItems.length - 3 }} more</span>
-                  </div>
-                }
+                  }
+                  @if (order.orderItems.length > 4) {
+                    <div class="flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-slate-100/80 to-slate-200/80 backdrop-blur-sm rounded-xl p-4 min-w-[100px] border border-white/20">
+                      <span class="text-slate-600 font-medium">+{{ order.orderItems.length - 4 }}</span>
+                    </div>
+                  }
+                </div>
               </div>
-            </div>
 
-            <!-- Order Actions -->
-            <div class="flex items-center justify-between pt-4 border-t border-gray-200">
-              <div class="text-sm text-gray-600">
-                <span>Delivery to {{ order.shippingAddress.city }}, {{ order.shippingAddress.country }}</span>
-              </div>
-              <div class="flex space-x-2">
-                <button
-                  (click)="router.navigate(['/orders', order._id])"
-                  class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                >
-                  View Details
-                </button>
+              <!-- Order Info & Actions -->
+              <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pt-4 border-t border-white/20">
+                <div class="flex items-center gap-2 text-slate-600">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  </svg>
+                  <span class="text-sm">Delivery to {{ order.shippingAddress.city }}, {{ order.shippingAddress.country }}</span>
+                </div>
 
-                @if (canCancelOrder(order)) {
+                <div class="flex flex-wrap gap-2">
                   <button
-                    (click)="handleCancelOrder(order._id!)"
-                    [disabled]="cancellingOrderId() === order._id"
-                    class="inline-flex items-center px-3 py-1.5 border border-red-300 shadow-sm text-xs font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    (click)="router.navigate(['/orders', order._id])"
+                    class="group inline-flex items-center px-4 py-2 bg-white/40 backdrop-blur-md border border-white/30 text-slate-700 font-medium rounded-lg shadow-md hover:shadow-lg hover:bg-white/50 transform hover:-translate-y-0.5 transition-all duration-200"
                   >
-                    @if (cancellingOrderId() === order._id) {
-                      <svg class="animate-spin -ml-1 mr-1 h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <svg class="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                    View Details
+                  </button>
+
+                  @if (canCancelOrder(order)) {
+                    <button
+                      (click)="handleCancelOrder(order._id!)"
+                      [disabled]="cancellingOrderId() === order._id"
+                      class="group inline-flex items-center px-4 py-2 bg-red-50/80 backdrop-blur-md border border-red-200/50 text-red-700 font-medium rounded-lg shadow-md hover:shadow-lg hover:bg-red-100/80 transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    >
+                      @if (cancellingOrderId() === order._id) {
+                        <svg class="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
+                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Cancelling...
+                      } @else {
+                        <svg class="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                        Cancel Order
+                      }
+                    </button>
+                  }
+
+                  @if (listType() === 'admin') {
+                    <button
+                      (click)="showStatusUpdate(order)"
+                      class="group inline-flex items-center px-4 py-2 bg-gradient-to-r from-indigo-500/80 to-purple-500/80 backdrop-blur-md border border-indigo-300/50 text-white font-medium rounded-lg shadow-md hover:shadow-lg hover:from-indigo-600/80 hover:to-purple-600/80 transform hover:-translate-y-0.5 transition-all duration-200"
+                    >
+                      <svg class="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                       </svg>
-                      Cancelling...
-                    } @else {
-                      Cancel Order
-                    }
-                  </button>
-                }
-
-                @if (listType() === 'admin') {
-                  <button
-                    (click)="showStatusUpdate(order)"
-                    class="inline-flex items-center px-3 py-1.5 border border-blue-300 shadow-sm text-xs font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                  >
-                    Update Status
-                  </button>
-                }
+                      Update Status
+                    </button>
+                  }
+                </div>
               </div>
             </div>
           </div>
+        }
+      </div>
+
+      <!-- Pagination -->
+      @if (totalPages() > 1) {
+        <div class="mt-8">
+          <app-pagination
+            [currentPage]="currentPage()"
+            [totalPages]="totalPages()"
+            (pageChange)="onPageChange($event)"
+            class="bg-white/20 backdrop-blur-xl rounded-2xl border border-white/20 shadow-xl p-4"
+          />
         </div>
       }
-    </div>
-
-    <!-- Pagination -->
-    @if (totalPages() > 1) {
-      <app-pagination
-        [currentPage]="currentPage()"
-        [totalPages]="totalPages()"
-        (pageChange)="onPageChange($event)"
-      />
     }
-  }
+  </div>
 </div>
 
+<style>
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+</style>

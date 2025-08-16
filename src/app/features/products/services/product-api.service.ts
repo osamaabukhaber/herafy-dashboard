@@ -1,6 +1,6 @@
 
 import { Injectable, inject } from '@angular/core';
-import { HttpClient,HttpHeaders ,HttpEvent, HttpEventType, HttpResponse, HttpRequest } from '@angular/common/http';
+import { HttpClient,HttpHeaders ,HttpEvent, HttpEventType, HttpResponse, HttpRequest, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { ProductListBackendResponse } from '../../../shared/models/Api Responses/productResponse';
@@ -8,16 +8,47 @@ import { Product } from '../../../shared/models/product.interface';
 import { Category } from '../../../shared/models/category.interface';
 import { environment } from '../../../environment/environment.developemnt.js';
 
+
+export interface ProductStats {
+  approved: number;
+  pending: number;
+  rejected: number;
+  total: number;
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
+
 export class ProductApiService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiBaseUrl}/product`;
 
-  getProducts(): Observable<ProductListBackendResponse> {
-    return this.http.get<ProductListBackendResponse>(this.apiUrl);
+  // getProducts(): Observable<ProductListBackendResponse> {
+  //   return this.http.get<ProductListBackendResponse>(this.apiUrl, { withCredentials: true });
+  // }
+
+
+getProducts(params?: {
+  page?: number;
+  limit?: number;
+  status?: string;
+}): Observable<ProductListBackendResponse> {
+  let httpParams = new HttpParams();
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        httpParams = httpParams.set(key, value);
+      }
+    });
   }
+  return this.http.get<ProductListBackendResponse>(this.apiUrl, {
+    params: httpParams,
+    withCredentials: true
+  });
+}
+
 
   deleteProduct(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`, { withCredentials: true });
@@ -29,24 +60,22 @@ createProduct(formData: FormData): Observable<Product> {
   return this.http.post<Product>(`${this.apiUrl}`, formData, { withCredentials: true });
 }
 
-getProductById(id: string): Observable<Product> {
-// test fake data
-  return of({
-    _id: id,
-    store: '68906db92b1ddddcb879cee5',
-    name: 'test prod',
-    description:'prod description',
-    basePrice: 100,
-    category: '68895bd225e59a1915813ce4',
-    images: [],
-    variants: [],
-    createdBy: 'user123',
-  });
+  // Update product status
+updateProductStatus(productId: string, status: string): Observable<any> {
+  const body = { status };
+  // adds the admin's auth token
+  return this.http.patch(`${this.apiUrl}/${productId}/status`, body,{withCredentials:true});
 }
 
-// getProductById(id: string): Observable<Product> {
-//   return this.http.get<Product>(`${this.apiUrl}/${id}`);
-// }
+getProductById(id: string): Observable<Product> {
+  return this.http.get<Product>(`${this.apiUrl}/${id}`);
+}
+
+
+  // New method to get only the statistics
+  getProductStats(): Observable<ProductStats> {
+    return this.http.get<ProductStats>(`${this.apiUrl}/stats`, { withCredentials: true });
+  }
 
 // getProductById(id: string): Observable<Product> {
 //   return this.http.get<Product>(`${this.apiUrl}/${id}`);
@@ -54,22 +83,28 @@ getProductById(id: string): Observable<Product> {
 
   // For now: fake stores list
   // GET /api/store
-  getStores(): Observable<{ _id: string; name: string }[]> {
-    return of([
-      { _id: '68906db92b1ddddcb879cee5', name: 'Tech Gear' },
-      { _id: '68906db92b1ddddcb879cee7', name: 'Book Town' }
-    ]);
+  // getStores(): Observable<{ _id: string; name: string }[]> {
+  //   return of([
+  //     { _id: '689b23632dc0fef270cdcf33', name: 'mens club' },
+  //     { _id: '68906db92b1ddddcb879cee7', name: 'Book Town' }
+  //   ]);
+  // }
+
+    getStores(): Observable<{ _id: string; name: string }[]> {
+      return this.http.get<{ _id: string; name: string }[]>(`${environment.apiBaseUrl}/store` , {withCredentials:true});
   }
 
   // For now: fake categories
+  // getCategories(): Observable<Category[]> {
+  //   return of([
+  //     { _id: '68895bd225e59a1915813ce4', name: 'rayzen',  sortOrder: 1 },
+  //     { _id: '6893b07e7718b30fbeb16997', name: 'Hand Made', sortOrder: 2 }
+  //   ] as Category[]);
+  // }
+
   getCategories(): Observable<Category[]> {
-    return of([
-      { _id: '68895bd225e59a1915813ce4', name: 'rayzen',  sortOrder: 1 },
-      { _id: '6893b07e7718b30fbeb16997', name: 'Hand Made', sortOrder: 2 }
-    ] as Category[]);
+    return this.http.get<Category[]>(`${environment.apiBaseUrl}/category`, {withCredentials:true});
   }
-
-
   // getStores(): Observable<{ _id: string; name: string }[]> {
   //   return this.http.get<{ _id: string; name: string }[]>(`${this.apiUrl}/store`);
   // }
@@ -82,6 +117,7 @@ getProductById(id: string): Observable<Product> {
 
 }
 
+//
 
 // import { Injectable, inject } from '@angular/core';
 // import { HttpClient, HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';

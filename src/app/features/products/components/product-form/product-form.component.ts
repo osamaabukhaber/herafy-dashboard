@@ -18,6 +18,9 @@ import { Router } from '@angular/router';
 import { ProductApiService } from '../../services/product-api.service';
 import { Category } from '../../../../shared/models/category.interface';
 import { Product } from '../../../../shared/models/product.interface';
+import Swal from 'sweetalert2';
+import { StoreServices } from '../../../store/services/store-serivces/store-services';
+import { CategoryService } from '../../../../services/category-services/category.service';
 
 @Component({
   selector: 'app-product-form',
@@ -30,10 +33,14 @@ export class ProductFormComponent implements OnInit {
   private router = inject(Router);
   private productApi = inject(ProductApiService);
   private cdr = inject(ChangeDetectorRef);
-
+  private storeService = inject(StoreServices);
+  private categoryService = inject(CategoryService);
   productForm!: FormGroup;
   stores: { _id: string; name: string }[] = [];
   categories: Category[] = [];
+  // stores: { stores: { _id: string; name: string }[] } = { stores: [] };
+  // categories: { allCategories: Category[] } = { allCategories: [] };
+
   loading = false;
   submitting = false;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
@@ -49,7 +56,7 @@ export class ProductFormComponent implements OnInit {
       name: ['', [Validators.required, Validators.minLength(3)]],
       description: ['', [Validators.required, Validators.minLength(10)]],
       basePrice: [0, [Validators.required, Validators.min(0.01)]],
-      discountPrice: [null, [Validators.min(0)]],
+      // discountPrice: [null, [Validators.min(0)]],
       category: ['', Validators.required],
       store: ['', Validators.required],
       variants: this.fb.array([]),
@@ -106,27 +113,24 @@ export class ProductFormComponent implements OnInit {
   private loadDropdownData(): void {
     this.loading = true;
 
-    this.productApi.getStores().subscribe({
-      next: (stores) => {
-        this.stores = stores;
+    this.storeService.getAllStores().subscribe({
+      next: (res) => {
+        this.stores = res.data.stores;
         this.loading = false;
-        if (stores.length > 0)
-          this.productForm.patchValue({ store: stores[0]._id });
-      },
-      error: (err) => {
-        console.error('Error loading stores:', err);
-        this.loading = false;
-      },
+        this.cdr.detectChanges();
+
+      }
     });
 
-    this.productApi.getCategories().subscribe({
-      next: (categories) => {
-        this.categories = categories;
-      },
-      error: (err) => {
-        console.error('Error loading categories:', err);
-      },
+    this.categoryService.getAllCategories().subscribe({
+      next: (res) => {
+        this.categories = res.data.allCategories;
+        this.loading = false;
+        this.cdr.detectChanges();
+
+      }
     });
+
   }
 
   onFileChange(event: Event): void {
@@ -146,16 +150,7 @@ export class ProductFormComponent implements OnInit {
     }
   }
 
-  // onFileChange(event: Event): void {
-  //   const input = event.target as HTMLInputElement;
-  //   if (input.files && input.files.length > 0) {
-  //     const files: File[] = Array.from(input.files);
-  //     this.productForm.patchValue({ images: files });
-  //     this.productForm.patchValue({ images: files });
-  //     this.imageUrls = files.map((file) => URL.createObjectURL(file));
-  //     this.cdr.detectChanges();
-  //   }
-  // }
+
 
   removeImage(index: number): void {
     const files = (this.productForm.get('images')?.value as File[]) || [];
@@ -175,63 +170,7 @@ export class ProductFormComponent implements OnInit {
     }
   }
 
-  // onSubmit(): void {
-  //   if (this.productForm.invalid) {
-  //     this.productForm.markAllAsTouched();
-  //     return;
-  //   }
 
-  //   const formValue = this.productForm.value;
-  //   if (!formValue.images || formValue.images.length === 0) {
-  //     alert('Please add at least one image.');
-  //     return;
-  //   }
-
-  //   this.submitting = true;
-  //   const formData = this.prepareFormData();
-  //   console.log('FormData being sent:', Object.fromEntries(formData));
-
-  //   this.productApi.createProduct(formData).subscribe({
-  //     next: (product) => {
-  //       alert('Product created successfully!');
-  //       this.router.navigate(['/products']);
-  //     },
-  //     error: (err) => {
-  //       console.error('Error creating product:', err);
-  //       alert('Failed to create product. Please try again.');
-  //       this.submitting = false;
-  //     },
-  //   });
-  // }
-
-  // onSubmit(): void {
-  //   if (this.productForm.invalid) {
-  //     this.productForm.markAllAsTouched();
-  //     return;
-  //   }
-
-  //   const formValue = this.productForm.value;
-  //   if (!formValue.images || formValue.images.length === 0) {
-  //     alert('Please add at least one image.');
-  //     return;
-  //   }
-
-  //   this.submitting = true;
-  //   const formData = this.prepareFormData(formValue);  // تمرير القيمة هنا بشكل صحيح
-  //   console.log('FormData being sent:', Object.fromEntries(formData));
-
-  //   this.productApi.createProduct(formData).subscribe({
-  //     next: (product) => {
-  //       alert('Product created successfully!');
-  //       this.router.navigate(['/products']);
-  //     },
-  //     error: (err) => {
-  //       console.error('Error creating product:', err);
-  //       alert('Failed to create product. Please try again.');
-  //       this.submitting = false;
-  //     },
-  //   });
-  // }
 
   onSubmit(): void {
     if (this.productForm.invalid) {
@@ -296,105 +235,6 @@ export class ProductFormComponent implements OnInit {
   }
 
 
-  // prepareFormData(formValue: any): FormData {
-  //   const formData = new FormData();
-
-  //   for (const key in formValue) {
-  //     if (!formValue.hasOwnProperty(key)) continue;
-  //     const value = formValue[key];
-  //     if (value === null || value === undefined) continue;
-  //     if (key === 'images') {
-  //       const files = Array.isArray(value) ? value : Array.from(value as FileList);
-  //       files.forEach((file: File) => {
-  //         formData.append('images', file);
-  //       });
-  //     }
-  //     else if (key === 'variants') {
-  //       formData.append('variants', JSON.stringify(value));
-  //     }
-  //     else if (typeof value === 'number') {
-  //       formData.append(key, value.toString());
-  //     }
-  //     else {
-  //       formData.append(key, value);
-  //     }
-  //   }
-  //   return formData;
-  // }
-
-
-
-  // prepareFormData(formValue: any): FormData {
-  //   const formData = new FormData();
-
-  //   for (const key in formValue) {
-  //     if (!formValue.hasOwnProperty(key)) continue;
-
-  //     if (key === 'images' && Array.isArray(formValue[key])) {
-  //       formValue[key].forEach((file: File) => {
-  //         formData.append('images', file);
-  //       });
-  //     } else if (typeof formValue[key] === 'boolean') {
-  //       formData.append(key, formValue[key] ? 'true' : 'false');
-  //     } else if (Array.isArray(formValue[key]) || typeof formValue[key] === 'object') {
-  //       formData.append(key, JSON.stringify(formValue[key]));
-  //     } else {
-  //       formData.append(key, formValue[key]);
-  //     }
-  //   }
-
-  //   return formData;
-  // }
-
-  // prepareFormData(formValue: any): FormData {
-  //   const formData = new FormData();
-
-  //   for (const key in formValue) {
-  //     if (!formValue.hasOwnProperty(key)) continue;
-
-  //     if (key === 'images' && Array.isArray(formValue[key])) {
-  //       formValue[key].forEach((file: File) => {
-  //         formData.append('images', file); // نرسل الصور بنفس الحقل مكرر
-  //       });
-  //     }
-  //     else if (typeof formValue[key] === 'boolean') {
-  //       // نرسل القيم المنطقية بدون تحويل لنص
-  //       formData.append(key, formValue[key] ? 'true' : 'false');
-  //     }
-  //     else if (Array.isArray(formValue[key]) || typeof formValue[key] === 'object') {
-  //       // أي مصفوفة أو كائن نعمله JSON.stringify
-  //       formData.append(key, JSON.stringify(formValue[key]));
-  //     }
-  //     else {
-  //       formData.append(key, formValue[key]);
-  //     }
-  //   }
-
-  //   return formData;
-  // }
-
-
-  // private prepareFormData(): FormData {
-  //   const formValue = this.productForm.value;
-  //   const formData = new FormData();
-
-  //   Object.keys(formValue).forEach((key) => {
-  //     if (formValue[key] !== null && formValue[key] !== undefined) {
-  //       if (key === 'variants') {
-  //         formData.append(key, JSON.stringify(formValue[key]));
-  //       } else if (key === 'images' && Array.isArray(formValue[key])) {
-  //         formValue[key].forEach((file: File) => {
-  //           formData.append('images', file);
-  //         });
-  //       } else if (key === 'basePrice' || key === 'discountPrice') {
-  //         formData.append(key, Number(formValue[key]).toString());
-  //       } else {
-  //         formData.append(key, String(formValue[key]));
-  //       }
-  //     }
-  //   });
-  //   return formData;
-  // }
 
   onCancel(): void {
     this.router.navigate(['/products']);
