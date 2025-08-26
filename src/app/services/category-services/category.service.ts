@@ -13,21 +13,25 @@ import {
 })
 export class CategoryService {
   private baseUrl = `${environment.apiBaseUrl}/category`;
-
   constructor(private http: HttpClient) {}
 
-  getAllCategories(page: number = 1, limit:number = 10): Observable<CategoryResponse> {
+  getAllCategories(page: number = 1, limit: number = 10): Observable<CategoryResponse> {
     return this.http.get<CategoryResponse>(this.baseUrl, {
       withCredentials: true,
-      params:{
+      params: {
         page: page.toString(),
-        limit: limit.toString()
-      }
+        limit: limit.toString(),
+      },
     });
   }
 
-  addNewCategory(category: Partial<Category>): Observable<NewCategoryResponse> {
-    return this.http.post<NewCategoryResponse>(this.baseUrl, category, {
+  addNewCategory(name: string, imageFile?: File): Observable<NewCategoryResponse> {
+    const formData = new FormData();
+    formData.append('name', name);
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+    return this.http.post<NewCategoryResponse>(this.baseUrl, formData, {
       withCredentials: true,
     });
   }
@@ -46,9 +50,15 @@ export class CategoryService {
 
   updateCategory(
     id: string,
-    updateData: Partial<Category>
+    name: string,
+    imageFile?: File
   ): Observable<Category> {
-    return this.http.patch<Category>(`${this.baseUrl}/${id}`, updateData, {
+    const formData = new FormData();
+    formData.append('name', name);
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+    return this.http.patch<Category>(`${this.baseUrl}/${id}`, formData, {
       withCredentials: true,
     });
   }

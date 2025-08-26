@@ -1,6 +1,6 @@
 export interface User {
   _id: string;
-  name: string;
+  userName: string;
   email: string;
   password?: string; // Only for create/update operations
   role: UserRole;

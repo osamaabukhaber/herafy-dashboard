@@ -38,14 +38,15 @@ export class ReviewComponent implements OnInit, OnDestroy {
 
   filteredReviews = computed(() => {
     let filtered = this.reviews();
-
+console.log(filtered)
     if (this.searchTerm.trim()) {
       const searchLower = this.searchTerm.toLowerCase();
       filtered = filtered.filter(
         (review) =>
+          
           (review.comment || '').toLowerCase().includes(searchLower) ||
           (typeof review.user === 'object' &&
-            (review.user as User)?.name?.toLowerCase().includes(searchLower)) ||
+            (review.user as User)?.userName?.toLowerCase().includes(searchLower)) ||
           (typeof review.user === 'object' &&
             (review.user as User)?.email?.toLowerCase().includes(searchLower))
       );
@@ -264,7 +265,7 @@ export class ReviewComponent implements OnInit, OnDestroy {
     }
     const user = review.user as User;
     return {
-      name: user.name || 'Unknown User',
+      name: user.userName || 'Unknown User',
       email: user.email || 'No email',
     };
   }

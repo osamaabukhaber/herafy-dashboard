@@ -14,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 export class CategoryComponent implements OnInit {
   categories: Category[] = [];
   filteredCategories: Category[] = [];
+  paginatedCategories: Category[] = [];
   loading = true;
   error: string | null = null;
   categoryProps: Category = {} as Category;
@@ -22,13 +23,13 @@ export class CategoryComponent implements OnInit {
   searchByName: string = '';
   currentPage: number = 1;
   limit: number = 5;
-  showAddModal = false;
-  newCategory: Partial<Category> = {
-    name: '',
-    image: '',
-  };
-  names: string[] = ['mobiles', 'shirts', 'handmade'];
   newCategoryRowVisible: boolean = false;
+  newCategory: { name: string; image?: string } = {
+    name: '',
+  };
+  newCategoryFile: File | null = null;
+  editingFile: File | null = null;
+  names: string[] = ['mobiles', 'shirts', 'handmade'];
 
   constructor(
     private categoryService: CategoryService,
@@ -37,16 +38,19 @@ export class CategoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCategories();
-    this.categoryPagination()
   }
-  showAddNew = false;
+
+  get totalPages(): number {
+    return Math.ceil(this.filteredCategories.length / this.limit);
+  }
 
   loadCategories(): void {
     this.loading = true;
-    this.categoryService.getAllCategories().subscribe({
+    this.categoryService.getAllCategories(1, 1000).subscribe({
       next: (res) => {
         this.categories = res.data.allCategories;
         this.filteredCategories = [...this.categories];
+        this.updatePaginated();
         this.loading = false;
         this.cdr.detectChanges();
       },
@@ -57,76 +61,88 @@ export class CategoryComponent implements OnInit {
       },
     });
   }
-  // paganition
-  categoryPagination(): void{
-    this.loading = true;
-    this.categoryService.getAllCategories(this.currentPage, this.limit).subscribe({
-      next: (res) => {
-        this.categories = res.data.allCategories;
-        this.loading = false;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        this.error = err?.error?.message || 'Failed';
-        this.loading = false
-      }
-    })
-  }
-  // next page
-  nextPage(): void{
-    this.currentPage++;
-    this.categoryPagination()
-} 
-// previous page
-previousPage():void{
-  if(this.currentPage > 1){
-    this.currentPage--;
-    this.categoryPagination()
-  }
-}
-// can paginate
-canPaginate(): boolean{
-  return this.categories.length === this.limit;
-}
-openAddCategoryModal(): void {
-    this.newCategory = {
-      name: '',
-      image: '',
-    };
-    this.showAddModal = true;
+
+  updatePaginated(): void {
+    const start = (this.currentPage - 1) * this.limit;
+    const end = start + this.limit;
+    this.paginatedCategories = this.filteredCategories.slice(start, end);
   }
 
-  closeAddCategoryModal(): void {
-    this.showAddModal = false;
+  nextPage(): void {
+    if (this.canPaginate()) {
+      this.currentPage++;
+      this.updatePaginated();
+    }
   }
 
-  addCategory() {
-    this.categoryService.addNewCategory(this.newCategory).subscribe({
-      next: (res) => {
-        const created = res?.data?.newCategory;
-        this.categories.unshift(created);
-        this.filteredCategories = [...this.categories];
-        this.resetNewCategoryForm();
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error('Error adding category:', err);
-        this.error = 'Failed to add category';
-        this.cdr.detectChanges();
-      },
-    });
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updatePaginated();
+    }
   }
 
-  cancelNewCategory() {
-    this.resetNewCategoryForm();
+  canPaginate(): boolean {
+    return this.filteredCategories.length > this.currentPage * this.limit;
   }
 
   showAddCategoryRow() {
     this.newCategoryRowVisible = true;
   }
 
+  onNewFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.newCategoryFile = input.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.newCategory.image = e.target?.result as string;
+        this.cdr.detectChanges();
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  onEditFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.editingFile = input.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.categoryProps.image = e.target?.result as string;
+        this.cdr.detectChanges();
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  addCategory() {
+    if (!this.newCategory.name) return;
+    this.categoryService
+      .addNewCategory(this.newCategory.name, this.newCategoryFile ?? undefined)
+      .subscribe({
+        next: (res) => {
+          const created = res.data.newCategory;
+          this.categories.unshift(created);
+          this.applyFilters();
+          this.resetNewCategoryForm();
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Error adding category:', err);
+          this.error = 'Failed to add category';
+          this.cdr.detectChanges();
+        },
+      });
+  }
+
+  cancelNewCategory() {
+    this.resetNewCategoryForm();
+  }
+
   resetNewCategoryForm() {
-    this.newCategory = { name: '', image: '' };
+    this.newCategory = { name: '' };
+    this.newCategoryFile = null;
     this.newCategoryRowVisible = false;
   }
 
@@ -141,7 +157,7 @@ openAddCategoryModal(): void {
           this.categories = this.categories.filter(
             (category) => category._id !== id
           );
-          this.filteredCategories = [...this.categories];
+          this.applyFilters();
           this.cdr.detectChanges();
         },
         error: (error) => {
@@ -155,11 +171,13 @@ openAddCategoryModal(): void {
   startEdit(category: Category): void {
     this.editingCategoryId = category._id;
     this.categoryProps = { ...category };
+    this.editingFile = null;
   }
 
   cancelEdit(): void {
     this.editingCategoryId = null;
     this.categoryProps = {} as Category;
+    this.editingFile = null;
   }
 
   updateCategory(): void {
@@ -167,24 +185,21 @@ openAddCategoryModal(): void {
       this.error = 'Category ID or name is missing';
       return;
     }
-
-    const updateData: Partial<Category> = {
-      name: this.categoryProps.name,
-      image: this.categoryProps.image,
-    };
-
     this.categoryService
-      .updateCategory(this.categoryProps._id, updateData)
+      .updateCategory(
+        this.categoryProps._id,
+        this.categoryProps.name,
+        this.editingFile ?? undefined
+      )
       .subscribe({
-        next: () => {
+        next: (res) => {
           this.categories = this.categories.map((category) =>
-            category._id === this.categoryProps._id
-              ? { ...category, ...updateData }
-              : category
+            category._id === res._id ? res : category
           );
-          this.filteredCategories = [...this.categories];
+          this.applyFilters();
           this.editingCategoryId = null;
           this.categoryProps = {} as Category;
+          this.editingFile = null;
           this.cdr.detectChanges();
         },
         error: (error) => {
@@ -204,21 +219,22 @@ openAddCategoryModal(): void {
 
   private applyFilters(): void {
     let filtered = [...this.categories];
-
     if (this.filterByName) {
       filtered = filtered.filter(
         (category: Category) =>
           category.name.toLowerCase() === this.filterByName.toLowerCase()
       );
     }
-
     if (this.searchByName) {
       filtered = filtered.filter((category: Category) =>
         category.name.toLowerCase().includes(this.searchByName.toLowerCase())
       );
     }
-
     this.filteredCategories = filtered;
+    if (this.currentPage > this.totalPages) {
+      this.currentPage = 1;
+    }
+    this.updatePaginated();
     this.cdr.detectChanges();
   }
 }

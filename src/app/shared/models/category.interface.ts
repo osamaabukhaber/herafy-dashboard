@@ -1,4 +1,4 @@
-// src/app/shared/models/category.interface.ts// src/app/shared/models/category.interface.ts
+// src/app/shared/models/category.interface.ts
 export interface Category {
   _id: string;
   name: string;
@@ -10,7 +10,6 @@ export interface Category {
   createdAt?: Date;
   updatedAt?: Date;
 }
-
 export interface CategoryResponse {
   success: boolean;
   data: {
@@ -24,4 +23,3 @@ export interface NewCategoryResponse {
     newCategory: Category;
   };
 }
-

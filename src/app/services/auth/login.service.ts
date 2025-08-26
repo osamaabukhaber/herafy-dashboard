@@ -42,7 +42,7 @@ export class LoginService {
 
   signOut(): void {
     this.http
-      .post(`${this.baseUrl}/api/signout`, {}, { withCredentials: true })
+      .post(`${this.baseUrl}/auth/signout`, {}, { withCredentials: true })
       .subscribe({
         complete: () => {
           this.tokenSubject.next(null);
@@ -56,7 +56,7 @@ export class LoginService {
 
   isUserLoggedIn(): Observable<boolean> {
     return this.http
-      .get<{ loggedIn: boolean }>(`${this.baseUrl}/status`, {
+      .get<{ loggedIn: boolean }>(`${this.baseUrl}/auth/status`, {
         withCredentials: true,
       })
       .pipe(
