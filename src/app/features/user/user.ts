@@ -55,6 +55,10 @@ export class User implements OnInit {
     }
   })
  }
+ refreshUsers(): void {
+  this.currentPage = 1;
+  this.userPagination();
+ }
  nextPage() :void{
   this.currentPage++;
   this.userPagination();

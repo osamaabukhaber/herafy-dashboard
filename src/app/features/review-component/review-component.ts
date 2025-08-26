@@ -297,6 +297,7 @@ console.log(filtered)
     this.currentPage.set(1);
     this.loadReviews();
   }
+  
 
   clearFilters(): void {
     this.searchTerm = '';

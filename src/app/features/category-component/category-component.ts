@@ -61,7 +61,10 @@ export class CategoryComponent implements OnInit {
       },
     });
   }
-
+  refreshCategories(): void {
+    this.currentPage = 1;
+    this.loadCategories();
+  }
   updatePaginated(): void {
     const start = (this.currentPage - 1) * this.limit;
     const end = start + this.limit;

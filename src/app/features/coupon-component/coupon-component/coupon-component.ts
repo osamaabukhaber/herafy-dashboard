@@ -53,6 +53,10 @@ export class CouponComponent implements OnInit {
       }
     })
   }
+  refreshCoupons(): void {
+    this.currentPage = 1;
+    this.couponpagination();
+  }
   // next page
   nextPage(): void{
     this.currentPage++;
