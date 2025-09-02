@@ -61,7 +61,7 @@ export const routes: Routes = [
 
       { path: 'orders', component: OrderListComponent, title: "orders" },
       { path: 'orders/create', component: CreateOrderComponent, title: "order" },
-      { path: 'order-detail', component: OrderDetailComponent, title: "order detail" },
+      { path: 'orders/:id' ,component: OrderDetailComponent, title: "order detail" },
       // { path: 'create-order', component: CreateOrderComponent, title: "create order" },
     ],
   },

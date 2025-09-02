@@ -109,10 +109,11 @@ export class OrderListComponent implements OnInit {
     switch (this.listType()) {
       case 'admin':
         return this.orderService.getAllOrders(page);
-      case 'seller':
-        return this.orderService.getSellerOrders(page);
+        break;
+      // case 'seller':
+      //   return this.orderService.getSellerOrders(page);
       default:
-        return this.orderService.getUserOrders(page);
+        return this.orderService.getAllOrders(page);
     }
   }
 
