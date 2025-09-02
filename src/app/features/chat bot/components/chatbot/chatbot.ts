@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnInit, OnDestroy, ViewChild, ElementRef,
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
 import { IChat, IChatMessage } from '../../../../models/chat-model/ichat';
-import { ChatBot } from '../../services/chat-bot.service';
+import { ChatBot } from '../../services/chat-bot';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 

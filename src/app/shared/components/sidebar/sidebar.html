@@ -4,22 +4,16 @@
     <div class="flex items-center justify-between">
       <div class="flex items-center justify-start rtl:justify-end">
         <!-- side bar button -->
-        <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar" aria-controls="logo-sidebar"
-          (click)="toggleAdminSideBare()" type="button"
+        <button (click)="toggleAdminSideBare()" type="button"
           class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 transition-all duration-200 hover:scale-105 active:scale-95">
           <span class="sr-only">Open sidebar</span>
-          <svg class="w-6 h-6 transition-transform duration-300 hover:rotate-6" aria-hidden="true" fill="currentColor"
-            viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            <path clip-rule="evenodd" fill-rule="evenodd"
-              d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z">
-            </path>
-          </svg>
+          <lucide-icon [img]="icons.Menu" class="w-6 h-6 transition-transform duration-300 hover:rotate-6"></lucide-icon>
         </button>
         <!-- logo -->
-        <a href="https://flowbite.com" class="flex ms-2 md:me-24 group">
+        <a routerLink="/" class="flex ms-2 md:me-24 group">
           <div class="relative">
             <img src="https://flowbite.com/docs/images/logo.svg"
-              class="h-8 me-3 transition-transform duration-300 group-hover:scale-110" alt="FlowBite Logo" />
+              class="h-8 me-3 transition-transform duration-300 group-hover:scale-110" alt="Herafy Logo" />
             <div
               class="absolute -inset-1 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur">
             </div>
@@ -28,6 +22,7 @@
             class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-indigo-600 transition-all duration-500">Herafy</span>
         </a>
       </div>
+
       <!-- user profile -->
       <div class="relative inline-block text-left">
         <button type="button"
@@ -45,12 +40,8 @@
               Joseph William</p>
             <p class="text-xs text-gray-500 dark:text-gray-400">Administrator</p>
           </div>
-          <svg class="w-4 h-4 text-gray-400 transition-transform duration-200 group-hover:rotate-180"
-            fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd"
-              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-              clip-rule="evenodd"></path>
-          </svg>
+          <lucide-icon [img]="icons.ChevronDown"
+            class="w-4 h-4 text-gray-400 transition-transform duration-200 group-hover:rotate-180"></lucide-icon>
         </button>
 
         @if(adminIconDropDown) {
@@ -63,15 +54,12 @@
             <div class="relative">
               <img src="https://i.pravatar.cc/40?img=3" alt="Avatar"
                 class="w-12 h-12 rounded-full transition-transform duration-300 hover:scale-110" />
-              <div
-                class="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse">
+              <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse">
               </div>
             </div>
             <div class="flex-1">
               <p class="font-semibold text-gray-800 dark:text-gray-200">Carson Darrin</p>
-              <p class="text-sm text-gray-500 dark:text-gray-400 truncate">
-                carson.darrincompany.io
-              </p>
+              <p class="text-sm text-gray-500 dark:text-gray-400 truncate">carson.darrin@company.io</p>
             </div>
             <span
               class="text-xs font-semibold bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-3 py-1 rounded-full animate-pulse">PRO</span>
@@ -80,30 +68,17 @@
           <div class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 space-y-2">
             <div
               class="flex items-center gap-3 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 hover:translate-x-2">
-              <svg class="w-5 h-5 text-gray-400 transition-colors duration-200" fill="none" stroke="currentColor"
-                stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-              </svg>
+              <lucide-icon [img]="icons.Key" class="w-5 h-5 text-gray-400"></lucide-icon>
               Change password
             </div>
             <div
               class="flex items-center gap-3 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 hover:translate-x-2">
-              <svg class="w-5 h-5 text-gray-400 transition-colors duration-200" fill="none" stroke="currentColor"
-                stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
+              <lucide-icon [img]="icons.Mail" class="w-5 h-5 text-gray-400"></lucide-icon>
               Recently mail
-              <div class="flex -space-x-2 ml-auto"></div>
             </div>
             <div
               class="flex items-center gap-3 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 hover:translate-x-2">
-              <svg class="w-5 h-5 text-gray-400 transition-colors duration-200" fill="none" stroke="currentColor"
-                stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" />
-              </svg>
+              <lucide-icon [img]="icons.Calendar" class="w-5 h-5 text-gray-400"></lucide-icon>
               Schedule meetings
             </div>
           </div>
@@ -114,6 +89,7 @@
   </div>
 </nav>
 
+<!-- Sidebar -->
 <aside id="logo-sidebar"
   class="fixed top-0 left-0 z-40 h-screen pt-20 transition-all duration-500 ease-in-out bg-white/95 backdrop-blur-sm border-r border-gray-200 dark:bg-gray-900/95 dark:border-gray-700 shadow-2xl"
   aria-label="Sidebar" [ngClass]="{
@@ -122,315 +98,127 @@
   }">
   <div class="h-full px-3 pb-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600">
     <ul class="space-y-2 font-medium">
+
+      <!-- Dashboard -->
       <li class="group">
-        <a href="./charts"
-          class="flex items-center p-3 text-gray-900 rounded-xl dark:text-white hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 dark:hover:from-indigo-900/20 dark:hover:to-purple-900/20 group transition-all duration-300 hover:shadow-lg hover:scale-105 border border-transparent hover:border-indigo-200 dark:hover:border-indigo-800">
-          <div class="relative">
-            <svg
-              class="w-5 h-5 text-gray-500 transition-all duration-300 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 group-hover:scale-110"
-              aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
-              <path
-                d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z" />
-              <path
-                d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z" />
-            </svg>
-            <div
-              class="absolute -inset-1 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur">
-            </div>
-          </div>
-          <span
-            class="ms-3 font-medium group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300">Dashboard</span>
-          <div class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <svg class="w-4 h-4 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd"
-                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                clip-rule="evenodd"></path>
-            </svg>
-          </div>
+        <a routerLink="/charts" routerLinkActive="bg-indigo-100 dark:bg-indigo-900/30 border-indigo-300 dark:border-indigo-600"
+          class="flex items-center p-3 text-gray-900 rounded-xl dark:text-white hover:bg-indigo-50 dark:hover:bg-indigo-900/20 group transition-all duration-300 hover:shadow-lg hover:scale-105 border border-transparent hover:border-indigo-200 dark:hover:border-indigo-800">
+          <lucide-icon [img]="icons.BarChart3"
+            class="w-5 h-5 text-gray-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"></lucide-icon>
+          <span class="ms-3">Dashboard</span>
         </a>
       </li>
 
+      <!-- Stores -->
       <li class="group">
-        <a routerLink="./store"
-          class="flex items-center p-3 text-gray-900 rounded-xl dark:text-white hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 dark:hover:from-blue-900/20 dark:hover:to-cyan-900/20 group transition-all duration-300 hover:shadow-lg hover:scale-105 border border-transparent hover:border-blue-200 dark:hover:border-blue-800">
-          <div class="relative">
-            <svg
-              class="w-5 h-5 text-gray-500 transition-all duration-300 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 group-hover:scale-110"
-              fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
-              </path>
-            </svg>
-            <div
-              class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur">
-            </div>
-          </div>
-          <span
-            class="flex-1 ms-3 whitespace-nowrap font-medium group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">Stores</span>
-          <div class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <svg class="w-4 h-4 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd"
-                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                clip-rule="evenodd"></path>
-            </svg>
-          </div>
+        <a routerLink="/stores" routerLinkActive="bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-600"
+          class="flex items-center p-3 text-gray-900 rounded-xl dark:text-white hover:bg-blue-50 dark:hover:bg-blue-900/20 group transition-all duration-300 hover:shadow-lg hover:scale-105 border border-transparent hover:border-blue-200 dark:hover:border-blue-800">
+          <lucide-icon [img]="icons.Store"
+            class="w-5 h-5 text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400"></lucide-icon>
+          <span class="ms-3">Stores</span>
         </a>
       </li>
 
-      <li class="group cursor-pointer">
-        <div routerLink="orders"
-          class="flex items-center p-3 text-gray-900 rounded-xl dark:text-white hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 dark:hover:from-green-900/20 dark:hover:to-emerald-900/20 group transition-all duration-300 hover:shadow-lg hover:scale-105 border border-transparent hover:border-green-200 dark:hover:border-green-800">
-          <div class="relative">
-            <svg
-              class="w-5 h-5 text-gray-500 transition-all duration-300 dark:text-gray-400 group-hover:text-green-600 dark:group-hover:text-green-400 group-hover:scale-110"
-              fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-              </path>
-            </svg>
-            <div
-              class="absolute -inset-1 bg-gradient-to-r from-green-600 to-emerald-600 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur">
-            </div>
-          </div>
-          <span
-            class="flex-1 ms-3 whitespace-nowrap font-medium group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors duration-300">Orders</span>
-          <div class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd"
-                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                clip-rule="evenodd"></path>
-            </svg>
-          </div>
-        </div>
-      </li>
-
-      <li class="group" routerLink="/user">
-        <div
-          class="flex items-center p-3 text-gray-900 rounded-xl dark:text-white hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 dark:hover:from-purple-900/20 dark:hover:to-pink-900/20 group transition-all duration-300 hover:shadow-lg hover:scale-105 border border-transparent hover:border-purple-200 dark:hover:border-purple-800 cursor-pointer">
-          <div class="relative">
-            <svg
-              class="w-5 h-5 text-gray-500 transition-all duration-300 dark:text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400 group-hover:scale-110"
-              fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-1a4 4 0 11-8 0 4 4 0 018 0z">
-              </path>
-            </svg>
-            <div
-              class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur">
-            </div>
-          </div>
-          <span
-            class="flex-1 ms-3 whitespace-nowrap font-medium group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">Users</span>
-          <div class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <svg class="w-4 h-4 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd"
-                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                clip-rule="evenodd"></path>
-            </svg>
-          </div>
-        </div>
-      </li>
+      <!-- Orders -->
       <li class="group">
-        <a routerLink="/products"
-          class="flex items-center p-3 text-gray-900 rounded-xl dark:text-white hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 dark:hover:from-orange-900/20 dark:hover:to-red-900/20 group transition-all duration-300 hover:shadow-lg hover:scale-105 border border-transparent hover:border-orange-200 dark:hover:border-orange-800">
-          <div class="relative">
-            <svg
-              class="w-5 h-5 text-gray-500 transition-all duration-300 dark:text-gray-400 group-hover:text-orange-600 dark:group-hover:text-orange-400 group-hover:scale-110"
-              fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-            </svg>
-            <div
-              class="absolute -inset-1 bg-gradient-to-r from-orange-600 to-red-600 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur">
-            </div>
-          </div>
-          <span
-            class="flex-1 ms-3 whitespace-nowrap font-medium group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors duration-300">Products</span>
-          <div class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <svg class="w-4 h-4 text-orange-400" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd"
-                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                clip-rule="evenodd"></path>
-            </svg>
-          </div>
-        </a>
-      </li>
-      <li class="group">
-        <a  routerLink="./payments"
-          class="flex items-center p-3 text-gray-900 rounded-xl dark:text-white hover:bg-gradient-to-r hover:from-teal-50 hover:to-cyan-50 dark:hover:from-teal-900/20 dark:hover:to-cyan-900/20 group transition-all duration-300 hover:shadow-lg hover:scale-105 border border-transparent hover:border-teal-200 dark:hover:border-teal-800">
-          <div class="relative">
-            <svg
-              class="w-5 h-5 text-gray-500 transition-all duration-300 dark:text-gray-400 group-hover:text-teal-600 dark:group-hover:text-teal-400 group-hover:scale-110"
-              fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
-            </svg>
-            <div
-              class="absolute -inset-1 bg-gradient-to-r from-teal-600 to-cyan-600 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur">
-            </div>
-          </div>
-          <span
-            class="flex-1 ms-3 whitespace-nowrap font-medium group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors duration-300">Payments</span>
-          <div class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <svg class="w-4 h-4 text-teal-400" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd"
-                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                clip-rule="evenodd"></path>
-            </svg>
-          </div>
+        <a routerLink="/orders" routerLinkActive="bg-green-100 dark:bg-green-900/30 border-green-300 dark:border-green-600"
+          class="flex items-center p-3 text-gray-900 rounded-xl dark:text-white hover:bg-green-50 dark:hover:bg-green-900/20 group transition-all duration-300 hover:shadow-lg hover:scale-105 border border-transparent hover:border-green-200 dark:hover:border-green-800">
+          <lucide-icon [img]="icons.FileText"
+            class="w-5 h-5 text-gray-500 group-hover:text-green-600 dark:group-hover:text-green-400"></lucide-icon>
+          <span class="ms-3">Orders</span>
         </a>
       </li>
 
+      <!-- Users -->
       <li class="group">
-        <a routerLink="./cart"
-          class="flex items-center p-3 text-gray-900 rounded-xl dark:text-white hover:bg-gradient-to-r hover:from-amber-50 hover:to-yellow-50 dark:hover:from-amber-900/20 dark:hover:to-yellow-900/20 group transition-all duration-300 hover:shadow-lg hover:scale-105 border border-transparent hover:border-amber-200 dark:hover:border-amber-800">
-          <div class="relative">
-            <svg
-              class="w-5 h-5 text-gray-500 transition-all duration-300 dark:text-gray-400 group-hover:text-amber-600 dark:group-hover:text-amber-400 group-hover:scale-110"
-              fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M3 3h2l.4 2M7 13h10l4-8H5.4m2.6 8L6 11H4m4 8a1 1 0 110-2m0 2a1 1 0 100-2m7 2a1 1 0 110-2m0 2a1 1 0 100-2">
-              </path>
-            </svg>
-            <div
-              class="absolute -inset-1 bg-gradient-to-r from-amber-600 to-yellow-600 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur">
-            </div>
-          </div>
-          <span
-            class="flex-1 ms-3 whitespace-nowrap font-medium group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors duration-300">Carts</span>
-          <div class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd"
-                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                clip-rule="evenodd"></path>
-            </svg>
-          </div>
+        <a routerLink="/user" routerLinkActive="bg-purple-100 dark:bg-purple-900/30 border-purple-300 dark:border-purple-600"
+          class="flex items-center p-3 text-gray-900 rounded-xl dark:text-white hover:bg-purple-50 dark:hover:bg-purple-900/20 group transition-all duration-300 hover:shadow-lg hover:scale-105 border border-transparent hover:border-purple-200 dark:hover:border-purple-800">
+          <lucide-icon [img]="icons.Users"
+            class="w-5 h-5 text-gray-500 group-hover:text-purple-600 dark:group-hover:text-purple-400"></lucide-icon>
+          <span class="ms-3">Users</span>
         </a>
       </li>
-      <li routerLink="/category">
-        <div
-          class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-        >
-          <svg
-            class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-            fill="currentColor"
-            viewBox="0 0 100 120"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            <path
-              fill-rule="evenodd"
-              d="m61.059 3.125h26.219c1.4727 0 2.6758 1.2031 2.6758 2.6758v13.195c0 1.4727-1.2031 2.6758-2.6758 2.6758h-26.219c-1.4727 0-2.6758-1.2031-2.6758-2.6758l0.003907-13.195c0-1.4727 1.2031-2.6758 2.6719-2.6758zm-37.449 33.719c7.4922 0 13.562 6.0742 13.562 13.562 0 7.4922-6.0742 13.562-13.562 13.562-7.4922 0-13.562-6.0742-13.562-13.562-0.003906-7.4883 6.0703-13.562 13.562-13.562zm32.434 51.93h-6.3086c-0.86328 0-1.6445-0.35156-2.207-0.91797-0.56641-0.56641-0.91797-1.3477-0.91797-2.207l-0.003906-34.066h-7.0898-0.042969c0.027344-0.38672 0.042969-0.77734 0.042969-1.1719 0-0.39453-0.015625-0.78516-0.042969-1.1719h0.042969 7.0898v-34.887c0-0.86328 0.35156-1.6445 0.91797-2.207 0.56641-0.56641 1.3477-0.91797 2.207-0.91797h6.3125v2.3438h-6.3086c-0.21484 0-0.41016 0.089844-0.55078 0.23047s-0.23047 0.33594-0.23047 0.55078v34.887h7.0898v2.3438h-7.0898v34.066c0 0.21484 0.085937 0.41016 0.23047 0.55078 0.14062 0.14062 0.33594 0.23047 0.55078 0.23047l6.3086-0.003907zm5.0156-10.445h26.219c1.4727 0 2.6758 1.2031 2.6758 2.6758v13.195c0 1.4727-1.2031 2.6758-2.6758 2.6758h-26.219c-1.4727 0-2.6758-1.2031-2.6758-2.6758l0.003907-13.195c0-1.4727 1.2031-2.6758 2.6719-2.6758zm3.6406 7.0977h9.5625c0.64844 0 1.1719-0.52344 1.1719-1.1719 0-0.64844-0.52344-1.1719-1.1719-1.1719h-9.5625c-0.64844 0-1.1719 0.52344-1.1719 1.1719 0 0.64844 0.52344 1.1719 1.1719 1.1719zm-0.17969 6.2148h19.125c0.64844 0 1.1719-0.52344 1.1719-1.1719s-0.52344-1.1719-1.1719-1.1719h-19.125c-0.64844 0-1.1719 0.52344-1.1719 1.1719s0.52344 1.1719 1.1719 1.1719zm-3.4609-50.914h26.219c1.4727 0 2.6758 1.2031 2.6758 2.6758v13.195c0 1.4727-1.2031 2.6758-2.6758 2.6758h-26.219c-1.4727 0-2.6758-1.2031-2.6758-2.6758l0.003907-13.195c0-1.4727 1.2031-2.6758 2.6719-2.6758zm3.6406 7.3359h19.125c0.64844 0 1.1719-0.52344 1.1719-1.1719s-0.52344-1.1719-1.1719-1.1719h-19.125c-0.64844 0-1.1719 0.52344-1.1719 1.1719s0.52344 1.1719 1.1719 1.1719zm-0.17969 6.2188h19.125c0.64844 0 1.1719-0.52344 1.1719-1.1719s-0.52344-1.1719-1.1719-1.1719h-19.125c-0.64844 0-1.1719 0.52344-1.1719 1.1719 0 0.64453 0.52344 1.1719 1.1719 1.1719zm0.17969-44.25h19.125c0.64844 0 1.1719-0.52344 1.1719-1.1719s-0.52344-1.1719-1.1719-1.1719h-19.125c-0.64844 0-1.1719 0.52344-1.1719 1.1719 0 0.64453 0.52344 1.1719 1.1719 1.1719zm-0.17969 6.2148h9.5625c0.64844 0 1.1719-0.52344 1.1719-1.1719 0-0.64844-0.52344-1.1719-1.1719-1.1719h-9.5625c-0.64844 0-1.1719 0.52344-1.1719 1.1719 0 0.64844 0.52344 1.1719 1.1719 1.1719z"
-            />
-          </svg>
 
-          <span class="flex-1 ms-3 whitespace-nowrap">Categories</span>
-        </div>
-      </li>
-      <li routerLink="/coupon">
-        <div
-          class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-        >
-          <svg
-            class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="-5 -10 110 135"
-            fill="currentColor"
-            aria-hidden="true"
-          >
-            <path d="m80.691 7.832-31.023 17.082h40.426z" />
-            <path
-              d="m60.434 61.809c-0.8125 0-1.4727 0.66016-1.4727 1.4727s0.66016 1.4727 1.4727 1.4727 1.4727-0.66016 1.4727-1.4727-0.66016-1.4727-1.4727-1.4727z"
-            />
-            <path
-              d="m51.473 52.844c0-0.8125-0.66016-1.4727-1.4727-1.4727s-1.4727 0.66016-1.4727 1.4727 0.66016 1.4727 1.4727 1.4727 1.4727-0.65625 1.4727-1.4727z"
-            />
-            <path
-              d="m29.34 73.609c0-1.6289-1.3242-2.9531-2.9531-2.9531-1.6289 0-2.9531 1.3242-2.9531 2.9531 0 0.81641-0.66016 1.4766-1.4766 1.4766h-12.051l9.4023 17.078 15.676-8.6289c-0.26172-1.0117-0.24609-2.0781 0.050781-3.1094 1.2617-4.3555 6.8281-5.75 9.9648-2.4062l5.3281-2.9336h-19.512c-0.81641 0-1.4766-0.66016-1.4766-1.4766z"
-            />
-            <path
-              d="m24.914 67.895v-35.789c-2.0703-0.53516-3.707-2.168-4.2422-4.2383l-17.895-0.003907v44.27h17.895c0.53516-2.0703 2.1719-3.7031 4.2422-4.2383zm-17.711-34.129h13.281c0.81641 0 1.4766 0.66016 1.4766 1.4766 0 0.81641-0.66016 1.4766-1.4766 1.4766h-13.281c-0.81641 0-1.4766-0.66016-1.4766-1.4766 0.003907-0.8125 0.66406-1.4766 1.4766-1.4766zm0 5.9062h13.281c0.81641 0 1.4766 0.66016 1.4766 1.4766 0 0.81641-0.66016 1.4766-1.4766 1.4766l-13.281-0.003906c-0.81641 0-1.4766-0.66016-1.4766-1.4766 0.003907-0.8125 0.66406-1.4727 1.4766-1.4727zm0 5.9023h13.281c0.81641 0 1.4766 0.66016 1.4766 1.4766 0 0.81641-0.66016 1.4766-1.4766 1.4766l-13.281-0.003906c-0.81641 0-1.4766-0.66016-1.4766-1.4766 0.003907-0.8125 0.66406-1.4727 1.4766-1.4727zm0 8.8516c-0.81641 0-1.4766-0.66016-1.4766-1.4766 0-0.81641 0.66016-1.4766 1.4766-1.4766h13.281c0.81641 0 1.4766 0.66016 1.4766 1.4766 0 0.81641-0.66016 1.4766-1.4766 1.4766z"
-            />
-            <path d="m36.719 35.242h51.648v5.9023h-51.648z" />
-            <path
-              d="m32.105 27.863c-0.53516 2.0703-2.168 3.7031-4.2422 4.2383v35.793c2.0703 0.53516 3.707 2.168 4.2422 4.2383h65.117v-44.27h-65.117zm13.469 24.98c0-2.4453 1.9805-4.4258 4.4258-4.4258s4.4258 1.9805 4.4258 4.4258-1.9805 4.4258-4.4258 4.4258-4.4258-1.9805-4.4258-4.4258zm2.3398 12.527c-0.57812-0.57812-0.57812-1.5117 0-2.0859l12.523-12.523c0.57812-0.57812 1.5117-0.57812 2.0859 0 0.57812 0.57812 0.57812 1.5117 0 2.0859l-12.523 12.523c-0.57422 0.57422-1.5117 0.57422-2.0859 0zm12.52 2.3359c-2.4453 0-4.4258-1.9805-4.4258-4.4258s1.9805-4.4258 4.4258-4.4258c2.4453 0 4.4258 1.9805 4.4258 4.4258s-1.9805 4.4258-4.4258 4.4258zm29.41 0h-20.66c-0.81641 0-1.4766-0.66016-1.4766-1.4766 0-0.81641 0.66016-1.4766 1.4766-1.4766h20.66c0.81641 0 1.4766 0.66016 1.4766 1.4766 0 0.81641-0.66016 1.4766-1.4766 1.4766zm0-5.9023h-20.66c-0.81641 0-1.4766-0.66016-1.4766-1.4766s0.66016-1.4766 1.4766-1.4766h20.66c0.81641 0 1.4766 0.66016 1.4766 1.4766s-0.66016 1.4766-1.4766 1.4766zm0-5.9023h-20.66c-0.81641 0-1.4766-0.66016-1.4766-1.4766 0-0.81641 0.66016-1.4766 1.4766-1.4766h20.66c0.81641 0 1.4766 0.66016 1.4766 1.4766 0 0.81641-0.66016 1.4766-1.4766 1.4766zm0-5.9023h-20.66c-0.81641 0-1.4766-0.66016-1.4766-1.4766 0-0.81641 0.66016-1.4766 1.4766-1.4766h20.66c0.81641 0 1.4766 0.66016 1.4766 1.4766 0 0.81641-0.66016 1.4766-1.4766 1.4766zm1.4766-7.3789c0 0.81641-0.66016 1.4766-1.4766 1.4766h-54.602c-0.81641 0-1.4766-0.66016-1.4766-1.4766v-8.8555c0-0.81641 0.66016-1.4766 1.4766-1.4766h54.602c0.81641 0 1.4766 0.66016 1.4766 1.4766z"
-            />
-          </svg>
-
-          <span class="flex-1 ms-3 whitespace-nowrap">Cuopons</span>
-        </div>
-      </li>
-      <li routerLink="/reviews">
-        <div
-          class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-        >
-          <svg
-            class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-            fill="currentColor"
-            viewBox="0 0 64 64"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            <path
-              d="M18 23.328v44h26l7 9.3281 7-9.3281h24v-44zm40.32 34.473-8.3203-3.9219-8.3203 3.9219 1.1484-9.1289-6.2891-6.7109 9.0312-1.7305 4.4297-8.0586 4.4297 8.0586 9.0312 1.7305-6.2891 6.7109z"
-            />
-          </svg>
-          <span class="flex-1 ms-3 whitespace-nowrap">Reviews</span>
-        </div>
+      <!-- Products -->
+      <li class="group">
+        <a routerLink="/products" routerLinkActive="bg-orange-100 dark:bg-orange-900/30 border-orange-300 dark:border-orange-600"
+          class="flex items-center p-3 text-gray-900 rounded-xl dark:text-white hover:bg-orange-50 dark:hover:bg-orange-900/20 group transition-all duration-300 hover:shadow-lg hover:scale-105 border border-transparent hover:border-orange-200 dark:hover:border-orange-800">
+          <lucide-icon [img]="icons.Package"
+            class="w-5 h-5 text-gray-500 group-hover:text-orange-600 dark:group-hover:text-orange-400"></lucide-icon>
+          <span class="ms-3">Products</span>
+        </a>
       </li>
 
+      <!-- Payments -->
+      <li class="group">
+        <a routerLink="/payments" routerLinkActive="bg-teal-100 dark:bg-teal-900/30 border-teal-300 dark:border-teal-600"
+          class="flex items-center p-3 text-gray-900 rounded-xl dark:text-white hover:bg-teal-50 dark:hover:bg-teal-900/20 group transition-all duration-300 hover:shadow-lg hover:scale-105 border border-transparent hover:border-teal-200 dark:hover:border-teal-800">
+          <lucide-icon [img]="icons.CreditCard"
+            class="w-5 h-5 text-gray-500 group-hover:text-teal-600 dark:group-hover:text-teal-400"></lucide-icon>
+          <span class="ms-3">Payments</span>
+        </a>
+      </li>
+
+      <!-- Carts -->
+      <li class="group">
+        <a routerLink="/cart" routerLinkActive="bg-amber-100 dark:bg-amber-900/30 border-amber-300 dark:border-amber-600"
+          class="flex items-center p-3 text-gray-900 rounded-xl dark:text-white hover:bg-amber-50 dark:hover:bg-amber-900/20 group transition-all duration-300 hover:shadow-lg hover:scale-105 border border-transparent hover:border-amber-200 dark:hover:border-amber-800">
+          <lucide-icon [img]="icons.ShoppingCart"
+            class="w-5 h-5 text-gray-500 group-hover:text-amber-600 dark:group-hover:text-amber-400"></lucide-icon>
+          <span class="ms-3">Carts</span>
+        </a>
+      </li>
+
+      <!-- Chatbot -->
+      <li class="group">
+        <a routerLink="/chatbot" routerLinkActive="bg-rose-100 dark:bg-rose-900/30 border-rose-300 dark:border-rose-600"
+          class="flex items-center p-3 text-gray-900 rounded-xl dark:text-white hover:bg-rose-50 dark:hover:bg-rose-900/20 group transition-all duration-300 hover:shadow-lg hover:scale-105 border border-transparent hover:border-rose-200 dark:hover:border-rose-800">
+          <lucide-icon [img]="icons.MessageCircle"
+            class="w-5 h-5 text-gray-500 group-hover:text-rose-600 dark:group-hover:text-rose-400"></lucide-icon>
+          <span class="ms-3">Chatbot</span>
+        </a>
+      </li>
+
+      <!-- Categories -->
+      <li class="group">
+        <a routerLink="/category" routerLinkActive="bg-violet-100 dark:bg-violet-900/30 border-violet-300 dark:border-violet-600"
+          class="flex items-center p-3 text-gray-900 rounded-xl dark:text-white hover:bg-violet-50 dark:hover:bg-violet-900/20 group transition-all duration-300 hover:shadow-lg hover:scale-105 border border-transparent hover:border-violet-200 dark:hover:border-violet-800">
+          <lucide-icon [img]="icons.Grid3X3"
+            class="w-5 h-5 text-gray-500 group-hover:text-violet-600 dark:group-hover:text-violet-400"></lucide-icon>
+          <span class="ms-3">Categories</span>
+        </a>
+      </li>
+
+      <!-- Coupons -->
+      <li class="group">
+        <a routerLink="/coupon" routerLinkActive="bg-emerald-100 dark:bg-emerald-900/30 border-emerald-300 dark:border-emerald-600"
+          class="flex items-center p-3 text-gray-900 rounded-xl dark:text-white hover:bg-emerald-50 dark:hover:bg-emerald-900/20 group transition-all duration-300 hover:shadow-lg hover:scale-105 border border-transparent hover:border-emerald-200 dark:hover:border-emerald-800">
+          <lucide-icon [img]="icons.Ticket"
+            class="w-5 h-5 text-gray-500 group-hover:text-emerald-600 dark:group-hover:text-emerald-400"></lucide-icon>
+          <span class="ms-3">Coupons</span>
+        </a>
+      </li>
+
+      <!-- Reviews -->
+      <li class="group">
+        <a routerLink="/reviews" routerLinkActive="bg-yellow-100 dark:bg-yellow-900/30 border-yellow-300 dark:border-yellow-600"
+          class="flex items-center p-3 text-gray-900 rounded-xl dark:text-white hover:bg-yellow-50 dark:hover:bg-yellow-900/20 group transition-all duration-300 hover:shadow-lg hover:scale-105 border border-transparent hover:border-yellow-200 dark:hover:border-yellow-800">
+          <lucide-icon [img]="icons.Star"
+            class="w-5 h-5 text-gray-500 group-hover:text-yellow-600 dark:group-hover:text-yellow-400"></lucide-icon>
+          <span class="ms-3">Reviews</span>
+        </a>
+      </li>
+
+      <!-- Logout -->
       <li>
-        <button
-          (click)="signOutUser()"
-          type="button"
-          class="w-full text-left flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-        >
-          <svg
-            class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.96 2.96 0 0 0 .13 5H5Z"
-            />
-            <path
-              d="M6.737 11.061a2.961 2.961 0 0 1 .81-1.515l6.117-6.116A4.839 4.839 0 0 1 16 2.141V2a1.97 1.97 0 0 0-1.933-2H7v5a2 2 0 0 1-2 2H0v11a1.969 1.969 0 0 0 1.933 2h12.134A1.97 1.97 0 0 0 16 18v-3.093l-1.546 1.546c-.413.413-.94.695-1.513.81l-3.4.679a2.947 2.947 0 0 1-1.85-.227 2.96 2.96 0 0 1-1.635-3.257l.681-3.397Z"
-            />
-            <path
-              d="M8.961 16a.93.93 0 0 0 .189-.019l3.4-.679a.961.961 0 0 0 .49-.263l6.118-6.117a2.884 2.884 0 0 0-4.079-4.078l-6.117 6.117a.96.96 0 0 0-.263.491l-.679 3.4A.961.961 0 0 0 8.961 16Zm7.477-9.8a.958.958 0 0 1 .68-.281.961.961 0 0 1 .682 1.644l-.315.315-1.36-1.36.313-.318Zm-5.911 5.911 4.236-4.236 1.359 1.359-4.236 4.237-1.7.339.341-1.699Z"
-            />
-          </svg>
-          <span class="flex-1 ms-3 whitespace-nowrap">Sign Out</span>
+        <button (click)="signOutUser()" type="button"
+          class="w-full text-left flex items-center p-3 text-gray-900 rounded-xl dark:text-white hover:bg-red-50 dark:hover:bg-red-900/20 group transition-all duration-300 hover:shadow-lg hover:scale-105 border border-transparent hover:border-red-200 dark:hover:border-red-800">
+          <lucide-icon [img]="icons.LogOut"
+            class="w-5 h-5 text-gray-500 group-hover:text-red-600 dark:group-hover:text-red-400"></lucide-icon>
+          <span class="ms-3">Sign Out</span>
         </button>
       </li>
-      <!-- Sign Up Item -->
-      <li class="group">
-        <a href="#"
-          class="flex items-center p-3 text-gray-900 rounded-xl dark:text-white hover:bg-gradient-to-r hover:from-teal-50 hover:to-cyan-50 dark:hover:from-teal-900/20 dark:hover:to-cyan-900/20 group transition-all duration-300 hover:shadow-lg hover:scale-105 border border-transparent hover:border-teal-200 dark:hover:border-teal-800">
-          <div class="relative">
-            <svg
-              class="w-5 h-5 text-gray-500 transition-all duration-300 dark:text-gray-400 group-hover:text-teal-600 dark:group-hover:text-teal-400 group-hover:scale-110"
-              fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
-            </svg>
-            <div
-              class="absolute -inset-1 bg-gradient-to-r from-teal-600 to-cyan-600 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur">
-            </div>
-          </div>
-          <span
-            class="flex-1 ms-3 whitespace-nowrap font-medium group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors duration-300">sign out</span>
-          <div class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <svg class="w-4 h-4 text-teal-400" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd"
-                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                clip-rule="evenodd"></path>
-            </svg>
-          </div>
-        </a>
-      </li>
+
     </ul>
   </div>
 </aside>

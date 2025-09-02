@@ -27,6 +27,7 @@ import { OrderDetailComponent } from './features/orders/components/order-detail/
 import { CreateOrderComponent } from './features/orders/components/create-order/create-order.component.js';
 import { ProductDetailComponent } from './features/products/components/product-detail/product-detail.component.js';
 import { DashboardChartsComponent } from './features/charts-component/dashboard-charts/dashboard-charts';
+import { Chatbot } from './features/chat bot/components/chatbot/chatbot';
 
 export const routes: Routes = [
   {
@@ -37,7 +38,7 @@ export const routes: Routes = [
     children: [
       {path: 'charts', component: DashboardChartsComponent},
       {path: 'user', component: User },
-      {path:"store",component:StoreComponent ,title:"store mangement"},
+      {path:"stores",component:StoreComponent ,title:"store mangement"},
       {path:"add-new-store", component:StoreAddedNewstoreComponent ,title:"add new store"},
       {path: 'update-store/:id', component: StoreUpdateSroreComponent, title: "update store"},
       {path: 'view-store/:id', component: StoreViewComponent, title: "view store"},
@@ -54,11 +55,8 @@ export const routes: Routes = [
       { path: 'products/:id/view', component: ProductDetailComponent },
       // { path: 'products/:id/edit',  }
       { path: 'products/create', component: ProductFormComponent, title: 'Create Product' },
-      { path: "store", component: StoreComponent, title: "store" },
-      { path: "add-new-store", component: StoreAddedNewstoreComponent, title: "add new store" },
-      { path: 'update/:id', component: StoreUpdateSroreComponent, title: "update store" },
       { path: 'category', component: CategoryComponent },
-
+      { path: 'chatbot', component: Chatbot , title: "chatbot" },
       { path: 'orders', component: OrderListComponent, title: "orders" },
       { path: 'orders/create', component: CreateOrderComponent, title: "order" },
       { path: 'order-detail', component: OrderDetailComponent, title: "order detail" },
