@@ -18,7 +18,6 @@ import { Router } from '@angular/router';
 import { ProductApiService } from '../../services/product-api.service';
 import { Category } from '../../../../shared/models/category.interface';
 import { Product } from '../../../../shared/models/product.interface';
-import Swal from 'sweetalert2';
 import { StoreServices } from '../../../store/services/store-serivces/store-services';
 import { CategoryService } from '../../../../services/category-services/category.service';
 
