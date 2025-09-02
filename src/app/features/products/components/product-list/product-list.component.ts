@@ -39,77 +39,6 @@ export class ProductListComponent implements OnInit {
   pendingCount = computed(() => this.products().filter(p => (p as any).status === 'pending').length);
   rejectedCount = computed(() => this.products().filter(p => (p as any).status === 'rejected').length);
 
-// totalOrders   = computed(() => this.statusCounts()['all'] ?? 0);
-// approvedCount = computed(() => this.statusCounts()['approved'] ?? 0);
-// pendingCount  = computed(() => this.statusCounts()['pending'] ?? 0);
-// rejectedCount = computed(() => this.statusCounts()['rejected'] ?? 0);
-
-
-// fetch paginated products **and** read counts from response (preferred)
-  // fetchProducts(): void {
-  //   this.loading.set(true);
-  //   this.error.set(null);
-
-  //   this.productApi.getProducts({
-  //     page: this.currentPage(),
-  //     limit: this.limit,
-  //     status: this.selectedStatus()
-  //   }).subscribe({
-  //     next: (response) => {
-  //       // response.products (current page)
-  //       this.products.set(response.products ?? []);
-  //       this.totalPages.set(response.totalPages ?? 1);
-
-  //       // NOTE: handle multiple possible shapes for counts:
-  //       // 1) response.counts = [{ _id: 'approved', count: 123 }, ...]
-  //       // 2) response.counts = { all: 200, approved: 120, ... }
-  //       const countsRaw = (response as any).counts;
-  //       if (Array.isArray(countsRaw)) {
-  //         const map: Record<string, number> = { all: 0, approved: 0, pending: 0, rejected: 0 };
-  //         countsRaw.forEach((c: any) => {
-  //           const key = (c._id ?? c.status ?? '').toString();
-  //           const val = Number(c.count ?? 0);
-  //           if (key === '' || key.toLowerCase() === 'all') { map['all'] = val; }
-  //           else { map[key] = val; }
-  //         });
-  //         // If backend didn't return total "all", compute fallback as sum
-  //         if (!map['all']) {
-  //           map['all'] = Object.values(map).reduce((s, v) => s + v, 0);
-  //         }
-  //         this.statusCounts.set(map);
-  //       } else if (countsRaw && typeof countsRaw === 'object') {
-  //         // object shape
-  //         const map: Record<string, number> = {
-  //           all: Number(countsRaw.all ?? 0),
-  //           approved: Number(countsRaw.approved ?? 0),
-  //           pending: Number(countsRaw.pending ?? 0),
-  //           rejected: Number(countsRaw.rejected ?? 0)
-  //         };
-  //         if (!map['all']) {
-  //           map['all'] = Object.values(map).reduce((s, v) => s + v, 0);
-  //         }
-  //         this.statusCounts.set(map);
-  //       } else {
-  //         // fallback: compute counts from server-provided products (only if no counts provided)
-  //         const fallback: Record<string, number> = { all: 0, approved: 0, pending: 0, rejected: 0 };
-  //         const products = response.products ?? [];
-  //         products.forEach((p: any) => {
-  //           const st = (p.status ?? '').toString().toLowerCase();
-  //           if (st in fallback) fallback[st] = fallback[st] + 1;
-  //           fallback['all']++;
-  //         });
-  //         this.statusCounts.set(fallback);
-  //       }
-
-  //       this.loading.set(false);
-  //     },
-  //     error: (err) => {
-  //       console.error('Error loading products:', err);
-  //       this.error.set('Failed to load products. Please try again later.');
-  //       this.loading.set(false);
-  //     }
-  //   });
-  // }
 
   // when user clicks a card to filter
   onStatusFilterChange(status: string) {
@@ -141,12 +70,6 @@ export class ProductListComponent implements OnInit {
       },
     });
   }
-
-  // onStatusFilterChange(status: string) {
-  //   this.selectedStatus.set(status);
-  //   this.currentPage.set(1);
-  //   this.fetchProducts();
-  // }
 
   goToPage(page: number) {
     if (page >= 1 && page <= this.totalPages()) {
@@ -193,14 +116,22 @@ export class ProductListComponent implements OnInit {
     return 'In Stock';
   }
 
-  onStatusChange(status: string, productId: string) {
-    this.productApi.updateProductStatus(productId, status).subscribe({
-      next: () => console.log('Status updated!'),
-      error: (err) => console.error('Failed to update status', err),
 
-    });
-    this.cdr.detectChanges();
-  }
+onStatusChange(status: string, productId: string) {
+  this.productApi.updateProductStatus(productId, status).subscribe({
+    next: () => {
+      this.products.update(products =>
+        products.map(product =>
+          product._id === productId ? { ...product, status } : product
+        )
+      );
+    },
+    error: (err) => {
+      console.error('Failed to update status', err);
+    },
+  });
+}
+
 
 }
 
