@@ -26,7 +26,7 @@ import { OrderListComponent } from './features/orders/components/order-list/orde
 import { OrderDetailComponent } from './features/orders/components/order-detail/order-detail.component.js';
 import { CreateOrderComponent } from './features/orders/components/create-order/create-order.component.js';
 import { ProductDetailComponent } from './features/products/components/product-detail/product-detail.component.js';
-import { ProductStatisticsComponent } from './features/main-component/productsChart/productsChart';
+import { DashboardChartsComponent } from './features/charts-component/dashboard-charts/dashboard-charts';
 
 export const routes: Routes = [
   {
@@ -35,9 +35,7 @@ export const routes: Routes = [
     /* resolve: { loggedIn: AuthStatusResolver }, */
     canActivate: [AuthGuard], // optional now, could be removed
     children: [
-       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: ProductStatisticsComponent, title: 'Dashboard' },
-
+      {path: 'charts', component: DashboardChartsComponent},
       {path: 'user', component: User },
       {path:"store",component:StoreComponent ,title:"store mangement"},
       {path:"add-new-store", component:StoreAddedNewstoreComponent ,title:"add new store"},

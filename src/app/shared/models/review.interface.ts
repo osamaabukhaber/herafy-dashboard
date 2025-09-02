@@ -1,9 +1,9 @@
-import { User } from "./user.interface";
+import { User } from './user.interface';
 export interface Review {
   _id: string;
-  user: string | User;           
+  user: User | string;
   entityId: string;
-  entityType: 'PRODUCT' | 'STORE'; 
+  entityType: 'PRODUCT' | 'STORE';
   rating: number;
   comment: string;
   createdAt?: Date;
@@ -34,4 +34,3 @@ export interface RatingBreakdown {
   count: number;
   percentage: number;
 }
-
