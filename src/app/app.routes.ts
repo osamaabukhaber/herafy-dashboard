@@ -35,7 +35,7 @@ export const routes: Routes = [
     /* resolve: { loggedIn: AuthStatusResolver }, */
     canActivate: [AuthGuard], // optional now, could be removed
     children: [
-      {path: 'charts', component: DashboardChartsComponent},
+      {path: '', component: DashboardChartsComponent},
       {path: 'user', component: User },
       {path:"store",component:StoreComponent ,title:"store mangement"},
       {path:"add-new-store", component:StoreAddedNewstoreComponent ,title:"add new store"},
