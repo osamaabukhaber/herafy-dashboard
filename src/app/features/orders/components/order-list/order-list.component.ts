@@ -1,5 +1,5 @@
 // src/app/components/orders/order-list/order-list.component.ts
-import { Component, OnInit, signal, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { OrderService } from '../../services/order.service.js';
@@ -39,6 +39,7 @@ export class OrderListComponent implements OnInit {
   readonly totalOrders = signal(0);
   readonly cancellingOrderId = signal<string | null>(null);
 
+  constructor(private cdr: ChangeDetectorRef) {}
   // Computed properties
   readonly emptyStateDescription = computed(() => {
     switch (this.listType()) {
@@ -63,17 +64,21 @@ export class OrderListComponent implements OnInit {
 
     request$.subscribe({
       next: (response: OrderResponse) => {
-        const data = response.data as { orders: Order[]; page: number; pages: number; total: number };
-        this.orders.set(data?.orders??[]);
-        this.currentPage.set(data.page);
-        this.totalPages.set(data.pages);
-        this.totalOrders.set(data.total);
+        console.log("res : ", response)
+        const res = response.data as { orders: Order[]; page: number; pages: number; total: number };
+        this.orders.set(res?.orders ?? []);
+        this.currentPage.set(res.page);
+        this.totalPages.set(res.pages);
+        this.totalOrders.set(res.total);
+  
         this.loading.set(false);
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.error.set(err.error?.message || 'Failed to load orders');
         this.loading.set(false);
         console.error('Error loading orders:', err);
+        this.cdr.detectChanges()
       }
     });
   }

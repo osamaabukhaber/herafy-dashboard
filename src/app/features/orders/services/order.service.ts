@@ -58,7 +58,7 @@ export class OrderService {
       .set('page', page.toString())
       .set('limit', limit.toString());
 
-    return this.http.get<OrderResponse>(`${this.baseUrl}/admin/orders`, { params });
+    return this.http.get<OrderResponse>(`${this.baseUrl}`, { params });
   }
 
   getAdminOrderById(orderId: string): Observable<OrderResponse> {
