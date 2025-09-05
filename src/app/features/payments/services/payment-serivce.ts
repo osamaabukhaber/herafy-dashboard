@@ -10,7 +10,7 @@ import { Ipayments } from '../../../models/payment-model/ipayments';
   providedIn: 'root'
 })
 export class PaymentService {
-  private baseUrl = environment.apiBaseUrl + '/payment';
+  private baseUrl = environment.apiBaseUrl + '/payments';
 
   constructor(private http: HttpClient) {}
 
@@ -30,26 +30,26 @@ export class PaymentService {
       });
     }
 
-    return this.http.get<IpaymentsApiResponce>(`${this.baseUrl}`, { params });
+    return this.http.get<IpaymentsApiResponce>(`${this.baseUrl}`, { params , withCredentials: true });
   }
 
   /**
    * Get a payment by its ID (Admin only)
    */
   getPaymentById(id: string): Observable<IpaymentsItemResponce> {
-    return this.http.get<IpaymentsItemResponce>(`${this.baseUrl}/${id}`);
+    return this.http.get<IpaymentsItemResponce>(`${this.baseUrl}/${id}`, { withCredentials: true });
   }
 
   /**
    * Update payment status (Admin only)
    */
   updatePaymentStatus(id: string, status: 'pending' | 'completed' | 'failed' | 'refunded'): Observable<Ipayments> {
-    return this.http.patch<Ipayments>(`${this.baseUrl}/${id}/status`, { status });
+    return this.http.patch<Ipayments>(`${this.baseUrl}/${id}/status`, { status }, { withCredentials: true });
   }
 
   // get all ids
   getAllPaymentIds(): Observable<string[]> {
-        return this.http.get<IpaymentsApiResponce>(this.baseUrl).pipe(
+        return this.http.get<IpaymentsApiResponce>(this.baseUrl, { withCredentials: true }).pipe(
           retry(3), // Retry up to 3 times in case of failure
           map((response: IpaymentsApiResponce) => response.data.payments
             .map(payment => payment._id)

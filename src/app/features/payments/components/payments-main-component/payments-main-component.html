@@ -28,12 +28,12 @@
             <svg class="w-5 h-5 absolute left-4 top-3.5 text-gray-400 transition-all duration-300 group-focus-within:text-indigo-500 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
-            <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 opacity-100 group-focus-within:opacity-95 transition-opacity duration-300"></div>
+            <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 opacity-0 group-focus-within:opacity-5 transition-opacity duration-300"></div>
           </div>
 
           <!-- Enhanced Filter Toggle -->
           <button
-            (click)="filterPanelOpen = !filterPanelOpen"
+            (click)="toggleFilterPanel()"
             class="inline-flex items-center px-5 py-3 border border-gray-200 rounded-xl text-sm font-semibold text-gray-700 bg-white transition-all duration-300 hover:bg-gray-50 hover:border-indigo-200 hover:text-indigo-600 hover:shadow-lg hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-indigo-100 active:scale-95"
             [class.bg-indigo-50]="filterPanelOpen"
             [class.border-indigo-300]="filterPanelOpen"
@@ -49,18 +49,20 @@
           <!-- Enhanced Refresh Button -->
           <button
             (click)="refresh()"
-            class="inline-flex items-center px-5 py-3 border border-gray-200 rounded-xl text-sm font-semibold text-gray-700 bg-white transition-all duration-300 hover:bg-gray-50 hover:border-gray-300 hover:shadow-lg hover:-translate-y-0.5 hover:rotate-180 focus:outline-none focus:ring-4 focus:ring-gray-100 active:scale-95 group"
+            class="inline-flex items-center px-5 py-3 border border-gray-200 rounded-xl text-sm font-semibold text-gray-700 bg-white transition-all duration-300 hover:bg-gray-50 hover:border-gray-300 hover:shadow-lg hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-gray-100 active:scale-95 group"
+            [disabled]="loading"
             aria-label="Refresh payments">
-            <svg class="w-4 h-4 mr-2 transition-all duration-500 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 mr-2 transition-all duration-500 group-hover:rotate-180" [class.animate-spin]="loading" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
             </svg>
-            <span class="transform transition-all duration-200 group-hover:scale-105">Refresh</span>
+            <span class="transform transition-all duration-200 group-hover:scale-105">{{ loading ? 'Loading...' : 'Refresh' }}</span>
           </button>
 
           <!-- Enhanced Export Button -->
           <button
             (click)="exportCurrentPageCSV()"
-            class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl text-sm font-semibold shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-200 active:scale-95 group"
+            [disabled]="!payments.length"
+            class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl text-sm font-semibold shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-200 active:scale-95 group disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none"
             aria-label="Export current page to CSV">
             <svg class="w-4 h-4 mr-2 transition-all duration-300 group-hover:scale-110 group-hover:-translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -110,6 +112,46 @@
             formControlName="provider"
             class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition-all duration-300 hover:shadow-md hover:border-gray-300 hover:-translate-y-0.5"
             placeholder="e.g., Visa, PayPal, Stripe..."
+          />
+        </div>
+
+        <!-- Amount Range Filters -->
+        <div class="space-y-2 group">
+          <label class="block text-sm font-semibold text-gray-700 transition-colors duration-200 group-focus-within:text-indigo-600">Amount Range</label>
+          <div class="flex flex-wrap space-y-2 space-x-2">
+            <input
+              type="number"
+              formControlName="minAmount"
+              class="flex-1 px-3 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition-all duration-300 hover:shadow-md hover:border-gray-300 hover:-translate-y-0.5"
+              placeholder="Min"
+            />
+            <input
+              type="number"
+              formControlName="maxAmount"
+              class="flex-1 px-3 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition-all duration-300 hover:shadow-md hover:border-gray-300 hover:-translate-y-0.5"
+              placeholder="Max"
+            />
+          </div>
+        </div>
+
+        <!-- Date Range Filters -->
+        <div class="space-y-2 group">
+          <label class="block text-sm font-semibold text-gray-700 transition-colors duration-200 group-focus-within:text-indigo-600">Date From</label>
+          <input
+            aria-label="data"
+            type="date"
+            formControlName="dateFrom"
+            class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition-all duration-300 hover:shadow-md hover:border-gray-300 hover:-translate-y-0.5"
+          />
+        </div>
+
+        <div class="space-y-2 group">
+          <label class="block text-sm font-semibold text-gray-700 transition-colors duration-200 group-focus-within:text-indigo-600">Date To</label>
+          <input
+          aria-label="date"
+            type="date"
+            formControlName="dateTo"
+            class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition-all duration-300 hover:shadow-md hover:border-gray-300 hover:-translate-y-0.5"
           />
         </div>
 
@@ -180,10 +222,10 @@
             </label>
 
             <div class="text-sm text-gray-600 bg-white px-3 py-1 rounded-full shadow-sm">
-              <span class="font-bold text-indigo-600 transition-all duration-300">{{ selectedIds.size }}</span> selected
+              <span class="font-bold text-indigo-600 transition-all duration-300">{{ selectedCount }}</span> selected
             </div>
 
-            <div class="flex space-x-2 animate-[fadeIn_0.3s_ease-out]" *ngIf="selectedIds.size > 0">
+            <div class="flex space-x-2 animate-[fadeIn_0.3s_ease-out]" *ngIf="hasSelection">
               <button
                 (click)="bulkUpdateStatus('completed')"
                 class="inline-flex items-center px-4 py-2 border border-green-200 rounded-lg text-xs font-semibold text-green-700 bg-gradient-to-r from-green-50 to-emerald-50 transition-all duration-300 hover:bg-green-100 hover:border-green-300 hover:shadow-md hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-green-100 active:scale-95"
@@ -259,9 +301,15 @@
                   aria-label="Select payment"
                 />
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 transition-colors duration-200 hover:text-indigo-600">{{ p.order }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 transition-colors duration-200 hover:text-gray-800">{{ p.user }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-indigo-600 transition-all duration-200 hover:text-indigo-800 hover:scale-105">{{ formatCurrency(p.amount) }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 transition-colors duration-200 hover:text-indigo-600">
+                {{ p.order?._id || p.order }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 transition-colors duration-200 hover:text-gray-800">
+                {{ p.user?.userName || p.user }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-indigo-600 transition-all duration-200 hover:text-indigo-800 hover:scale-105">
+                {{ formatCurrency(p.amount) }}
+              </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-800 transition-all duration-300 hover:shadow-md hover:scale-105">
                   {{ p.paymentMethod }}
@@ -277,8 +325,12 @@
                   {{ p.status | titlecase }}
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 transition-colors duration-200 hover:text-gray-800">{{ p.provider || '—' }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 transition-colors duration-200 hover:text-gray-800">{{ p.createdAt | date:'short' }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 transition-colors duration-200 hover:text-gray-800">
+                {{ p.provider || '—' }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 transition-colors duration-200 hover:text-gray-800">
+                {{ p.createdAt | date:'short' }}
+              </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                 <button
                   (click)="openDetails(p)"
@@ -329,14 +381,33 @@
         <div *ngFor="let p of payments; trackBy: trackById; let i = index"
              class="p-6 space-y-4 transition-all duration-300 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 hover:shadow-lg transform hover:-translate-y-1 animate-[slideUp_0.4s_ease-out] group"
              [style.animation-delay.ms]="i * 150">
+
+          <!-- Mobile Card Header with Selection -->
           <div class="flex items-start justify-between">
-            <div class="space-y-2 flex-1">
-              <p class="text-sm font-bold text-gray-900 transition-colors duration-200 group-hover:text-indigo-600">Order #{{ p.order }}</p>
-              <p class="text-xs text-gray-500 transition-colors duration-200 group-hover:text-gray-700">{{ p.user }}</p>
+            <div class="flex items-center space-x-3">
+              <input
+                type="checkbox"
+                class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-all duration-200 hover:scale-110"
+                [checked]="selectedIds.has((p._id || ''))"
+                (change)="toggleSelect(p._id)"
+                aria-label="Select payment"
+              />
+              <div class="space-y-1">
+                <p class="text-sm font-bold text-gray-900 transition-colors duration-200 group-hover:text-indigo-600">
+                  Order #{{ p.order?._id || p.order }}
+                </p>
+                <p class="text-xs text-gray-500 transition-colors duration-200 group-hover:text-gray-700">
+                  {{ p.user?.userName || p.user }}
+                </p>
+              </div>
             </div>
             <div class="text-right space-y-1">
-              <p class="text-lg font-bold text-indigo-600 transition-all duration-300 group-hover:text-indigo-800 group-hover:scale-105">{{ formatCurrency(p.amount) }}</p>
-              <p class="text-xs text-gray-500 transition-colors duration-200 group-hover:text-gray-700">{{ p.createdAt | date:'short' }}</p>
+              <p class="text-lg font-bold text-indigo-600 transition-all duration-300 group-hover:text-indigo-800 group-hover:scale-105">
+                {{ formatCurrency(p.amount) }}
+              </p>
+              <p class="text-xs text-gray-500 transition-colors duration-200 group-hover:text-gray-700">
+                {{ p.createdAt | date:'short' }}
+              </p>
             </div>
           </div>
 
@@ -402,13 +473,13 @@
     <div class="bg-white rounded-2xl shadow-lg border border-gray-100 px-6 py-4 transform transition-all duration-300 hover:shadow-xl">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div class="text-sm text-gray-700 bg-gray-50 px-4 py-2 rounded-lg">
-          Showing <span class="font-bold text-indigo-600">{{ payments.length }}</span> of <span class="font-bold text-indigo-600">{{ total }}</span> payments
+          Showing <span class="font-bold text-indigo-600">{{ startItem }}</span> to <span class="font-bold text-indigo-600">{{ endItem }}</span> of <span class="font-bold text-indigo-600">{{ total }}</span> payments
         </div>
 
         <div class="flex items-center space-x-3">
           <button
             (click)="gotoPage(page - 1)"
-            [disabled]="page === 1"
+            [disabled]="isFirstPage"
             class="relative inline-flex items-center px-5 py-2.5 border border-gray-200 text-sm font-semibold rounded-xl text-gray-700 bg-white transition-all duration-300 hover:bg-gray-50 hover:border-indigo-200 hover:text-indigo-600 hover:shadow-lg hover:-translate-y-0.5 focus:z-10 focus:outline-none focus:ring-4 focus:ring-indigo-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none active:scale-95 group"
             aria-label="Previous page">
             <svg class="w-4 h-4 mr-2 transition-all duration-300 group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -418,12 +489,12 @@
           </button>
 
           <div class="inline-flex items-center px-5 py-2.5 border-2 border-indigo-200 text-sm font-bold rounded-xl text-indigo-700 bg-gradient-to-r from-indigo-50 to-purple-50 shadow-sm">
-            Page {{ page }}
+            Page {{ page }} of {{ totalPages }}
           </div>
 
           <button
             (click)="gotoPage(page + 1)"
-            [disabled]="page * limit >= total"
+            [disabled]="isLastPage"
             class="relative inline-flex items-center px-5 py-2.5 border border-gray-200 text-sm font-semibold rounded-xl text-gray-700 bg-white transition-all duration-300 hover:bg-gray-50 hover:border-indigo-200 hover:text-indigo-600 hover:shadow-lg hover:-translate-y-0.5 focus:z-10 focus:outline-none focus:ring-4 focus:ring-indigo-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none active:scale-95 group"
             aria-label="Next page">
             Next
@@ -438,52 +509,52 @@
 </div>
 
 <!-- Ultra-Premium Payment Details Modal -->
-<div *ngIf="showDetails" 
-     class="fixed inset-0 bg-gradient-to-br from-black/50 via-slate-900/60 to-black/70 backdrop-blur-md 
-            flex items-center justify-center z-50 p-4 opacity-100 animate-[fadeIn_0.3s_ease-out_forwards]" 
+<div *ngIf="showDetails"
+     class="fixed inset-0 bg-gradient-to-br from-black/50 via-slate-900/60 to-black/70 backdrop-blur-md
+            flex items-center justify-center z-50 p-4 opacity-100 animate-[fadeIn_0.3s_ease-out_forwards]"
      role="dialog" aria-modal="true" aria-labelledby="modalTitle"
      (click)="closeDetails()">
-  
-  <div class="bg-white/95 backdrop-blur-xl rounded-3xl w-full max-w-6xl shadow-2xl 
-              transform transition-all duration-500 max-h-[95vh] overflow-y-auto 
+
+  <div class="bg-white/95 backdrop-blur-xl rounded-3xl w-full max-w-6xl shadow-2xl
+              transform transition-all duration-500 max-h-[95vh] overflow-y-auto
               opacity-100 animate-[scaleIn_0.4s_ease-out_0.1s_forwards] border border-white/20"
        (click)="$event.stopPropagation()">
-    
+
     <!-- Premium Modal Header -->
-    <div class="relative flex items-center justify-between p-8 border-b border-slate-200/60 
+    <div class="relative flex items-center justify-between p-8 border-b border-slate-200/60
                 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 rounded-t-3xl overflow-hidden">
       <!-- Background Pattern -->
       <div class="absolute inset-0 opacity-90">
         <div class="absolute top-0 left-0 w-32 h-32 bg-indigo-400 rounded-full -translate-x-16 -translate-y-16 animate-pulse"></div>
         <div class="absolute bottom-0 right-0 w-24 h-24 bg-purple-400 rounded-full translate-x-12 translate-y-12 animate-pulse"></div>
       </div>
-      
+
       <!-- Header Content -->
       <div class="relative flex items-center space-x-5 z-10">
-        <div class="bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-600 p-4 rounded-3xl 
-                    shadow-xl transform transition-all duration-300 hover:scale-110 hover:rotate-12 
+        <div class="bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-600 p-4 rounded-3xl
+                    shadow-xl transform transition-all duration-300 hover:scale-110 hover:rotate-12
                     hover:shadow-2xl hover:shadow-purple-300/50 group">
-          <svg class="w-7 h-7 text-white transition-transform duration-300 group-hover:scale-110" 
+          <svg class="w-7 h-7 text-white transition-transform duration-300 group-hover:scale-110"
                fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
           </svg>
         </div>
         <div>
-          <h3 id="modalTitle" class="text-3xl font-bold bg-gradient-to-r from-slate-800 via-indigo-700 to-purple-700 
+          <h3 id="modalTitle" class="text-3xl font-bold bg-gradient-to-r from-slate-800 via-indigo-700 to-purple-700
                                      bg-clip-text text-transparent mb-1">
             Payment Details
           </h3>
           <p class="text-slate-600 font-medium">Complete transaction information and history</p>
         </div>
       </div>
-      
+
       <!-- Close Button -->
       <button (click)="closeDetails()"
-              class="relative z-10 p-3 hover:bg-white/80 rounded-2xl transition-all duration-300 
+              class="relative z-10 p-3 hover:bg-white/80 rounded-2xl transition-all duration-300
                      hover:scale-110 hover:rotate-90 group shadow-lg hover:shadow-xl"
               aria-label="Close details modal">
-        <svg class="w-6 h-6 text-slate-400 group-hover:text-slate-600 transition-colors duration-200" 
+        <svg class="w-6 h-6 text-slate-400 group-hover:text-slate-600 transition-colors duration-200"
              fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
         </svg>
@@ -491,51 +562,51 @@
     </div>
 
     <!-- Enhanced Modal Content -->
-    <div class="p-8 space-y-8">
-      
+    <div class="p-8 space-y-8" *ngIf="selectedPayment">
+
       <!-- Ultra-Premium Status Display -->
       <div class="flex justify-center">
         <div class="relative group">
-          <div class="absolute -inset-2 bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 
+          <div class="absolute -inset-2 bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400
                       rounded-3xl opacity-70 animate-pulse group-hover:opacity-50 transition-opacity duration-300"></div>
-          <span class="relative inline-flex items-center px-8 py-4 rounded-3xl text-xl font-bold 
-                       shadow-2xl transition-all duration-500 hover:shadow-3xl hover:scale-105 
-                       border-2 backdrop-blur-sm" 
+          <span class="relative inline-flex items-center px-8 py-4 rounded-3xl text-xl font-bold
+                       shadow-2xl transition-all duration-500 hover:shadow-3xl hover:scale-105
+                       border-2 backdrop-blur-sm"
                 [ngClass]="{
                   'bg-gradient-to-r from-amber-100 via-yellow-100 to-orange-100 text-amber-800 border-amber-300 shadow-amber-200/50': selectedPayment?.status === 'pending',
                   'bg-gradient-to-r from-emerald-100 via-green-100 to-teal-100 text-emerald-800 border-emerald-300 shadow-emerald-200/50': selectedPayment?.status === 'completed',
                   'bg-gradient-to-r from-red-100 via-pink-100 to-rose-100 text-red-800 border-red-300 shadow-red-200/50': selectedPayment?.status === 'failed',
                   'bg-gradient-to-r from-slate-100 via-gray-100 to-zinc-100 text-slate-800 border-slate-300 shadow-slate-200/50': selectedPayment?.status === 'refunded'
                 }">
-            
+
             <!-- Status Icons -->
             <div class="mr-4 p-2 rounded-2xl bg-white/50 shadow-inner">
-              <svg class="w-6 h-6 transition-transform duration-300 group-hover:rotate-12" 
-                   fill="currentColor" viewBox="0 0 20 20" 
+              <svg class="w-6 h-6 transition-transform duration-300 group-hover:rotate-12"
+                   fill="currentColor" viewBox="0 0 20 20"
                    *ngIf="selectedPayment?.status === 'completed'">
-                <path fill-rule="evenodd" 
-                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" 
+                <path fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                       clip-rule="evenodd"/>
               </svg>
-              <svg class="w-6 h-6 transition-transform duration-300 group-hover:rotate-12" 
-                   fill="currentColor" viewBox="0 0 20 20" 
+              <svg class="w-6 h-6 transition-transform duration-300 group-hover:rotate-12"
+                   fill="currentColor" viewBox="0 0 20 20"
                    *ngIf="selectedPayment?.status === 'failed'">
-                <path fill-rule="evenodd" 
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" 
+                <path fill-rule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
                       clip-rule="evenodd"/>
               </svg>
-              <svg class="w-6 h-6 transition-transform duration-300 group-hover:rotate-12 animate-spin" 
-                   fill="currentColor" viewBox="0 0 20 20" 
+              <svg class="w-6 h-6 transition-transform duration-300 group-hover:rotate-12 animate-spin"
+                   fill="currentColor" viewBox="0 0 20 20"
                    *ngIf="selectedPayment?.status === 'pending'">
-                <path fill-rule="evenodd" 
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" 
+                <path fill-rule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
                       clip-rule="evenodd"/>
               </svg>
-              <svg class="w-6 h-6 transition-transform duration-300 group-hover:rotate-12" 
-                   fill="currentColor" viewBox="0 0 20 20" 
+              <svg class="w-6 h-6 transition-transform duration-300 group-hover:rotate-12"
+                   fill="currentColor" viewBox="0 0 20 20"
                    *ngIf="selectedPayment?.status === 'refunded'">
-                <path fill-rule="evenodd" 
-                      d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" 
+                <path fill-rule="evenodd"
+                      d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
                       clip-rule="evenodd"/>
               </svg>
             </div>
@@ -546,22 +617,22 @@
 
       <!-- Enhanced Information Grid -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
+
         <!-- Order ID Card -->
         <div class="group relative overflow-hidden">
-          <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-3xl 
+          <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-3xl
                       transform transition-all duration-500 group-hover:scale-105 group-hover:rotate-1"></div>
-          <div class="relative p-6 bg-white/90 backdrop-blur-sm rounded-3xl border border-blue-200/60 
-                      shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-2 
+          <div class="relative p-6 bg-white/90 backdrop-blur-sm rounded-3xl border border-blue-200/60
+                      shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-2
                       group-hover:shadow-blue-200/50">
             <div class="flex items-center justify-between mb-4">
-              <label class="text-xs font-bold text-blue-600 uppercase tracking-wider 
+              <label class="text-xs font-bold text-blue-600 uppercase tracking-wider
                            bg-blue-100 px-3 py-1.5 rounded-xl">Order ID</label>
               <div class="w-3 h-3 bg-blue-400 rounded-full animate-pulse"></div>
             </div>
-            <p class="text-2xl font-bold text-slate-900 transition-colors duration-300 
+            <p class="text-2xl font-bold text-slate-900 transition-colors duration-300
                      group-hover:text-blue-600 break-words">
-              {{ selectedPayment?.order?._id || "unknown" }}
+              {{ selectedPayment?.order?._id || selectedPayment?.order || "unknown" }}
             </p>
             <div class="mt-3 text-xs text-slate-500">Click to copy</div>
           </div>
@@ -569,46 +640,46 @@
 
         <!-- Customer Card -->
         <div class="group relative overflow-hidden">
-          <div class="absolute inset-0 bg-gradient-to-br from-emerald-50 to-green-100 rounded-3xl 
+          <div class="absolute inset-0 bg-gradient-to-br from-emerald-50 to-green-100 rounded-3xl
                       transform transition-all duration-500 group-hover:scale-105 group-hover:rotate-1"></div>
-          <div class="relative p-6 bg-white/90 backdrop-blur-sm rounded-3xl border border-emerald-200/60 
-                      shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-2 
+          <div class="relative p-6 bg-white/90 backdrop-blur-sm rounded-3xl border border-emerald-200/60
+                      shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-2
                       group-hover:shadow-emerald-200/50">
             <div class="flex items-center justify-between mb-4">
-              <label class="text-xs font-bold text-emerald-600 uppercase tracking-wider 
+              <label class="text-xs font-bold text-emerald-600 uppercase tracking-wider
                            bg-emerald-100 px-3 py-1.5 rounded-xl">Customer</label>
-              <div class="w-8 h-8 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-2xl 
+              <div class="w-8 h-8 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-2xl
                           flex items-center justify-center text-white text-xs font-bold">
-                {{ selectedPayment?.user?.userName?.charAt(0)?.toUpperCase() }}
+                {{ (selectedPayment?.user?.userName || selectedPayment?.user || 'U')?.toString()?.charAt(0)?.toUpperCase() }}
               </div>
             </div>
-            <p class="text-2xl font-bold text-slate-900 transition-colors duration-300 
+            <p class="text-2xl font-bold text-slate-900 transition-colors duration-300
                      group-hover:text-emerald-600 break-words">
-              {{ selectedPayment?.user?.userName || 'Unknown User' }}
+              {{ selectedPayment?.user?.userName || selectedPayment?.user || 'Unknown User' }}
             </p>
-            <div class="mt-3 text-xs text-slate-500">{{ selectedPayment?.user?.email }}</div>
+            <div class="mt-3 text-xs text-slate-500">{{ selectedPayment?.user?.email || '' }}</div>
           </div>
         </div>
 
         <!-- Payment Method Card -->
         <div class="group relative overflow-hidden">
-          <div class="absolute inset-0 bg-gradient-to-br from-purple-50 to-violet-100 rounded-3xl 
+          <div class="absolute inset-0 bg-gradient-to-br from-purple-50 to-violet-100 rounded-3xl
                       transform transition-all duration-500 group-hover:scale-105 group-hover:rotate-1"></div>
-          <div class="relative p-6 bg-white/90 backdrop-blur-sm rounded-3xl border border-purple-200/60 
-                      shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-2 
+          <div class="relative p-6 bg-white/90 backdrop-blur-sm rounded-3xl border border-purple-200/60
+                      shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-2
                       group-hover:shadow-purple-200/50">
             <div class="flex items-center justify-between mb-4">
-              <label class="text-xs font-bold text-purple-600 uppercase tracking-wider 
+              <label class="text-xs font-bold text-purple-600 uppercase tracking-wider
                            bg-purple-100 px-3 py-1.5 rounded-xl">Payment Method</label>
               <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
               </svg>
             </div>
             <div class="flex items-center space-x-3">
-              <span class="inline-flex items-center px-4 py-2.5 rounded-2xl text-lg font-bold 
-                           bg-gradient-to-r from-purple-100 to-violet-100 text-purple-800 
-                           border-2 border-purple-200 transition-all duration-300 
+              <span class="inline-flex items-center px-4 py-2.5 rounded-2xl text-lg font-bold
+                           bg-gradient-to-r from-purple-100 to-violet-100 text-purple-800
+                           border-2 border-purple-200 transition-all duration-300
                            group-hover:scale-105 shadow-inner">
                 {{ selectedPayment?.paymentMethod || 'Not specified' }}
               </span>
@@ -619,23 +690,23 @@
 
       <!-- Amount Section -->
       <div class="relative group overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 
+        <div class="absolute inset-0 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50
                     rounded-3xl transform transition-all duration-500 group-hover:scale-[1.02]"></div>
-        <div class="relative p-8 bg-white/90 backdrop-blur-sm rounded-3xl border-2 border-indigo-200/60 
-                    shadow-xl transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-1 
+        <div class="relative p-8 bg-white/90 backdrop-blur-sm rounded-3xl border-2 border-indigo-200/60
+                    shadow-xl transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-1
                     group-hover:shadow-indigo-200/50">
           <div class="flex items-center justify-between">
             <div>
-              <label class="text-sm font-bold text-indigo-600 uppercase tracking-wider 
+              <label class="text-sm font-bold text-indigo-600 uppercase tracking-wider
                            bg-indigo-100 px-4 py-2 rounded-xl mb-4 inline-block">Total Amount</label>
-              <p class="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 
+              <p class="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600
                        bg-clip-text text-transparent">
-                ${{ selectedPayment?.amount?.toFixed(2) || '0.00' }}
+                {{ formatCurrency(selectedPayment?.amount) }}
               </p>
             </div>
             <div class="text-right">
               <div class="text-sm text-slate-600 mb-1">Currency</div>
-              <span class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold 
+              <span class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold
                            bg-slate-100 text-slate-700">
                 USD
               </span>
@@ -646,33 +717,33 @@
 
       <!-- Ultra-Premium Transaction ID Display -->
       <div class="relative group overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-r from-slate-50 via-gray-50 to-zinc-50 
+        <div class="absolute inset-0 bg-gradient-to-r from-slate-50 via-gray-50 to-zinc-50
                     rounded-3xl transform transition-all duration-500 group-hover:scale-[1.02]"></div>
-        <div class="relative p-8 bg-white/90 backdrop-blur-sm rounded-3xl border-2 border-slate-200/60 
-                    shadow-xl transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-1 
+        <div class="relative p-8 bg-white/90 backdrop-blur-sm rounded-3xl border-2 border-slate-200/60
+                    shadow-xl transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-1
                     group-hover:shadow-slate-200/50">
-          <label class="text-sm font-bold text-slate-600 uppercase tracking-wider 
+          <label class="text-sm font-bold text-slate-600 uppercase tracking-wider
                        bg-slate-100 px-4 py-2 rounded-xl mb-6 inline-block">Transaction ID</label>
-          
-          <div class="flex items-center justify-between bg-gradient-to-r from-white to-slate-50 
-                      rounded-2xl p-6 border-2 border-slate-200 group-hover:border-indigo-300 
+
+          <div class="flex items-center justify-between bg-gradient-to-r from-white to-slate-50
+                      rounded-2xl p-6 border-2 border-slate-200 group-hover:border-indigo-300
                       transition-all duration-300">
             <div class="flex-1 min-w-0">
-              <p class="text-lg font-mono text-slate-800 break-all transition-colors duration-300 
+              <p class="text-lg font-mono text-slate-800 break-all transition-colors duration-300
                        group-hover:text-indigo-600 leading-relaxed">
                 {{ selectedPayment?.transactionId || 'Transaction ID not available' }}
               </p>
             </div>
-            
+
             <button *ngIf="selectedPayment?.transactionId"
-                    class="ml-6 p-4 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 
-                           rounded-2xl transition-all duration-300 hover:scale-110 hover:rotate-12 
+                    class="ml-6 p-4 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50
+                           rounded-2xl transition-all duration-300 hover:scale-110 hover:rotate-12
                            group/copy shadow-lg hover:shadow-xl"
                     (click)="copyToClipboard(selectedPayment?.transactionId)"
                     aria-label="Copy transaction ID">
-              <svg class="w-6 h-6 transition-transform duration-200 group-hover/copy:scale-110" 
+              <svg class="w-6 h-6 transition-transform duration-200 group-hover/copy:scale-110"
                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
               </svg>
             </button>
@@ -684,13 +755,13 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Created Date -->
         <div class="group relative overflow-hidden">
-          <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-cyan-100 rounded-3xl 
+          <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-cyan-100 rounded-3xl
                       transform transition-all duration-500 group-hover:scale-105"></div>
-          <div class="relative p-6 bg-white/90 backdrop-blur-sm rounded-3xl border border-blue-200/60 
+          <div class="relative p-6 bg-white/90 backdrop-blur-sm rounded-3xl border border-blue-200/60
                       shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-1">
             <div class="flex items-center space-x-3 mb-3">
               <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
               <label class="text-xs font-bold text-blue-600 uppercase tracking-wider">Created</label>
@@ -705,15 +776,15 @@
         </div>
 
         <!-- Updated Date -->
-        <div class="group relative overflow-hidden" 
+        <div class="group relative overflow-hidden"
              *ngIf="selectedPayment?.updatedAt && selectedPayment?.updatedAt !== selectedPayment?.createdAt">
-          <div class="absolute inset-0 bg-gradient-to-br from-orange-50 to-amber-100 rounded-3xl 
+          <div class="absolute inset-0 bg-gradient-to-br from-orange-50 to-amber-100 rounded-3xl
                       transform transition-all duration-500 group-hover:scale-105"></div>
-          <div class="relative p-6 bg-white/90 backdrop-blur-sm rounded-3xl border border-orange-200/60 
+          <div class="relative p-6 bg-white/90 backdrop-blur-sm rounded-3xl border border-orange-200/60
                       shadow-lg transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-1">
             <div class="flex items-center space-x-3 mb-3">
               <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
               </svg>
               <label class="text-xs font-bold text-orange-600 uppercase tracking-wider">Last Updated</label>
@@ -730,22 +801,22 @@
     </div>
 
     <!-- Ultra-Enhanced Modal Footer -->
-    <div class="relative flex items-center justify-between px-8 py-6 border-t border-slate-200/60 
+    <div class="relative flex items-center justify-between px-8 py-6 border-t border-slate-200/60
                 bg-gradient-to-r from-slate-50 via-gray-50 to-zinc-50 rounded-b-3xl overflow-hidden">
       <!-- Background Pattern -->
       <div class="absolute inset-0 opacity-95">
         <div class="absolute bottom-0 left-0 w-20 h-20 bg-indigo-400 rounded-full -translate-x-10 translate-y-10"></div>
         <div class="absolute top-0 right-0 w-16 h-16 bg-purple-400 rounded-full translate-x-8 -translate-y-8"></div>
       </div>
-      
+
       <!-- Action Buttons -->
       <div class="relative flex items-center space-x-4 ml-auto z-10">
         <button (click)="closeDetails()"
-                class="px-8 py-3 border-2 border-slate-300 rounded-2xl text-sm font-bold 
-                       text-slate-700 bg-white/80 backdrop-blur-sm transition-all duration-300 
-                       hover:bg-slate-50 hover:border-slate-400 hover:text-slate-800 
-                       hover:shadow-lg hover:-translate-y-0.5 focus:outline-none 
-                       focus:ring-4 focus:ring-slate-200 active:scale-95 
+                class="px-8 py-3 border-2 border-slate-300 rounded-2xl text-sm font-bold
+                       text-slate-700 bg-white/80 backdrop-blur-sm transition-all duration-300
+                       hover:bg-slate-50 hover:border-slate-400 hover:text-slate-800
+                       hover:shadow-lg hover:-translate-y-0.5 focus:outline-none
+                       focus:ring-4 focus:ring-slate-200 active:scale-95
                        shadow-md hover:shadow-xl"
                 aria-label="Close details modal">
           <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -753,17 +824,17 @@
           </svg>
           Close Details
         </button>
-        
+
         <button type="button"
                 (click)="moreDetails(selectedPayment?._id || '')"
-                class="px-8 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 
-                       rounded-2xl text-sm font-bold text-white shadow-lg transition-all duration-300 
-                       hover:shadow-2xl hover:shadow-purple-300/50 hover:-translate-y-0.5 
-                       hover:scale-105 focus:outline-none focus:ring-4 focus:ring-purple-200 
+                class="px-8 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600
+                       rounded-2xl text-sm font-bold text-white shadow-lg transition-all duration-300
+                       hover:shadow-2xl hover:shadow-purple-300/50 hover:-translate-y-0.5
+                       hover:scale-105 focus:outline-none focus:ring-4 focus:ring-purple-200
                        active:scale-95 border-2 border-transparent hover:border-white/30"
                 aria-label="View more details">
           <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
           More Details
