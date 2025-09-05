@@ -38,7 +38,7 @@ export const routes: Routes = [
     children: [
       {path: 'charts', component: DashboardChartsComponent},
       {path: 'user', component: User },
-      {path:"stores",component:StoreComponent ,title:"store mangement"},
+      {path:"store",component:StoreComponent ,title:"store mangement"},
       {path:"add-new-store", component:StoreAddedNewstoreComponent ,title:"add new store"},
       {path: 'update-store/:id', component: StoreUpdateSroreComponent, title: "update store"},
       {path: 'view-store/:id', component: StoreViewComponent, title: "view store"},
