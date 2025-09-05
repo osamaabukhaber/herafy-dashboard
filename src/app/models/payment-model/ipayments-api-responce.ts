@@ -9,5 +9,6 @@ export interface IpaymentsApiResponce {
     total: number; // total number of payments
     page: number;  // current page number
     limit: number; // items per page
+    pages: number; // total number of pages
   };
 }
