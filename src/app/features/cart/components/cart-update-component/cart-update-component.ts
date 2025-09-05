@@ -41,30 +41,34 @@ export class AdminCartUpdateComponent implements OnInit {
 
   newItem(item?: any): FormGroup {
     return this.fb.group({
-      product: [item?.product?.name || null, Validators.required],
+      product: [item?.product?._id || null, Validators.required],
       quantity: [item?.quantity || 1, [Validators.required, Validators.min(1)]],
       variant: this.createVariantGroup(item?.variant || {}),
       price: [item?.price || 0, [Validators.required, Validators.min(0)]],
     });
   }
 
-  createVariantGroup(variant: any): FormGroup {
-    const group: { [key: string]: any } = {};
-    Object.keys(variant).forEach(key => {
-      group[key] = [variant[key] || '', Validators.required];
+  createVariantGroup(variant?: { name?: string; value?: string }): FormGroup {
+    return this.fb.group({
+      name: [variant?.name || '', Validators.required],
+      value: [variant?.value || '', Validators.required],
     });
-    return this.fb.group(group);
   }
+
 
   loadCart() {
     this.cartService.getCartById(this.cartId).subscribe({
       next: (res: IcartItemResponce) => {
         const cart = res.data.cart;
-
+        if (!cart) {
+          this.router.navigate(['/cart']);
+          return;
+        }
+        console.log('Cart data loaded:', cart);
         this.cartForm.patchValue({
           user: cart.user["_id"] || null,
           coupon: cart.coupon || '',
-          isDeleted: cart.isDeleted
+          isDeleted: cart.isDeleted || false
         });
 
         this.items.clear();
@@ -90,17 +94,22 @@ export class AdminCartUpdateComponent implements OnInit {
     this.items.removeAt(index);
   }
 
-  onSubmit() {
-    if (this.cartForm.invalid) return;
+onSubmit() {
+  if (this.cartForm.invalid) return;
 
-    this.cartService.updateCart(this.cartId, this.cartForm.value).subscribe({
-      next: () => {
-        this.router.navigate(['/admin/carts']);
-      },
-      error: err => console.error(err)
-    });
-  }
+  const formValue = this.cartForm.value;
 
+  console.log('Updating cart with ID:', this.cartId);
+  console.log('Updated cart data (formatted):', formValue);
+
+  this.cartService.updateCart(this.cartId, formValue).subscribe({
+    next: (res) => {
+      console.log('Cart updated successfully:', res);
+      this.router.navigate(['/cart']);
+    },
+    error: err => console.error(err)
+  });
+}
   onCancel() {
     this.router.navigate(['/cart']);
   }

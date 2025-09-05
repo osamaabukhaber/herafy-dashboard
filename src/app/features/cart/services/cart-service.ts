@@ -20,26 +20,26 @@ export class CartService implements OnInit {
     //Add 'implements OnInit' to the class.
   }
   getAllCarts({ queryParams, sortBy, page, limit }: { queryParams: any; sortBy: string; page: number; limit: number }): Observable<IcartResponceApi> {
-    return this.httpRequest.get<IcartResponceApi>(this.baseUrl, { params: { ...queryParams, sortBy, page, limit } });
+    return this.httpRequest.get<IcartResponceApi>(this.baseUrl, { params: { ...queryParams, sortBy, page, limit } , withCredentials: true });
   }
   getCartById(cartId: string): Observable<IcartItemResponce> {
     const url = `${this.baseUrl}/${cartId}`;
-    return this.httpRequest.get<IcartItemResponce>(url);
+    return this.httpRequest.get<IcartItemResponce>(url, { withCredentials: true });
   }
   deleteCartById(cartId: string): Observable<IcartResponceApi> {
     const url = `${this.baseUrl}/${cartId}`;
-    return this.httpRequest.delete<IcartResponceApi>(url);
-  }
+    return this.httpRequest.delete<IcartResponceApi>(url, { withCredentials: true });
+  } 
   updateCart(cartId: string, cartData: any): Observable<IcartResponceApi> {
     const url = `${this.baseUrl}/${cartId}`;
-    return this.httpRequest.patch<IcartResponceApi>(url, cartData);
+    return this.httpRequest.patch<IcartResponceApi>(url, cartData, { withCredentials: true });
   }
   createCart(cartData: ICart): Observable<IcartResponceApi> {
     this.baseUrl = environment.apiBaseUrl + '/cart';
-    return this.httpRequest.post<IcartResponceApi>(this.baseUrl, cartData);
+    return this.httpRequest.post<IcartResponceApi>(this.baseUrl, cartData, { withCredentials: true });
   }
   getAllCartIds(): Observable<string[]> {
-      return this.httpRequest.get<IcartResponceApi>(this.baseUrl).pipe(
+      return this.httpRequest.get<IcartResponceApi>(this.baseUrl, { withCredentials: true }).pipe(
         retry(3), // Retry up to 3 times in case of failure
         map((response: IcartResponceApi) => response.data.carts
           .map(cart => cart._id)
@@ -49,7 +49,7 @@ export class CartService implements OnInit {
     }
     getAllProducts(): Observable<any> {
       this.baseUrl = environment.apiBaseUrl + '/products';
-      return this.httpRequest.get<any>(this.baseUrl, { params: { limit: '3' } }).pipe(
+      return this.httpRequest.get<any>(this.baseUrl, { params: { limit: '3' }, withCredentials: true }).pipe(
         retry(3), // Retry up to 3 times in case of failure
       );
     }
