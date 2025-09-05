@@ -1,5 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
-import {CommonModule, NgIf } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import {CommonModule } from '@angular/common';
 import { UserService } from '../../services/user-services/user.service';
 import { IUser } from '../../models/iuser';
 import { FormsModule } from '@angular/forms';
@@ -8,8 +8,8 @@ import { ChangeDetectorRef } from '@angular/core';
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, NgIf, FormsModule],
-  templateUrl: './user.html',
+  imports: [CommonModule, FormsModule, RouterModule, FormsModule],
+  templateUrl:'./user.html',
   styleUrls: ['./user.css'],
 })
 export class User implements OnInit {

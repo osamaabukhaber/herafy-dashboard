@@ -37,7 +37,7 @@ export class ProductDetailComponent implements OnInit {
         next: ([stores, categories]) => {
           this.stores = stores;
           this.categories = categories;
-          this.loadProduct(productId); 
+          this.loadProduct(productId);
         },
         error: (err) => console.error('Error loading stores or categories:', err),
       });
@@ -54,9 +54,9 @@ export class ProductDetailComponent implements OnInit {
         console.log('Categories:', this.categories);
       console.log('Stores:', this.stores);
         if (typeof response.category === 'string') {
-          const category = this.categories.find(c => c._id === response.category) || {
+          const category = this.categories.find(c => c._id === response.category._id) || {
             _id: response.category,
-            name: 'غير مصنف',
+            name: 'un known',
           };
           this.product = { ...response, category };
         } else {
@@ -79,7 +79,7 @@ export class ProductDetailComponent implements OnInit {
   }
 
   getStoreName(): string {
-    return this.stores.find(s => s._id === this.product?.store)?.name || 'unknown category';
+    return this.stores.find(s => s._id === this.product?.store.name)?.name || 'unknown category';
   }
 
   editProduct(): void {

@@ -8,9 +8,15 @@ import { OrderService } from '../../services/order.service.js';
 import { ProductApiService } from '../../../products/services/product-api.service.js';
 import { CreateOrderData, ShippingAddress } from '../../../../shared/models/order.interface.js';
 import { Product as SharedProduct } from '../../../../shared/models/product.interface.js';
+import { PaymentService } from '../../../payments/services/payment-serivce.js';
 
-
-// Use shared Product model; compute stock when needed
+// Payment method interface
+interface PaymentMethod {
+  _id: string;
+  name: string;
+  type: string;
+  isActive: boolean;
+}
 
 interface OrderItemForm {
   productId: string;
@@ -27,7 +33,6 @@ interface OrderItemForm {
     LoadingSpinnerComponent
   ],
   templateUrl:"./create-order.component.html"
-
 })
 export class CreateOrderComponent implements OnInit {
   readonly orderService = inject(OrderService);
@@ -37,7 +42,9 @@ export class CreateOrderComponent implements OnInit {
 
   // Signals
   readonly availableProducts = signal<SharedProduct[]>([]);
+  readonly paymentMethods = signal<PaymentMethod[]>([]);
   readonly loadingProducts = signal(false);
+  readonly loadingPayments = signal(false);
   readonly submitting = signal(false);
   readonly error = signal<string | null>(null);
 
@@ -52,7 +59,8 @@ export class CreateOrderComponent implements OnInit {
         city: ['', [Validators.required]],
         postalCode: ['', [Validators.required]],
         country: ['', [Validators.required]]
-      })
+      }),
+      payment: ['', [Validators.required]]
     });
   }
 
@@ -62,12 +70,12 @@ export class CreateOrderComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadProducts();
+    this.loadPaymentMethods();
     this.addOrderItem(); // Add first item by default
   }
 
   loadProducts(): void {
     this.loadingProducts.set(true);
-
 
     this.productService.getProducts().subscribe({
       next: (response) => {
@@ -77,9 +85,52 @@ export class CreateOrderComponent implements OnInit {
       error: (err) => {
         console.error('Error loading products:', err);
         this.loadingProducts.set(false);
-
       }
     });
+  }
+
+  loadPaymentMethods(): void {
+    this.loadingPayments.set(true);
+
+    // For now, we'll use mock payment methods since you don't have a payment service
+    // Replace this with actual payment service call when available
+    setTimeout(() => {
+      const mockPaymentMethods: PaymentMethod[] = [
+        {
+          _id: '665d1b8fd5e1b2c5d9a66f51',
+          name: 'Credit Card',
+          type: 'credit_card',
+          isActive: true
+        },
+        {
+          _id: '665d1b8fd5e1b2c5d9a66f52',
+          name: 'PayPal',
+          type: 'paypal',
+          isActive: true
+        },
+        {
+          _id: '665d1b8fd5e1b2c5d9a66f53',
+          name: 'Cash on Delivery',
+          type: 'cod',
+          isActive: true
+        }
+      ];
+
+      this.paymentMethods.set(mockPaymentMethods);
+      this.loadingPayments.set(false);
+    }, 500);
+
+    // TODO: Replace with actual API call when payment service is available
+    // PaymentService.getPaymentMethods().subscribe({
+    //   next: (methods) => {
+    //     this.paymentMethods.set(methods);
+    //     this.loadingPayments.set(false);
+    //   },
+    //   error: (err) => {
+    //     console.error('Error loading payment methods:', err);
+    //     this.loadingPayments.set(false);
+    //   }
+    // });
   }
 
   addOrderItem(): void {
@@ -154,6 +205,11 @@ export class CreateOrderComponent implements OnInit {
     return this.calculateSubtotal() + this.calculateTax() + this.calculateShipping();
   }
 
+  getSelectedPaymentMethod(): PaymentMethod | null {
+    const paymentId = this.orderForm.get('payment')?.value;
+    return this.paymentMethods().find(p => p._id === paymentId) || null;
+  }
+
   private computeProductStock(product: SharedProduct | null): number {
     if (!product?.variants) return 0;
     return product.variants.reduce((sum, variant) => {
@@ -173,18 +229,24 @@ export class CreateOrderComponent implements OnInit {
     this.submitting.set(true);
     this.error.set(null);
 
-    // Prepare order data
+    // Prepare order data exactly as expected by the API
     const orderData: CreateOrderData = {
       orderItems: this.orderItemsArray.value.map((item: OrderItemForm) => ({
-        product: item.productId,
+        product: item.productId, // Send as 'product' not 'productId'
         quantity: item.quantity
       })),
-      shippingAddress: this.orderForm.get('shippingAddress')?.value as ShippingAddress
+      shippingAddress: this.orderForm.get('shippingAddress')?.value as ShippingAddress,
+      // payment: this.orderForm.get('payment')?.value as string,
+      // payment: "665d1b8fd5e1b2c5d9a66f51",
     };
+
+    console.log('Sending order data:', orderData); // For debugging
 
     this.orderService.createOrder(orderData).subscribe({
       next: (response) => {
         this.submitting.set(false);
+        console.log('Order created successfully:', response);
+
         // Navigate to order details or orders list
         const order = response.data;
         if (typeof order === 'object' && '_id' in order) {
@@ -197,6 +259,7 @@ export class CreateOrderComponent implements OnInit {
         this.error.set(err.error?.message || 'Failed to create order');
         this.submitting.set(false);
         console.error('Error creating order:', err);
+        console.error('Error details:', err.error);
       }
     });
   }

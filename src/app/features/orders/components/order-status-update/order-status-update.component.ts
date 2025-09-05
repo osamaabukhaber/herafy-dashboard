@@ -1,11 +1,9 @@
-// src/app/components/orders/order-status-update/order-status-update.component.ts
-
 import { Component, input, output, signal, inject, ChangeDetectionStrategy, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { OrderService } from '../../services/order.service';
+import { Order } from '../../../../shared/models/order.interface';
 
-// import { OrderService } from '../../services/order.service.js';
-// import { Order, OrderResponse } from '../../../../shared/models/order.interface.js';
 
 @Component({
   selector: 'app-order-status-update',
@@ -115,32 +113,3 @@ export class OrderStatusUpdateComponent {
 }
 
 // src/app/components/orders/order-routing.module.ts
-import { Routes } from '@angular/router';
-import { Order } from '../../../../shared/models/order.interface.js';
-import { OrderService } from '../../services/order.service.js';
-
-export const orderRoutes: Routes = [
-  {
-    path: '',
-    loadComponent: () => import('../order-list/order-list.component.js').then(m => m.OrderListComponent)
-  },
-  {
-    path: 'create',
-    loadComponent: () => import('../create-order/create-order.component.js').then(m => m.CreateOrderComponent)
-  },
-  {
-    path: 'admin',
-    loadComponent: () => import('../order-list/order-list.component.js').then(m => m.OrderListComponent),
-    data: { listType: 'admin' }
-  },
-  {
-    path: 'seller',
-    loadComponent: () => import('../order-list/order-list.component.js').then(m => m.OrderListComponent),
-    data: { listType: 'seller' }
-  },
-  {
-    path: ':id',
-    loadComponent: () => import('../order-detail/order-detail.component.js').then(m => m.OrderDetailComponent)
-  }
-];
-

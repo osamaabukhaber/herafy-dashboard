@@ -30,7 +30,7 @@ export class LoginService {
     password: string;
   }): Observable<{ user: IUser }> {
     return this.http
-      .post<{ user: IUser }>(`${this.baseUrl}/auth/signin`, credentials, {
+      .post<{ user: IUser }>(`${this.baseUrl}/auth/admin/signin`, credentials, {
         withCredentials: true,
       })
       .pipe(

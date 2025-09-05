@@ -173,34 +173,7 @@
                   </label>
                 </div>
                 <!-- Discount Price -->
-                <div>
-                  <label class="block mb-3">
-                    <span class="text-sm font-semibold text-gray-700">Discount Price (EGP)</span>
-                    <div class="relative">
-                      <span class="absolute left-3 top-3 text-gray-500">EGP</span>
-                      <input
-                        type="number"
-                        formControlName="discountPrice"
-                        min="0"
-                        step="0.01"
-                        placeholder="0.00"
-                        [ngClass]="{
-                          'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': productForm.get('discountPrice')?.valid && (productForm.get('discountPrice')?.touched || productForm.get('discountPrice')?.dirty),
-                          'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !productForm.get('discountPrice')?.touched && !productForm.get('discountPrice')?.dirty
-                        }"
-                        class="mt-2 w-full pl-12 pr-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 placeholder-gray-400 text-gray-900 shadow-sm"
-                      >
-                    </div>
-                    @if (getDiscountPercentage() > 0) {
-                      <p class="mt-3 text-sm text-green-600 flex items-center">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        {{ getDiscountPercentage() }}% discount
-                      </p>
-                    }
-                  </label>
-                </div>
+
               </div>
             </div>
           </div>

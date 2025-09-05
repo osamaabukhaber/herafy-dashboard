@@ -5,21 +5,19 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environment/environment.developemnt.js';
 import { CreateOrderData, Order, OrderResponse, UpdateOrderItemData } from '../../../shared/models/order.interface.js';
 
-
-
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiBaseUrl}/order/admin/orders`;
+  private readonly baseUrl = `${environment.apiBaseUrl}/order`;
 
   private ordersSubject = new BehaviorSubject<Order[]>([]);
   public orders$ = this.ordersSubject.asObservable();
 
   // User Orders
   createOrder(orderData: CreateOrderData): Observable<OrderResponse> {
-    return this.http.post<OrderResponse>(this.baseUrl, orderData);
+    return this.http.post<OrderResponse>(this.baseUrl, orderData, { withCredentials: true });
   }
 
   getUserOrders(page = 1, limit = 10): Observable<OrderResponse> {
@@ -27,19 +25,23 @@ export class OrderService {
       .set('page', page.toString())
       .set('limit', limit.toString());
 
-    return this.http.get<OrderResponse>(this.baseUrl, { params,withCredentials: true });
+    // Use admin endpoint since user endpoint is restricted
+    return this.http.get<OrderResponse>(`${this.baseUrl}/admin/orders`, {
+      withCredentials: true,
+      params
+    });
   }
 
   getOrderById(orderId: string): Observable<OrderResponse> {
-    return this.http.get<OrderResponse>(`${this.baseUrl}/${orderId}`, {withCredentials: true });
+    return this.http.get<OrderResponse>(`${this.baseUrl}/${orderId}`, { withCredentials: true });
   }
 
   cancelOrder(orderId: string): Observable<OrderResponse> {
-    return this.http.patch<OrderResponse>(`${this.baseUrl}/${orderId}/cancel`, {});
+    return this.http.patch<OrderResponse>(`${this.baseUrl}/${orderId}/cancel`, {}, { withCredentials: true });
   }
 
   deleteOrder(orderId: string): Observable<OrderResponse> {
-    return this.http.delete<OrderResponse>(`${this.baseUrl}/${orderId}`);
+    return this.http.delete<OrderResponse>(`${this.baseUrl}/${orderId}`, { withCredentials: true });
   }
 
   updateOrderItem(orderId: string, itemId: string, updateData: UpdateOrderItemData): Observable<OrderResponse> {
@@ -49,7 +51,7 @@ export class OrderService {
     if (updateData.quantity) formData.append('quantity', updateData.quantity.toString());
     if (updateData.image) formData.append('image', updateData.image);
 
-    return this.http.patch<OrderResponse>(`${this.baseUrl}/${orderId}/items/${itemId}`, formData);
+    return this.http.patch<OrderResponse>(`${this.baseUrl}/${orderId}/items/${itemId}`, formData, { withCredentials: true });
   }
 
   // Admin Orders
@@ -57,16 +59,18 @@ export class OrderService {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString());
-
-    return this.http.get<OrderResponse>(`${this.baseUrl}`, { params });
+    return this.http.get<OrderResponse>(`${this.baseUrl}/admin/orders`, {
+      params,
+      withCredentials: true,
+    });
   }
 
   getAdminOrderById(orderId: string): Observable<OrderResponse> {
-    return this.http.get<OrderResponse>(`${this.baseUrl}/admin/orders/${orderId}`);
+    return this.http.get<OrderResponse>(`${this.baseUrl}/admin/orders/${orderId}`, { withCredentials: true });
   }
 
   updateOrderStatus(orderId: string, status: Order['status']): Observable<OrderResponse> {
-    return this.http.patch<OrderResponse>(`${this.baseUrl}/admin/orders/${orderId}/status`, { status });
+    return this.http.patch<OrderResponse>(`${this.baseUrl}/admin/orders/${orderId}/status`, { status }, { withCredentials: true });
   }
 
   // Seller Orders
@@ -75,7 +79,10 @@ export class OrderService {
       .set('page', page.toString())
       .set('limit', limit.toString());
 
-    return this.http.get<OrderResponse>(`${this.baseUrl}/seller/orders`, { params });
+    return this.http.get<OrderResponse>(`${this.baseUrl}/seller/orders`, {
+      params,
+      withCredentials: true
+    });
   }
 
   // Utility methods

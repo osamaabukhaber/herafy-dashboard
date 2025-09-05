@@ -8,8 +8,6 @@ import { LoadingSpinnerComponent } from '../../../../shared/components/ui/loadin
 import { PaginationComponent } from '../../../../shared/components/ui/pagination/pagination.component.js';
 import { EmptyStateComponent } from '../../../../shared/components/ui/empty-state/empty-state.component.js';
 
-
-
 type OrderListType = 'user' | 'admin' | 'seller';
 
 @Component({
@@ -19,9 +17,9 @@ type OrderListType = 'user' | 'admin' | 'seller';
     CommonModule,
     LoadingSpinnerComponent,
     EmptyStateComponent,
-    PaginationComponent
+    PaginationComponent,
   ],
-templateUrl:'./order-list.component.html'
+  templateUrl: './order-list.component.html',
 })
 export class OrderListComponent implements OnInit {
   readonly orderService = inject(OrderService);
@@ -52,6 +50,9 @@ export class OrderListComponent implements OnInit {
     }
   });
 
+  // log order data
+  logOrderData = (order: Order) => console.log(order);
+
   ngOnInit(): void {
     this.loadOrders();
   }
@@ -64,21 +65,42 @@ export class OrderListComponent implements OnInit {
 
     request$.subscribe({
       next: (response: OrderResponse) => {
-        console.log("res : ", response)
-        const res = response.data as { orders: Order[]; page: number; pages: number; total: number };
-        this.orders.set(res?.orders ?? []);
-        this.currentPage.set(res.page);
-        this.totalPages.set(res.pages);
-        this.totalOrders.set(res.total);
-  
+        console.log('Full API Response:', response);
+
+        // Handle the nested response structure
+        let data;
+        if (response.data && typeof response.data === 'object' && 'data' in response.data) {
+          // Nested structure from your API
+          data = response.data.data as {
+            orders: Order[];
+            page: number;
+            pages: number;
+            total: number;
+          };
+        } else {
+          // Direct structure
+          data = response.data as {
+            orders: Order[];
+            page: number;
+            pages: number;
+            total: number;
+          };
+        }
+
+        console.log('Parsed data:', data);
+
+        this.orders.set(data?.orders ?? []);
+        this.currentPage.set(data?.page ?? 1);
+        this.totalPages.set(data?.pages ?? 1);
+        this.totalOrders.set(data?.total ?? 0);
         this.loading.set(false);
-        this.cdr.detectChanges();
+        console.log("Order Data", this.orders());
       },
       error: (err) => {
-        this.error.set(err.error?.message || 'Failed to load orders');
+        console.error('Full Error Object:', err);
+        this.error.set(err.error?.message || err.message || 'Failed to load orders');
         this.loading.set(false);
         console.error('Error loading orders:', err);
-        this.cdr.detectChanges()
       }
     });
   }
@@ -87,10 +109,11 @@ export class OrderListComponent implements OnInit {
     switch (this.listType()) {
       case 'admin':
         return this.orderService.getAllOrders(page);
-      case 'seller':
-        return this.orderService.getSellerOrders(page);
+        break;
+      // case 'seller':
+      //   return this.orderService.getSellerOrders(page);
       default:
-        return this.orderService.getUserOrders(page);
+        return this.orderService.getAllOrders(page);
     }
   }
 
@@ -99,7 +122,9 @@ export class OrderListComponent implements OnInit {
   }
 
   canCancelOrder(order: Order): boolean {
-    return !['shipped', 'delivered', 'cancelled', 'refunded'].includes(order.status);
+    return !['shipped', 'delivered', 'cancelled', 'refunded'].includes(
+      order.status
+    );
   }
 
   handleCancelOrder(orderId: string): void {
@@ -112,8 +137,10 @@ export class OrderListComponent implements OnInit {
     this.orderService.cancelOrder(orderId).subscribe({
       next: (response) => {
         // Update the order in the list
-        const updatedOrders = this.orders().map(order =>
-          order._id === orderId ? { ...order, status: 'cancelled' as const } : order
+        const updatedOrders = this.orders().map((order) =>
+          order._id === orderId
+            ? { ...order, status: 'cancelled' as const }
+            : order
         );
         this.orders.set(updatedOrders);
         this.cancellingOrderId.set(null);
@@ -122,13 +149,11 @@ export class OrderListComponent implements OnInit {
         this.error.set(err.error?.message || 'Failed to cancel order');
         this.cancellingOrderId.set(null);
         console.error('Error cancelling order:', err);
-      }
+      },
     });
   }
 
   showStatusUpdate(order: Order): void {
-    // This would open a modal or navigate to update status page
-    // Implementation depends on your modal system
     console.log('Update status for order:', order._id);
   }
 }
