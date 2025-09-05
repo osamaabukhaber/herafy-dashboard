@@ -1,44 +1,14 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { CartService } from '../../services/cart-service';
-import { ICart, ICartItem } from '../../../../models/cart-model/icart';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 
-// Additional interfaces for admin functionality
-interface IUser {
-  _id: string;
-  name: string;
-  email: string;
-}
-
-interface IProduct {
-  _id: string;
-  name: string;
-  price: number;
-}
-
-interface ICoupon {
-  _id: string;
-  code: string;
-  discount: number; // percentage
-}
-
-interface ICartForm {
-  _id?: string;
-  user: string;
-  items: ICartItemForm[];
-  coupon?: string;
-  total: number;
-  discount: number;
-  totalAfterDiscount: number;
-  isDeleted: boolean;
-}
-
-interface ICartItemForm extends ICartItem {
-  variantKey?: string;
-  variantValue?: string;
-}
+import { CartService } from '../../services/cart-service';
+import { ICart } from '../../../../models/cart-model/icart';
+import { IUser } from '../../../../models/iuser';
+import { Product } from '../../../../shared/models/product.interface';
+import { ICoupon } from '../../../../shared/models/coupon.interface';
+import { IcartResponceApi } from '../../../../models/cart-model/icart-responce-api';
 
 interface ICartWithSelection extends ICart {
   selected?: boolean;
@@ -46,202 +16,200 @@ interface ICartWithSelection extends ICart {
 
 @Component({
   selector: 'app-cart-main-component',
-  imports: [CommonModule, FormsModule], // Add FormsModule to imports array in your module
+  imports: [CommonModule, FormsModule],
   templateUrl: './cart-main-component.html',
   styleUrl: './cart-main-component.css'
 })
 export class CartMainComponent implements OnInit {
-
-  // Data properties
+  /** Data */
   cartList: ICartWithSelection[] = [];
-  filteredCarts: ICartWithSelection[] = [];
-  paginatedCarts: ICartWithSelection[] = [];
   users: IUser[] = [];
-  products: IProduct[] = [];
+  products: Product[] = [];
   coupons: ICoupon[] = [];
 
-  // Modal properties
-  showCartModal: boolean = false;
-  showViewModal: boolean = false;
-  showDeleteModal: boolean = false;
-  isEditMode: boolean = false;
+  /** Modal states */
+  showCartModal = false;
+  showViewModal = false;
+  showDeleteModal = false;
+  isEditMode = false;
+
+  /** Selected carts */
   selectedCart: ICart | null = null;
   cartToDelete: ICart | null = null;
 
-  // Form properties
-  cartForm: ICartForm = this.initializeCartForm();
+  /** Filters & sorting */
+  searchTerm = '';
+  selectedStatus = '';
+  sortBy = 'createdAt';
+  readonly slectedStatusOption = ['All Status', 'Active', 'Deleted'];
+  readonly allowedSortFields = ['createdAt', 'updatedAt', 'total', 'discount', 'totalAfterDiscount'];
 
-  // Filter and search properties
-  searchTerm: string = '';
-  selectedStatus: string = '';
-  sortBy: string = 'createdAt';
+  /** Pagination */
+  currentPage = 1;
+  pageSize = 5;
+  totalPages = 0;
+  totalCarts = 0;
 
-  // Pagination properties
-  currentPage: number = 1;
-  pageSize: number = 10;
-  totalPages: number = 0;
+  /** Selection */
+  selectAll = false;
 
-  // Selection properties
-  selectAll: boolean = false;
+  /** Stats */
+  totalValue = 0;
+  activeCarts = 0;
+  avgCartValue = 0;
 
-  // Stats properties
-  totalCarts: number = 0;
-  totalValue: number = 0;
-  activeCarts: number = 0;
-  avgCartValue: number = 0;
-
-  slectedStatusOption: string[] = [
-    "All Status",
-    "Active",
-    "Deleted"
-  ]
-  allowedSortFields: string[] = [
-    'createdAt',
-    'updatedAt',
-    'total',
-    'discount',
-    'totalAfterDiscount'
-  ];
-  // Utility property for Math functions in template
+  /** Utility */
   Math = Math;
 
-  constructor(private cartApiService: CartService, private router: Router, private cdr: ChangeDetectorRef) { }
+  constructor(
+    private cartApiService: CartService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
-    this.loadData();
-  }
-
-  // ===== Data Loading Methods =====
-
-  loadData(): void {
     this.loadCarts();
   }
 
-  loadCarts(): void {
-    this.cartApiService.getAllCarts({ queryParams: { selectedStatus: this.selectedStatus }, sortBy: this.sortBy, page: this.currentPage, limit: this.pageSize }).subscribe({
-      next: (response) => {
+  /** ===== Data Fetching ===== */
+  private loadCarts(): void {
+    const queryParams: any = {};
+
+    // Add search term if exists
+    if (this.searchTerm.trim()) {
+      queryParams.search = this.searchTerm.trim();
+    }
+
+    // Add status filter if selected
+    if (this.selectedStatus && this.selectedStatus !== 'All Status') {
+      queryParams.status = this.selectedStatus.toLowerCase();
+    }
+
+    // Add timestamp to prevent caching
+    queryParams._t = Date.now();
+
+    this.cartApiService.getAllCarts({
+      queryParams,
+      sortBy: this.sortBy,
+      page: this.currentPage,
+      limit: this.pageSize
+    }).subscribe({
+      next: (response: IcartResponceApi) => {
         if (response.status === 'success') {
-          this.cartList = response.data.carts.map((cart: ICart) => ({
-            ...cart,
-            selected: false
-          }));
-          this.filteredCarts = this.cartList;
-          console.log('Carts loaded successfully:', this.cartList);
+          this.cartList = response.data.carts.map(cart  => ({ ...cart, selected: false }));
+          this.totalCarts = response.pagination.total;
+          this.totalPages = response.pagination.totalPages;
+          this.currentPage = response.pagination.currentPage;
+
+          console.log('Fetched cart items:', this.cartList);
           this.updateStats();
           this.cdr.detectChanges();
         } else {
-          console.error('Failed to fetch cart items:', response);
+          console.error('Failed to fetch cart items');
+          this.cdr.detectChanges()
         }
       },
       error: (error) => {
         console.error('Error fetching cart items:', error);
+        this.cdr.detectChanges();
       }
     });
   }
-  // ===== Stats Methods =====
 
-  updateStats(): void {
-    this.totalCarts = this.cartList.length;
-    this.activeCarts = this.cartList.filter(cart => !cart.isDeleted).length;
-    this.totalValue = this.cartList.reduce((sum, cart) => sum + cart.totalAfterDiscount, 0);
-    this.avgCartValue = this.totalCarts > 0 ? this.totalValue / this.totalCarts : 0;
+  /** ===== Stats ===== */
+  private updateStats(): void {
+    this.activeCarts = this.cartList.filter(c => !c.isDeleted).length;
+    this.totalValue = this.cartList.reduce((sum, c) => sum + c.totalAfterDiscount, 0);
+    this.avgCartValue = this.totalCarts ? this.totalValue / this.totalCarts : 0;
   }
 
-  // ===== Filter and Search Methods =====
-
-  filterCarts(): void {
-    let filtered = [...this.cartList];
-
-    // Apply search filter
-    if (this.searchTerm) {
-      const term = this.searchTerm.toLowerCase();
-      filtered = filtered.filter(cart =>
-        cart.user && cart.user['userName'] && cart.user['userName'].toLowerCase().includes(term) ||
-        cart.items.some(item =>
-          item.product &&
-          item.product['productName'] &&
-          item.product['productName'].toLowerCase().includes(term)
-        ) ||
-        (cart._id && cart._id.toLowerCase().includes(term))
-      );
-      this.filteredCarts = filtered;
-      this.cdr.detectChanges();
-    }
-  }
-  filterByStatus(): void {
-      this.loadCarts();
-  }
-  sortCarts(): void {
-      this.loadCarts()
+  /** ===== Filters & Search ===== */
+  onSearch(): void {
+    this.currentPage = 1; // Reset to first page when searching
+    this.loadCarts();
   }
 
-  // ===== Pagination Methods =====
+  onStatusChange(): void {
+    this.currentPage = 1; // Reset to first page when filtering
+    this.loadCarts();
+  }
 
+  onSortChange(): void {
+    this.currentPage = 1; // Reset to first page when sorting
+    this.loadCarts();
+  }
 
+  // Clear search
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.onSearch();
+  }
+
+  /** ===== Pagination ===== */
   goToPage(page: number): void {
-    this.currentPage = page;
-    this.loadCarts()
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.loadCarts();
+    }
   }
 
   previousPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
-      this.loadCarts()
+      this.loadCarts();
     }
-
   }
 
   nextPage(): void {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
-      this.loadCarts()
+      this.loadCarts();
     }
   }
 
   getVisiblePages(): number[] {
-    const pages: number[] = [];
     const maxVisible = 5;
     let start = Math.max(1, this.currentPage - Math.floor(maxVisible / 2));
     let end = Math.min(this.totalPages, start + maxVisible - 1);
-
     if (end - start < maxVisible - 1) {
       start = Math.max(1, end - maxVisible + 1);
     }
-
-    for (let i = start; i <= end; i++) {
-      pages.push(i);
-    }
-
-    return pages;
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   }
 
-  // ===== Selection Methods =====
-
+  /** ===== Selection ===== */
   toggleSelectAll(): void {
-    this.paginatedCarts.forEach(cart => cart.selected = this.selectAll);
+    this.cartList.forEach(c => c.selected = this.selectAll);
   }
 
   updateSelectAll(): void {
-    this.selectAll = this.paginatedCarts.length > 0 &&
-      this.paginatedCarts.every(cart => cart.selected);
+    this.selectAll = this.cartList.length > 0 && this.cartList.every(c => c.selected);
   }
 
   hasSelectedCarts(): boolean {
-    return this.cartList.some(cart => cart.selected);
+    return this.cartList.some(c => c.selected);
   }
 
   getSelectedCount(): number {
-    return this.cartList.filter(cart => cart.selected).length;
+    return this.cartList.filter(c => c.selected).length;
   }
 
-  // ===== CRUD Methods =====
+  getSelectedCarts(): ICartWithSelection[] {
+    return this.cartList.filter(c => c.selected);
+  }
 
+  clearSelection(): void {
+    this.cartList.forEach(c => c.selected = false);
+    this.selectAll = false;
+  }
+
+  /** ===== CRUD Navigation ===== */
   openCreateCartModal(): void {
-    this.router.navigate(["/createcart"]);
+    this.router.navigate(['/createcart']);
   }
 
   editCart(cart: ICart): void {
-    this.router.navigate(["/updatecart", cart._id]);
+    this.router.navigate(['/updatecart', cart._id]);
   }
 
   editCartFromView(): void {
@@ -251,55 +219,88 @@ export class CartMainComponent implements OnInit {
   }
 
   viewCart(cart: ICart): void {
-    this.router.navigate(["/viewcart", cart._id]);
+    this.router.navigate(['/viewcart', cart._id]);
   }
 
+  /** ===== Delete ===== */
   confirmDelete(cart: ICart): void {
     this.cartToDelete = cart;
     this.showDeleteModal = true;
   }
 
-  deleteCart(): void {
-    if (this.cartToDelete && this.cartToDelete._id) {
-      // TODO: Implement delete API call
-      // this.cartApiService.deleteCart(this.cartToDelete._id).subscribe(...)
+  deleteCart(id: string): void {
+    if (!id) return;
+    if (!confirm('Are you sure you want to delete this cart?')) return;
 
-      // For now, update locally
-      const index = this.cartList.findIndex(c => c._id === this.cartToDelete!._id);
-      if (index !== -1) {
-        this.cartList[index].isDeleted = true;
-        this.updateStats();
-        this.filterCarts();
-      }
-    }
+    this.cartApiService.deleteCartById(id).subscribe({
+      next: () => {
+        // Refresh the current page to get updated data
+        this.loadCarts();
+      },
+      error: (err) => console.error('Error deleting cart:', err)
+    });
   }
 
+  // Bulk delete selected carts
+  deleteSelectedCarts(): void {
+    const selectedCarts = this.getSelectedCarts();
+    if (selectedCarts.length === 0) return;
+
+    if (!confirm(`Are you sure you want to delete ${selectedCarts.length} cart(s)?`)) return;
+
+    const deletePromises = selectedCarts.map(cart =>
+      this.cartApiService.deleteCartById(cart._id!)
+    );
+
+    Promise.all(deletePromises).then(() => {
+      this.loadCarts();
+      this.clearSelection();
+    }).catch(err => {
+      console.error('Error deleting carts:', err);
+    });
+  }
+
+  /** ===== Restore ===== */
   restoreCart(cart: ICart): void {
-    if (cart._id) {
-      // TODO: Implement restore API call
-      // this.cartApiService.restoreCart(cart._id).subscribe(...)
+    if (!cart._id) return;
 
-      // For now, update locally
-      const index = this.cartList.findIndex(c => c._id === cart._id);
-      if (index !== -1) {
-        this.cartList[index].isDeleted = false;
-        this.updateStats();
-        this.filterCarts();
-      }
-    }
+    // Call restore API if available
+    // this.cartApiService.restoreCartById(cart._id).subscribe({
+    //   next: () => this.loadCarts(),
+    //   error: (err) => console.error('Error restoring cart:', err)
+    // });
+
+    // For now, just reload the data
+    this.loadCarts();
   }
 
-  initializeCartForm(): ICartForm {
-    return {
-      user: '',
-      items: [],
-      total: 0,
-      discount: 0,
-      totalAfterDiscount: 0,
-      isDeleted: false
-    };
-  }
+  /** ===== Utilities ===== */
   getTotalQuantity(cart: ICart): number {
     return cart.items.reduce((total, item) => total + item.quantity, 0);
+  }
+
+  formatCurrency(amount: number): string {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(amount);
+  }
+
+  formatDate(date: string | Date): string {
+    return new Date(date).toLocaleDateString();
+  }
+
+  isFirstPage(): boolean {
+    return this.currentPage === 1;
+  }
+
+  isLastPage(): boolean {
+    return this.currentPage === this.totalPages;
+  }
+
+  getPaginationInfo(): string {
+    const start = (this.currentPage - 1) * this.pageSize + 1;
+    const end = Math.min(this.currentPage * this.pageSize, this.totalCarts);
+    return `Showing ${start}-${end} of ${this.totalCarts} carts`;
   }
 }

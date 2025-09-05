@@ -26,13 +26,29 @@
             <input
               type="text"
               [(ngModel)]="searchTerm"
-              (input)="filterCarts()"
-              placeholder="Search by user ID, product name..."
-              class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:border-gray-300 bg-white/50 backdrop-blur-sm">
+              (keyup.enter)="onSearch()"
+              placeholder="Search by user, product, cart ID..."
+              class="w-full pl-10 pr-10 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:border-gray-300 bg-white/50 backdrop-blur-sm">
             <svg class="absolute left-3 top-3 h-4 w-4 sm:h-5 sm:w-5 text-gray-400 transition-colors duration-300 group-focus-within:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
+            <!-- Clear Search Button -->
+            <button
+              *ngIf="searchTerm"
+              (click)="clearSearch()"
+              class="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors duration-300"
+              title="Clear search">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
           </div>
+          <!-- Search Button -->
+          <button
+            (click)="onSearch()"
+            class="mt-2 w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200">
+            Search
+          </button>
         </div>
 
         <!-- Status Filter -->
@@ -41,11 +57,11 @@
           <select
             aria-label="Filter by Status"
             [(ngModel)]="selectedStatus"
-            (change)="filterByStatus()"
+            (change)="onStatusChange()"
             class="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:border-gray-300 bg-white/50 backdrop-blur-sm">
-            <option value="" disabled selected>Select status</option>
-            @for (status of slectedStatusOption ; track status) {
-              <option [value]="status">{{ status | titlecase }}</option>
+            <option value="">All Status</option>
+            @for (status of slectedStatusOption; track status) {
+              <option [value]="status === 'All Status' ? '' : status.toLowerCase()">{{ status }}</option>
             }
           </select>
         </div>
@@ -56,12 +72,36 @@
           <select
             aria-label="Sort Carts"
             [(ngModel)]="sortBy"
-            (change)="sortCarts()"
+            (change)="onSortChange()"
             class="w-full px-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:border-gray-300 bg-white/50 backdrop-blur-sm">
-            @for (filter of allowedSortFields; track filter) {
-              <option [value]="filter">{{ filter | titlecase }}</option>
+            @for (field of allowedSortFields; track field) {
+              <option [value]="field">{{ field | titlecase }}</option>
             }
           </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bulk Actions Bar -->
+    <div *ngIf="hasSelectedCarts()" class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 animate-slide-down">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-3 sm:space-y-0">
+        <div class="text-sm text-blue-700">
+          <span class="font-medium">{{ getSelectedCount() }}</span> cart(s) selected
+        </div>
+        <div class="flex space-x-2">
+          <button
+            (click)="deleteSelectedCarts()"
+            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+            </svg>
+            Delete Selected
+          </button>
+          <button
+            (click)="clearSelection()"
+            class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200">
+            Clear Selection
+          </button>
         </div>
       </div>
     </div>
@@ -91,7 +131,7 @@
           </div>
           <div class="ml-3 sm:ml-4 min-w-0 flex-1">
             <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Total Value</p>
-            <p class="text-lg sm:text-2xl font-bold text-gray-900">${{totalValue | number:'1.2-2'}}</p>
+            <p class="text-lg sm:text-2xl font-bold text-gray-900">{{ formatCurrency(totalValue) }}</p>
           </div>
         </div>
       </div>
@@ -119,7 +159,7 @@
           </div>
           <div class="ml-3 sm:ml-4 min-w-0 flex-1">
             <p class="text-xs sm:text-sm font-medium text-gray-600 truncate">Avg Cart</p>
-            <p class="text-lg sm:text-2xl font-bold text-gray-900">${{avgCartValue | number:'1.2-2'}}</p>
+            <p class="text-lg sm:text-2xl font-bold text-gray-900">{{ formatCurrency(avgCartValue) }}</p>
           </div>
         </div>
       </div>
@@ -128,11 +168,14 @@
     <!-- Carts Table -->
     <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden animate-fade-in-up">
       <div class="px-4 sm:px-6 py-4 border-b border-gray-200/50 bg-gradient-to-r from-gray-50/50 to-blue-50/50">
-        <h2 class="text-lg font-medium text-gray-900">All Carts ({{filteredCarts.length}})</h2>
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-medium text-gray-900">All Carts ({{ totalCarts }})</h2>
+          <div class="text-sm text-gray-500">{{ getPaginationInfo() }}</div>
+        </div>
       </div>
 
       <!-- Empty State -->
-      <div *ngIf="filteredCarts.length === 0" class="text-center py-12 sm:py-16 animate-fade-in">
+      <div *ngIf="cartList.length === 0" class="text-center py-12 sm:py-16 animate-fade-in">
         <div class="mx-auto h-16 w-16 sm:h-24 sm:w-24 text-gray-400 mb-4 animate-pulse">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
@@ -149,32 +192,42 @@
       </div>
 
       <!-- Mobile Card View -->
-      <div *ngIf="filteredCarts.length > 0" class="block sm:hidden">
+      <div *ngIf="cartList.length > 0" class="block sm:hidden">
         <div class="divide-y divide-gray-200/50">
-          @for (cart of filteredCarts ; track cart._id) {
-          <div  class="p-4 hover:bg-gray-50/50 transition-colors duration-200">
+          @for (cart of cartList; track cart._id) {
+          <div class="p-4 hover:bg-gray-50/50 transition-colors duration-200">
             <div class="flex items-start justify-between mb-3">
+              <input
+                aria-label="Select Cart"
+                type="checkbox"
+                [(ngModel)]="cart.selected"
+                (change)="updateSelectAll()"
+                class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 mt-1">
               <span *ngIf="!cart.isDeleted" class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Active</span>
               <span *ngIf="cart.isDeleted" class="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">Deleted</span>
             </div>
 
             <div class="grid grid-cols-2 gap-4 mb-3 text-xs">
               <div>
+                <span class="text-gray-500">User:</span>
+                <span class="font-medium ml-1">{{ cart.user?.['userName'] || 'N/A' }}</span>
+              </div>
+              <div>
                 <span class="text-gray-500">Items:</span>
-                <span class="font-medium ml-1">{{cart.items.length}}</span>
+                <span class="font-medium ml-1">{{ cart.items.length }}</span>
               </div>
               <div>
                 <span class="text-gray-500">Total:</span>
-                <span class="font-medium ml-1">${{cart.total | number:'1.2-2'}}</span>
+                <span class="font-medium ml-1">{{ formatCurrency(cart.total) }}</span>
               </div>
               <div>
                 <span class="text-gray-500">Discount:</span>
-                <span class="font-medium ml-1 text-green-600" *ngIf="cart.discount > 0">-${{cart.discount | number:'1.2-2'}}</span>
+                <span class="font-medium ml-1 text-green-600" *ngIf="cart.discount > 0">-{{ formatCurrency(cart.discount) }}</span>
                 <span class="font-medium ml-1" *ngIf="cart.discount === 0">$0.00</span>
               </div>
-              <div>
+              <div class="col-span-2">
                 <span class="text-gray-500">Created:</span>
-                <span class="font-medium ml-1">{{cart.createdAt | date:'short'}}</span>
+                <span class="font-medium ml-1">{{ formatDate(cart.createdAt || "") }}</span>
               </div>
             </div>
 
@@ -198,7 +251,7 @@
               </button>
               <button
                 *ngIf="!cart.isDeleted"
-                (click)="confirmDelete(cart)"
+                (click)="deleteCart(cart._id!)"
                 class="p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-lg transition-all duration-200"
                 title="Delete Cart">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -216,19 +269,18 @@
               </button>
             </div>
           </div>
-        }
+          }
         </div>
       </div>
 
       <!-- Desktop Table View -->
-      <div *ngIf="filteredCarts.length > 0" class="hidden sm:block overflow-x-auto">
+      <div *ngIf="cartList.length > 0" class="hidden sm:block overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200/50">
           <thead class="bg-gradient-to-r from-gray-50/50 to-blue-50/50">
             <tr>
               <th class="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 <input
-                  aria-label="good"
-                  id="selectAll"
+aria-label="Select Cart"
                   type="checkbox"
                   [(ngModel)]="selectAll"
                   (change)="toggleSelectAll()"
@@ -245,12 +297,12 @@
             </tr>
           </thead>
           <tbody class="bg-white/50 backdrop-blur-sm divide-y divide-gray-200/50">
-            @for (cart of filteredCarts ; track cart._id) {
+            @for (cart of cartList; track cart._id) {
             <tr class="hover:bg-gray-50/50 transition-all duration-200 group">
               <!-- Checkbox -->
               <td class="px-4 lg:px-6 py-4 whitespace-nowrap">
                 <input
-                  aria-label="selectCart"
+                  aria-label="Select Cart"
                   type="checkbox"
                   [(ngModel)]="cart.selected"
                   (change)="updateSelectAll()"
@@ -259,47 +311,49 @@
 
               <!-- Cart ID -->
               <td class="px-4 lg:px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-medium text-gray-900 font-mono">
-                  {{cart._id }}...
+                <div class="text-sm font-medium text-gray-900 font-mono truncate max-w-[100px]" [title]="cart._id">
+                  {{ cart._id }}
                 </div>
               </td>
 
               <!-- User -->
               <td class="px-4 lg:px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900 font-mono">{{cart.user['userName']}}...</div>
+                <div class="text-sm text-gray-900 truncate max-w-[120px]" [title]="cart.user?.['userName'] || 'N/A'">
+                  {{ cart.user?.['userName'] || 'N/A' }}
+                </div>
               </td>
 
               <!-- Items -->
               <td class="px-4 lg:px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{cart.items.length}} items</div>
-                <div class="text-sm text-gray-500">{{getTotalQuantity(cart)}} qty</div>
+                <div class="text-sm text-gray-900">{{ cart.items.length }} items</div>
+                <div class="text-sm text-gray-500">{{ getTotalQuantity(cart) }} qty</div>
               </td>
 
               <!-- Total -->
               <td class="px-4 lg:px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-semibold text-gray-900">${{cart.total | number:'1.2-2'}}</div>
+                <div class="text-sm font-semibold text-gray-900">{{ formatCurrency(cart.total) }}</div>
                 <div *ngIf="cart.totalAfterDiscount !== cart.total" class="text-sm text-green-600">
-                  After: ${{cart.totalAfterDiscount | number:'1.2-2'}}
+                  After: {{ formatCurrency(cart.totalAfterDiscount) }}
                 </div>
               </td>
 
               <!-- Discount -->
               <td class="px-4 lg:px-6 py-4 whitespace-nowrap">
                 <div *ngIf="cart.discount > 0" class="text-sm text-green-600 font-medium">
-                  -${{cart.discount | number:'1.2-2'}}
+                  -{{ formatCurrency(cart.discount) }}
                 </div>
                 <div *ngIf="cart.discount === 0" class="text-sm text-gray-400">
                   $0.00
                 </div>
-                <div *ngIf="cart.coupon" class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full inline-block mt-1">
-                  {{cart.coupon }}...
+                <div *ngIf="cart.coupon" class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full inline-block mt-1 truncate max-w-[80px]" [title]="cart.coupon">
+                  {{ cart.coupon }}
                 </div>
               </td>
 
               <!-- Status -->
               <td class="px-4 lg:px-6 py-4 whitespace-nowrap">
-                <span *ngIf="!cart.isDeleted" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 animate-pulse-subtle">
-                  <div class="w-1.5 h-1.5 bg-green-500 rounded-full mr-1.5 animate-ping"></div>
+                <span *ngIf="!cart.isDeleted" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  <div class="w-1.5 h-1.5 bg-green-500 rounded-full mr-1.5"></div>
                   Active
                 </span>
                 <span *ngIf="cart.isDeleted" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
@@ -309,8 +363,8 @@
               </td>
 
               <!-- Created -->
-              <td class="px-4 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-500 ">
-                {{cart.createdAt}}
+              <td class="px-4 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ formatDate(cart.createdAt || "") }}
               </td>
 
               <!-- Actions -->
@@ -325,7 +379,6 @@
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                     </svg>
-                    view
                   </button>
 
                   <!-- Edit Button -->
@@ -336,21 +389,20 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                     </svg>
-                    edit
                   </button>
 
-                  <!-- Restore/Delete Button -->
+                  <!-- Delete Button -->
                   <button
                     *ngIf="!cart.isDeleted"
-                    (click)="confirmDelete(cart)"
+                    (click)="deleteCart(cart._id!)"
                     class="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition-all duration-200 transform hover:scale-110"
                     title="Delete Cart">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                     </svg>
-                    delete
                   </button>
 
+                  <!-- Restore Button -->
                   <button
                     *ngIf="cart.isDeleted"
                     (click)="restoreCart(cart)"
@@ -363,43 +415,44 @@
                 </div>
               </td>
             </tr>
-          }
+            }
           </tbody>
         </table>
       </div>
 
       <!-- Pagination -->
-      <div *ngIf="filteredCarts.length > pageSize" class="px-4 sm:px-6 py-4 bg-white/50 border-t border-gray-200/50">
+      <div *ngIf="totalPages > 1" class="px-4 sm:px-6 py-4 bg-white/50 border-t border-gray-200/50">
         <div class="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
           <div class="text-sm text-gray-700 text-center sm:text-left">
-            Showing {{((currentPage - 1) * pageSize) + 1}} to {{Math.min(currentPage * pageSize, filteredCarts.length)}} of {{filteredCarts.length}} results
+            {{ getPaginationInfo() }}
           </div>
           <div class="flex items-center space-x-2">
             <button
               (click)="previousPage()"
-              [disabled]="currentPage === 1"
+              [disabled]="isFirstPage()"
               class="px-3 py-2 border border-gray-300 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:shadow-md disabled:hover:shadow-none">
               Previous
             </button>
 
             <div class="hidden sm:flex space-x-1">
-              <button
-                *ngFor="let page of getVisiblePages()"
-                (click)="goToPage(page)"
-                [class]="page === currentPage ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg' : 'bg-white text-gray-700 hover:bg-gray-50 hover:shadow-md'"
-                class="px-3 py-2 border border-gray-300 rounded-xl text-sm font-medium transition-all duration-200 transform hover:scale-105">
-                {{page}}
-              </button>
+              @for (page of getVisiblePages(); track page) {
+                <button
+                  (click)="goToPage(page)"
+                  [class]="page === currentPage ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg' : 'bg-white text-gray-700 hover:bg-gray-50 hover:shadow-md'"
+                  class="px-3 py-2 border border-gray-300 rounded-xl text-sm font-medium transition-all duration-200 transform hover:scale-105">
+                  {{ page }}
+                </button>
+              }
             </div>
 
             <!-- Mobile pagination info -->
             <div class="sm:hidden px-3 py-2 text-sm text-gray-700 bg-gray-50 rounded-xl">
-              {{currentPage}} / {{totalPages}}
+              {{ currentPage }} / {{ totalPages }}
             </div>
 
             <button
               (click)="nextPage()"
-              [disabled]="currentPage === totalPages"
+              [disabled]="isLastPage()"
               class="px-3 py-2 border border-gray-300 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:shadow-md disabled:hover:shadow-none">
               Next
             </button>

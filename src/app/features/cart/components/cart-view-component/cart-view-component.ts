@@ -59,6 +59,7 @@ export class CartViewComponent implements OnInit, OnDestroy {
         error: (err) => {
           console.error('Failed to load cart data:', err);
           this.router.navigate(['**']);
+          this.cdr.detectChanges();
         }
       });
   }

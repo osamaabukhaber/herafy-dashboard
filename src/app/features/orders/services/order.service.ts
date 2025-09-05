@@ -59,7 +59,6 @@ export class OrderService {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString());
-
     return this.http.get<OrderResponse>(`${this.baseUrl}/admin/orders`, {
       params,
       withCredentials: true,

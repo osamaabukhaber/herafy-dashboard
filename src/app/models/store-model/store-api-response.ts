@@ -8,6 +8,6 @@ export interface StoreApiResponse {
   pagination:{
     total:number,
     currentPage:number,
-    limit:number
+    totalPages:number
   }
 }

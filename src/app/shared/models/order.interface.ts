@@ -21,6 +21,7 @@ export interface Order {
   user: string;
   orderItems: OrderItem[];
   shippingAddress: ShippingAddress;
+  paymentMethod ?: string;
   coupon?: string;
   subtotal: number;
   shippingFee: number;

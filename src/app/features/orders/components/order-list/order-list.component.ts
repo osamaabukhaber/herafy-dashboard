@@ -1,5 +1,5 @@
 // src/app/components/orders/order-list/order-list.component.ts
-import { Component, OnInit, signal, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { OrderService } from '../../services/order.service.js';
@@ -37,6 +37,7 @@ export class OrderListComponent implements OnInit {
   readonly totalOrders = signal(0);
   readonly cancellingOrderId = signal<string | null>(null);
 
+  constructor(private cdr: ChangeDetectorRef) {}
   // Computed properties
   readonly emptyStateDescription = computed(() => {
     switch (this.listType()) {
@@ -93,7 +94,6 @@ export class OrderListComponent implements OnInit {
         this.totalPages.set(data?.pages ?? 1);
         this.totalOrders.set(data?.total ?? 0);
         this.loading.set(false);
-
         console.log("Order Data", this.orders());
       },
       error: (err) => {
@@ -101,7 +101,7 @@ export class OrderListComponent implements OnInit {
         this.error.set(err.error?.message || err.message || 'Failed to load orders');
         this.loading.set(false);
         console.error('Error loading orders:', err);
-      },
+      }
     });
   }
 
