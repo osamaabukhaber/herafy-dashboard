@@ -6,71 +6,97 @@ import { takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { IStore } from '../../../../models/store-model/istore';
 import { StoreServices } from '../../services/store-serivces/store-services';
-
-export interface StoreFilters {
-  status: string;
-  search: string;
-  sortBy: string;
-  sortOrder: 'asc' | 'desc';
-}
+import {
+  MapPin,
+  Eye,
+  Edit3,
+  Trash2,
+  Plus,
+  Download,
+  Search,
+  Package,
+  Heart,
+  ShoppingCart,
+  Percent,
+  FileText,
+  XCircle,
+  Loader2,
+  LucideAngularModule,
+  ChevronRight,
+  ChevronLeft,
+  RefreshCw,
+  ArrowUp,
+  ArrowDown
+} from 'lucide-angular';
+import { StoreApiResponse } from '../../../../models/store-model/store-api-response';
 
 export interface StoreStats {
-  activeStores: number;
+  approvedStores: number;
   totalProducts: number;
   totalOrders: number;
   totalRevenue: number;
 }
-
 @Component({
   selector: 'app-store-component',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LucideAngularModule],
   templateUrl: './store-component.html',
-  styleUrl: './store-component.css'
+  styleUrls: ['./store-component.css'],
 })
 export class StoreComponent implements OnInit, OnDestroy {
-  // Data properties
   storesList: IStore[] = [];
-  filteredStoresList: IStore[] = [];
   selectedStore: IStore | null = null;
 
-  // State properties
   error: string | null = null;
   loading = true;
   isLoading = false;
   showStoreModal = false;
 
-  // Search and filter properties
   searchTerm = '';
   statusFilter = '';
-  sortBy = 'name';
+  sortBy = 'name'; // backend supports: name, products, orders, oldest
   sortOrder: 'asc' | 'desc' = 'asc';
   private searchSubject = new Subject<string>();
 
-  // Pagination properties
+  MapPin = MapPin;
+  Eye = Eye;
+  Edit3 = Edit3;
+  Trash2 = Trash2;
+  Plus = Plus;
+  Download = Download;
+  Search = Search;
+  Package = Package;
+  Heart = Heart;
+  ShoppingCart = ShoppingCart;
+  Percent = Percent;
+  FileText = FileText;
+  XCircle = XCircle;
+  Loader2 = Loader2;
+  ChevronRight = ChevronRight;
+  ChevronLeft = ChevronLeft;
+  RefreshCw = RefreshCw;
+  ArrowUp = ArrowUp;
+  ArrowDown = ArrowDown;
+
   currentPage = 1;
   pageSize = 10;
   totalStores = 0;
   totalPages = 0;
-  startIndex = 0;
 
-  // Statistics
   stats: StoreStats = {
-    activeStores: 0,
+    approvedStores: 0,
     totalProducts: 0,
     totalOrders: 0,
-    totalRevenue: 0
+    totalRevenue: 0,
   };
 
-  // Expose Math to template
   Math = Math;
-
   private destroy$ = new Subject<void>();
 
   constructor(
     private storeApiService: StoreServices,
     private route: Router,
-    private cdr: ChangeDetectorRef,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -83,20 +109,28 @@ export class StoreComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  // Load stores from API
+  // ===== Load stores from backend =====
   loadStores(): void {
     this.loading = true;
     this.error = null;
 
-  this.storeApiService.getAllStores()
+    this.storeApiService
+      .getAllStores({
+        page: this.currentPage,
+        limit: this.pageSize,
+        search: this.searchTerm || undefined,
+        status: this.statusFilter || undefined,
+        sort: this.sortBy, // backend interprets this
+      })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (res) => {
+        next: (res: StoreApiResponse) => {
           this.storesList = res.data.stores;
-          console.log(this.storesList) ;
-          this.applyFilters();
+          this.totalStores = res.pagination.total;
+          this.totalPages = res.pagination.totalPages;
+          this.currentPage = res.pagination.currentPage;
+
           this.calculateStats();
-          this.updatePagination();
           this.loading = false;
           this.cdr.detectChanges();
         },
@@ -108,143 +142,71 @@ export class StoreComponent implements OnInit, OnDestroy {
       });
   }
 
-  // Setup search debounce
+  // ===== Search with debounce =====
   private setupSearchDebounce(): void {
     this.searchSubject
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        takeUntil(this.destroy$)
-      )
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(() => {
         this.currentPage = 1;
-        this.applyFilters();
+        this.loadStores();
       });
   }
 
-  // Search functionality
   onSearch(): void {
     this.searchSubject.next(this.searchTerm);
   }
 
-  // Filter functionality
+  // ===== Filter & Pagination =====
   onFilterChange(): void {
     this.currentPage = 1;
-    this.applyFilters();
-  }
-
-  // Apply filters and search
-  applyFilters(): void {
-    let filtered = [...this.storesList];
-
-    // Apply search filter
-    if (this.searchTerm.trim()) {
-      const searchLower = this.searchTerm.toLowerCase();
-      filtered = filtered.filter(store =>
-        store.name.toLowerCase().includes(searchLower) ||
-        store.description.toLowerCase().includes(searchLower) ||
-        store.address.city.toLowerCase().includes(searchLower) ||
-        store._id?.toLowerCase().includes(searchLower)
-      );
-    }
-
-    // Apply status filter
-    if (this.statusFilter) {
-      filtered = filtered.filter(store => store.status === this.statusFilter);
-    }
-
-    // Apply sorting
-    filtered.sort((a, b) => {
-      let aValue: any, bValue: any;
-
-      switch (this.sortBy) {
-        case 'name':
-          aValue = a.name.toLowerCase();
-          bValue = b.name.toLowerCase();
-          break;
-        case 'status':
-          aValue = a.status;
-          bValue = b.status;
-          break;
-        case 'city':
-          aValue = a.address.city.toLowerCase();
-          bValue = b.address.city.toLowerCase();
-          break;
-        case 'products':
-          aValue = a.productCount || 0;
-          bValue = b.productCount || 0;
-          break;
-        case 'orders':
-          aValue = a.ordersCount || 0;
-          bValue = b.ordersCount || 0;
-          break;
-        default:
-          aValue = a.name.toLowerCase();
-          bValue = b.name.toLowerCase();
-      }
-
-      if (aValue < bValue) return this.sortOrder === 'asc' ? -1 : 1;
-      if (aValue > bValue) return this.sortOrder === 'asc' ? 1 : -1;
-      return 0;
-    });
-
-    this.filteredStoresList = filtered;
-    this.updatePagination();
-  }
-
-  // Calculate statistics
-  calculateStats(): void {
-    this.stats = {
-      activeStores: this.storesList.filter(store => store.status === 'active' && !store.isDeleted).length,
-      totalProducts: this.storesList.reduce((sum, store) => sum + (store.productCount || 0), 0),
-      totalOrders: this.storesList.reduce((sum, store) => sum + (store.ordersCount || 0), 0),
-      totalRevenue: this.storesList.reduce((sum, store) => {
-        // Estimate revenue based on orders (you might want to get actual revenue from API)
-        return sum + ((store.ordersCount || 0) * 50); // Assuming average order value of $50
-      }, 0)
-    };
-  }
-
-  // Pagination methods
-  updatePagination(): void {
-    this.totalStores = this.filteredStoresList.length;
-    this.totalPages = Math.ceil(this.totalStores / this.pageSize);
-    this.startIndex = (this.currentPage - 1) * this.pageSize;
-
-    // Get current page data
-    const start = this.startIndex;
-    const end = start + this.pageSize;
-    this.filteredStoresList = this.filteredStoresList.slice(start, end);
-  }
-
-  getPageNumbers(): number[] {
-    const pages: number[] = [];
-    const maxPages = 5; // Show max 5 page numbers
-
-    let startPage = Math.max(1, this.currentPage - Math.floor(maxPages / 2));
-    let endPage = Math.min(this.totalPages, startPage + maxPages - 1);
-
-    if (endPage - startPage < maxPages - 1) {
-      startPage = Math.max(1, endPage - maxPages + 1);
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
-    }
-
-    return pages;
+    this.loadStores();
   }
 
   goToPage(page: number): void {
     if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
       this.currentPage = page;
-      this.applyFilters();
+      this.loadStores();
     }
   }
 
-  // Modal methods
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxPages = 5;
+    let startPage = Math.max(1, this.currentPage - Math.floor(maxPages / 2));
+    let endPage = Math.min(this.totalPages, startPage + maxPages - 1);
+    if (endPage - startPage < maxPages - 1) {
+      startPage = Math.max(1, endPage - maxPages + 1);
+    }
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  // ===== Stats =====
+  calculateStats(): void {
+    this.stats = {
+      approvedStores: this.storesList.filter(
+        (store) => store.status === 'approved' && !store.isDeleted
+      ).length,
+      totalProducts: this.storesList.reduce(
+        (sum, store) => sum + (store.productCount || 0),
+        0
+      ),
+      totalOrders: this.storesList.reduce(
+        (sum, store) => sum + (store.ordersCount || 0),
+        0
+      ),
+      totalRevenue: this.storesList.reduce(
+        (sum, store) => sum + (store.ordersCount || 0) * 50,
+        0
+      ),
+    };
+  }
+
+  // ===== Store actions =====
   viewStore(store: IStore): void {
-    this.route.navigate(["/view-store", store._id]);
+    this.route.navigate(['/view-store', store._id]);
   }
 
   closeStoreModal(): void {
@@ -252,46 +214,43 @@ export class StoreComponent implements OnInit, OnDestroy {
     this.selectedStore = null;
   }
 
-  // Store management methods
   deleteStore(id: string): void {
     if (!id) return;
 
     if (confirm('Are you sure you want to delete this store? This action cannot be undone.')) {
       this.isLoading = true;
-
-      this.storeApiService.deleteStore(id)
+      this.storeApiService
+        .deleteStore(id)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: () => {
-            // Remove store from local list
-            this.storesList = this.storesList.filter(store => store._id !== id);
-            this.applyFilters();
+            this.storesList = this.storesList.filter((s) => s._id !== id);
             this.calculateStats();
             this.isLoading = false;
             this.cdr.detectChanges();
           },
-          error: (err:any) => {
+          error: (err: any) => {
             this.error = err?.error?.message || 'Failed to delete store.';
             this.isLoading = false;
             this.cdr.detectChanges();
-          }
+          },
         });
     }
   }
 
   addStore(): void {
-    this.route.navigate(["/add-new-store"]);
+    this.route.navigate(['/add-new-store']);
   }
 
   updateStore(store: IStore): void {
     if (store._id) {
-      this.route.navigate(["/update-store", store._id]);
+      this.route.navigate(['/update-store', store._id]);
     }
   }
 
-  // Utility methods for template
-  getActiveStoresCount(): number {
-    return this.stats.activeStores;
+  // ===== Helpers =====
+  getApprovedStoresCount(): number {
+    return this.stats.approvedStores;
   }
 
   getTotalProducts(): number {
@@ -311,7 +270,7 @@ export class StoreComponent implements OnInit, OnDestroy {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0
+      maximumFractionDigits: 0,
     }).format(amount);
   }
 
@@ -345,12 +304,10 @@ export class StoreComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Refresh data
   refreshStores(): void {
     this.loadStores();
   }
 
-  // Export functionality
   exportStoresData(): void {
     const csvContent = this.convertToCSV(this.storesList);
     const blob = new Blob([csvContent], { type: 'text/csv' });
@@ -363,23 +320,38 @@ export class StoreComponent implements OnInit, OnDestroy {
   }
 
   private convertToCSV(stores: IStore[]): string {
-    const headers = ['ID', 'Name', 'Description', 'Status', 'City', 'Postal Code', 'Street', 'Products', 'Orders', 'Categories', 'Coupons'];
-    const rows = stores.map(store => [
-      store._id || '',
-      store.name,
-      store.description,
-      store.status,
-      store.address.city,
-      store.address.postalCode,
-      store.address.street,
-      store.productCount || 0,
-      store.ordersCount || 0,
-      store.categorieCount || 0,
-      store.couponsUsed || 0
+    const headers = [
+      'ID',
+      'Name',
+      'Description',
+      'Status',
+      'City',
+      'Postal Code',
+      'Street',
+      'Products',
+      'Orders',
+      'Categories',
+      'Coupons',
+    ];
+    const rows = stores.map((s) => [
+      s._id || '',
+      s.name,
+      s.description,
+      s.status,
+      s.address.city,
+      s.address.postalCode,
+      s.address.street,
+      s.productCount || 0,
+      s.ordersCount || 0,
+      s.categorieCount || 0,
+      s.couponsUsed || 0,
     ]);
-
     return [headers, ...rows]
-      .map(row => row.map(field => `"${field}"`).join(','))
+      .map((row) => row.map((field) => `"${field}"`).join(','))
       .join('\n');
+  }
+
+  trackByStoreId(index: number, store: IStore): string | undefined {
+    return store._id;
   }
 }

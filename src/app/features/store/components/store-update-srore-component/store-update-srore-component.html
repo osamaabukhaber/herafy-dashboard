@@ -1,12 +1,9 @@
-<!-- add-store.component.html -->
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-8">
   <!-- Header Section -->
   <div class="max-w-6xl mx-auto px-6 mb-8">
     <div class="text-center">
       <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mb-4 shadow-lg">
-        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-        </svg>
+        <lucide-icon [img]="Store" class="w-8 h-8 text-white"></lucide-icon>
       </div>
       <h1 class="text-4xl font-bold text-gray-900 mb-2">Update Store</h1>
       <p class="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -28,15 +25,13 @@
       <!-- Progress Indicator -->
       <div class="bg-gradient-to-r from-blue-500 to-purple-600 h-2"></div>
 
-      <form [formGroup]="storeDataForm" class="p-8 space-y-10">
+      <form [formGroup]="storeDataForm" class="p-8 space-y-10" (ngSubmit)="onSubmit()">
 
         <!-- Store Basic Information -->
         <div class="relative">
           <div class="flex items-center mb-6">
             <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mr-4">
-              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
+              <lucide-icon [img]="Info" class="w-5 h-5 text-blue-600"></lucide-icon>
             </div>
             <div>
               <h2 class="text-2xl font-bold text-gray-900">Store Information</h2>
@@ -67,33 +62,25 @@
                   @switch (name?.errors) {
                     @case (name?.errors?.['required']) {
                       <p class="text-sm text-red-700 flex items-center">
-                        <svg class="w-4 h-4 mr-2 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                        </svg>
+                        <lucide-icon [img]="AlertTriangle" class="w-4 h-4 mr-2 text-red-500"></lucide-icon>
                         Please enter a store name to continue
                       </p>
                     }
                     @case (name?.errors?.['minlength']) {
                       <p class="text-sm text-red-700 flex items-center">
-                        <svg class="w-4 h-4 mr-2 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                        </svg>
+                        <lucide-icon [img]="AlertTriangle" class="w-4 h-4 mr-2 text-red-500"></lucide-icon>
                         Store name should be at least 3 characters long
                       </p>
                     }
                     @case (name?.errors?.['maxlength']) {
                       <p class="text-sm text-red-700 flex items-center">
-                        <svg class="w-4 h-4 mr-2 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                        </svg>
+                        <lucide-icon [img]="AlertTriangle" class="w-4 h-4 mr-2 text-red-500"></lucide-icon>
                         Store name should not exceed 50 characters
                       </p>
                     }
                     @default {
                       <p class="text-sm text-red-700 flex items-center">
-                        <svg class="w-4 h-4 mr-2 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                        </svg>
+                        <lucide-icon [img]="AlertTriangle" class="w-4 h-4 mr-2 text-red-500"></lucide-icon>
                         Please check your store name and try again
                       </p>
                     }
@@ -108,10 +95,7 @@
         <div class="relative">
           <div class="flex items-center mb-6">
             <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center mr-4">
-              <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-              </svg>
+              <lucide-icon [img]="MapPin" class="w-5 h-5 text-purple-600"></lucide-icon>
             </div>
             <div>
               <h2 class="text-2xl font-bold text-gray-900">Store Address</h2>
@@ -146,7 +130,7 @@
                           <span>Please enter the city name</span>
                         }
                         @case (city?.errors?.['minlength']) {
-                          <span>City name should be at least 3 characters</span>
+                          <span>City name should be at least 2 characters</span>
                         }
                         @case (city?.errors?.['maxlength']) {
                           <span>City name is too long</span>
@@ -185,7 +169,7 @@
                           <span>Postal code is required</span>
                         }
                         @case (postalCode?.errors?.['minlength']) {
-                          <span>Postal code should be at least 5 characters</span>
+                          <span>Postal code should be at least 2 characters</span>
                         }
                         @case (postalCode?.errors?.['maxlength']) {
                           <span>Postal code should not exceed 10 characters</span>
@@ -224,7 +208,7 @@
                           <span>Street address is required</span>
                         }
                         @case (street?.errors?.['minlength']) {
-                          <span>Street address should be at least 3 characters</span>
+                          <span>Street address should be at least 2 characters</span>
                         }
                         @case (street?.errors?.['maxlength']) {
                           <span>Street address is too long</span>
@@ -245,9 +229,7 @@
         <div class="relative">
           <div class="flex items-center mb-6">
             <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center mr-4">
-              <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m0 0V1a1 1 0 011-1h2a1 1 0 011 1v18a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1h2a1 1 0 011 1z"></path>
-              </svg>
+              <lucide-icon [img]="Palette" class="w-5 h-5 text-emerald-600"></lucide-icon>
             </div>
             <div>
               <h2 class="text-2xl font-bold text-gray-900">Store Branding</h2>
@@ -256,35 +238,34 @@
           </div>
 
           <div class="bg-gray-50/50 rounded-2xl p-6 border border-gray-100 space-y-6">
-            <!-- Logo URL -->
+            <!-- Logo File Upload -->
             <div>
               <label class="block">
                 <span class="text-sm font-semibold text-gray-700 flex items-center">
-                  Store Logo URL
+                  Store Logo
                   <span class="text-red-500 ml-1">*</span>
+                  <span class="text-xs text-gray-500 ml-2">(Upload image file)</span>
                 </span>
                 <input
-                  formControlName="logoUrl"
-                  type="url"
-                  placeholder="https://example.com/logo.png"
+                  #logoFileInput
+                  type="file"
+                  accept="image/*"
+                  (change)="onLogoFileChange($event)"
                   [ngClass]="{
                     'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': logoUrl?.invalid && (logoUrl?.touched || logoUrl?.dirty),
                     'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': logoUrl?.valid && (logoUrl?.touched || logoUrl?.dirty),
                     'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !logoUrl?.touched && !logoUrl?.dirty
                   }"
-                  class="mt-2 w-full px-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 placeholder-gray-400 text-gray-900 shadow-sm" />
+                  class="mt-2 w-full px-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 text-gray-900 shadow-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
 
                 @if (logoUrl?.invalid && (logoUrl?.dirty || logoUrl?.touched)) {
                   <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
                     @switch (logoUrl?.errors) {
                       @case (logoUrl?.errors?.['required']) {
-                        <p class="text-sm text-red-700">Please provide a logo URL for your store</p>
-                      }
-                      @case (logoUrl?.errors?.['pattern']) {
-                        <p class="text-sm text-red-700">Please enter a valid URL (e.g., https://example.com/logo.png)</p>
+                        <p class="text-sm text-red-700">Please upload a logo for your store</p>
                       }
                       @default {
-                        <p class="text-sm text-red-700">Please check your logo URL format</p>
+                        <p class="text-sm text-red-700">Please upload a valid image file</p>
                       }
                     }
                   </div>
@@ -335,9 +316,7 @@
         <div class="relative">
           <div class="flex items-center mb-6">
             <div class="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center mr-4">
-              <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-              </svg>
+              <lucide-icon [img]="FileText" class="w-5 h-5 text-orange-600"></lucide-icon>
             </div>
             <div>
               <h2 class="text-2xl font-bold text-gray-900">Store Policies</h2>
@@ -428,9 +407,7 @@
         <div class="relative">
           <div class="flex items-center mb-6">
             <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center mr-4">
-              <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-              </svg>
+              <lucide-icon [img]="BarChart3" class="w-5 h-5 text-indigo-600"></lucide-icon>
             </div>
             <div>
               <h2 class="text-2xl font-bold text-gray-900">Location & Status</h2>
@@ -441,20 +418,20 @@
           <div class="bg-gray-50/50 rounded-2xl p-6 border border-gray-100">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <!-- Location -->
-              <div>
+              <div formGroupName="location">
                 <label class="block">
                   <span class="text-sm font-semibold text-gray-700">
                     GPS Coordinates
                     <span class="text-xs text-gray-500 block mt-1">Optional - Latitude, Longitude format</span>
                   </span>
                   <input
-                    formGroupName="location"
+                    formControlName="coordinates"
                     type="text"
                     placeholder="25.2048, 55.2708"
                     [ngClass]="{
-                      'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': location?.invalid && (location?.touched || location?.dirty),
-                      'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': location?.valid && (location?.touched || location?.dirty),
-                      'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !location?.touched && !location?.dirty
+                      'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': location?.get('coordinates')?.invalid && (location?.get('coordinates')?.touched || location?.get('coordinates')?.dirty),
+                      'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': location?.get('coordinates')?.valid && (location?.get('coordinates')?.touched || location?.get('coordinates')?.dirty),
+                      'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !location?.get('coordinates')?.touched && !location?.get('coordinates')?.dirty
                     }"
                     class="mt-2 w-full px-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 placeholder-gray-400 text-gray-900 shadow-sm" />
 
@@ -462,17 +439,14 @@
                     type="button"
                     (click)="getCurrentLocation()"
                     class="mt-3 inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-medium rounded-lg hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-200 shadow-sm">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
+                    <lucide-icon [img]="MapPin" class="w-4 h-4 mr-2"></lucide-icon>
                     Use My Current Location
                   </button>
 
-                  @if (location?.invalid && (location?.dirty || location?.touched)) {
+                  @if (location?.get('coordinates')?.invalid && (location?.get('coordinates')?.dirty || location?.get('coordinates')?.touched)) {
                     <div class="mt-2 text-sm text-red-600">
-                      @switch (location?.errors) {
-                        @case (location?.errors?.['pattern']) {
+                      @switch (location?.get('coordinates')?.errors) {
+                        @case (location?.get('coordinates')?.errors?.['pattern']) {
                           <span>Please use the format: Latitude, Longitude (e.g., 25.2048, 55.2708)</span>
                         }
                         @default {
@@ -532,13 +506,11 @@
           <div class="bg-gradient-to-r from-red-50 to-red-100 border-l-4 border-red-500 rounded-xl p-6 shadow-sm">
             <div class="flex items-start">
               <div class="flex-shrink-0">
-                <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                </svg>
+                <lucide-icon [img]="AlertTriangle" class="w-6 h-6 text-red-500"></lucide-icon>
               </div>
               <div class="ml-4">
                 <h3 class="text-lg font-semibold text-red-800">Form Validation Required</h3>
-                <p class="text-red-700 mt-1">Please review and correct the errors above before creating your store.</p>
+                <p class="text-red-700 mt-1">Please review and correct the errors above before updating your store.</p>
                 <p class="text-red-600 text-sm mt-2">All required fields must be completed with valid information.</p>
               </div>
             </div>
@@ -556,14 +528,13 @@
                 'bg-gray-300 cursor-not-allowed opacity-60': storeDataForm.invalid
               }"
               class="inline-flex items-center px-8 py-4 text-white font-bold text-lg rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-200">
+              <lucide-icon [img]="CheckCircle" class="w-5 h-5 mr-2"></lucide-icon>
               Update Store
             </button>
 
             <div class="mt-4 flex items-center justify-center text-sm text-gray-600">
-              <svg class="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-              Your store will be reviewed and activated within 24 hours
+              <lucide-icon [img]="Clock" class="w-4 h-4 mr-2 text-blue-500"></lucide-icon>
+              Your store changes will be reviewed and updated within 24 hours
             </div>
           </div>
         </div>
@@ -572,9 +543,7 @@
         <div class="bg-gray-100 rounded-2xl p-6 border border-gray-200">
           <details class="group">
             <summary class="cursor-pointer text-gray-700 font-semibold hover:text-gray-900 transition-colors duration-200 flex items-center">
-              <svg class="w-4 h-4 mr-2 transform group-open:rotate-90 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-              </svg>
+              <lucide-icon [img]="ChevronRight" class="w-4 h-4 mr-2 transform group-open:rotate-90 transition-transform duration-200"></lucide-icon>
               Form Debug Information
             </summary>
             <div class="mt-4 bg-white rounded-lg border border-gray-200 overflow-hidden">
@@ -589,3 +558,4 @@
       </form>
     </div>
   </div>
+</div>

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable, retry } from 'rxjs';
 import { environment } from '../../../../environment/environment.developemnt';
 import { StoreApiResponse } from '../../../../models/store-model/store-api-response';
@@ -14,35 +14,68 @@ export class StoreServices {
 
   constructor(private httpRequest:HttpClient){}
 
-  getAllStores():Observable<StoreApiResponse>{
-      return this.httpRequest.get<StoreApiResponse>(this.baseUrl)
+getAllStores(params?: Record<string, any>): Observable<StoreApiResponse> {
+  let httpParams = new HttpParams();
+
+  if (params) {
+    Object.keys(params).forEach((key) => {
+      if (params[key] !== undefined && params[key] !== null) {
+        httpParams = httpParams.set(key, params[key]);
+      }
+    });
   }
 
+  return this.httpRequest.get<StoreApiResponse>(this.baseUrl, { params: httpParams });
+}
   getStoreById(id: string): Observable<StoreApiResponceById> {
     return this.httpRequest.get<StoreApiResponceById>(`${ this.baseUrl}${id}`);
   }
-  updateStore(id: string, storeData: Partial<IStore>): Observable<IStore> {
-    return this.httpRequest.patch<IStore>(`${this.baseUrl}${id}`, storeData, {
-      headers: {
-        'Content-Type': 'application/json',
-        // 'Authorization': `Bearer ${cookieService.getCookie('token')}`
-      }
-    });
+
+  updateStore(id: string, storeData: FormData | Partial<IStore>): Observable<IStore> {
+    // Check if the data is FormData or regular object
+    if (storeData instanceof FormData) {
+      // If it's FormData, we don't need to set Content-Type header
+      console.log('Updating store with FormData:', storeData , "ID:", id);
+      // For FormData, don't set Content-Type header - let browser set it with boundary
+      return this.httpRequest.patch<IStore>(`${this.baseUrl}${id}`, storeData, {
+        withCredentials: true
+      });
+    } else {
+      // For regular JSON object
+      return this.httpRequest.patch<IStore>(`${this.baseUrl}${id}`, storeData, {
+        headers: {
+          'Content-Type': 'application/json',
+          // 'Authorization': `Bearer ${cookieService.getCookie('token')}`
+        },
+        withCredentials: true
+      });
+    }
   }
-  addStore(storeData: IStore): Observable<IStore> {
-    return this.httpRequest.post<IStore>(this.baseUrl, storeData , {
-      headers: {
-        'Content-Type': 'application/json',
-        // 'Authorization': `Bearer ${cookieService.getCookie('token')}`
-      }
-    });
+
+  addStore(storeData: FormData | IStore): Observable<IStore> {
+    // Check if the data is FormData or regular object
+    if (storeData instanceof FormData) {
+      // For FormData, don't set Content-Type header - let browser set it with boundary
+      return this.httpRequest.post<IStore>(this.baseUrl, storeData, {
+        withCredentials: true
+      });
+    } else {
+      // For regular JSON object
+      return this.httpRequest.post<IStore>(this.baseUrl, storeData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true
+      });
+    }
   }
+
   deleteStore(id: string): Observable<void> {
     return this.httpRequest.delete<void>(`${this.baseUrl}${id}`, {
       headers: {
         'Content-Type': 'application/json',
-        // 'Authorization': `Bearer ${cookieService.getCookie('token')}`
-      }
+      },
+      withCredentials: true
     });
   }
 
