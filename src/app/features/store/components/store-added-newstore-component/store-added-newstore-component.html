@@ -50,27 +50,27 @@
               <input name="name" formControlName="name" type="text"
                 placeholder="Enter your store name (e.g., Downtown Electronics)" [ngClass]="{
                   'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': name.invalid && (name.touched || name.dirty),
-                  'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': name?.valid && (name?.touched || name?.dirty),
-                  'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !name?.touched && !name?.dirty
+                  'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': name.valid && (name.touched || name.dirty),
+                  'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !name.touched && !name.dirty
                 }"
                 class="mt-2 w-full px-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 placeholder-gray-400 text-gray-900 shadow-sm" />
 
-              @if (name?.invalid && (name?.dirty || name?.touched)) {
+              @if (name.invalid && (name.dirty || name.touched)) {
               <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-                @switch (name?.errors) {
-                @case (name?.errors?.['required']) {
+                @switch (name.errors) {
+                @case (name.errors?.['required']) {
                 <p class="text-sm text-red-700 flex items-center">
                   <lucide-icon [img]="AlertCircle" class="w-4 h-4 mr-2 text-red-500"></lucide-icon>
                   Please enter a store name to continue
                 </p>
                 }
-                @case (name?.errors?.['minlength']) {
+                @case (name.errors?.['minlength']) {
                 <p class="text-sm text-red-700 flex items-center">
                   <lucide-icon [img]="AlertCircle" class="w-4 h-4 mr-2 text-red-500"></lucide-icon>
                   Store name should be at least 3 characters long
                 </p>
                 }
-                @case (name?.errors?.['maxlength']) {
+                @case (name.errors?.['maxlength']) {
                 <p class="text-sm text-red-700 flex items-center">
                   <lucide-icon [img]="AlertCircle" class="w-4 h-4 mr-2 text-red-500"></lucide-icon>
                   Store name should not exceed 50 characters
@@ -111,22 +111,22 @@
                     <span class="text-red-500 ml-1">*</span>
                   </span>
                   <input formControlName="city" type="text" placeholder="Enter city name" [ngClass]="{
-                      'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': city?.invalid && (city?.touched || city?.dirty),
-                      'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': city?.valid && (city?.touched || city?.dirty),
-                      'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !city?.touched && !city?.dirty
+                      'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': city.invalid && (city.touched || city.dirty),
+                      'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': city.valid && (city.touched || city.dirty),
+                      'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !city.touched && !city.dirty
                     }"
                     class="mt-2 w-full px-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 placeholder-gray-400 text-gray-900 shadow-sm" />
 
-                  @if (city?.invalid && (city?.dirty || city?.touched)) {
+                  @if (city.invalid && (city.dirty || city.touched)) {
                   <div class="mt-2 text-sm text-red-600">
-                    @switch (city?.errors) {
-                    @case (city?.errors?.['required']) {
+                    @switch (city.errors) {
+                    @case (city.errors?.['required']) {
                     <span>Please enter the city name</span>
                     }
-                    @case (city?.errors?.['minlength']) {
+                    @case (city.errors?.['minlength']) {
                     <span>City name should be at least 2 characters</span>
                     }
-                    @case (city?.errors?.['maxlength']) {
+                    @case (city.errors?.['maxlength']) {
                     <span>City name is too long</span>
                     }
                     @default {
@@ -146,22 +146,22 @@
                     <span class="text-red-500 ml-1">*</span>
                   </span>
                   <input formControlName="postalCode" type="text" placeholder="Enter postal code" [ngClass]="{
-                      'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': postalCode?.invalid && (postalCode?.touched || postalCode?.dirty),
-                      'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': postalCode?.valid && (postalCode?.touched || postalCode?.dirty),
-                      'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !postalCode?.touched && !postalCode?.dirty
+                      'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': postalCode.invalid && (postalCode.touched || postalCode.dirty),
+                      'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': postalCode.valid && (postalCode.touched || postalCode.dirty),
+                      'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !postalCode.touched && !postalCode.dirty
                     }"
                     class="mt-2 w-full px-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 placeholder-gray-400 text-gray-900 shadow-sm" />
 
-                  @if (postalCode?.invalid && (postalCode?.dirty || postalCode?.touched)) {
+                  @if (postalCode.invalid && (postalCode.dirty || postalCode.touched)) {
                   <div class="mt-2 text-sm text-red-600">
-                    @switch (postalCode?.errors) {
-                    @case (postalCode?.errors?.['required']) {
+                    @switch (postalCode.errors) {
+                    @case (postalCode.errors?.['required']) {
                     <span>Postal code is required</span>
                     }
-                    @case (postalCode?.errors?.['minlength']) {
+                    @case (postalCode.errors?.['minlength']) {
                     <span>Postal code should be at least 2 characters</span>
                     }
-                    @case (postalCode?.errors?.['maxlength']) {
+                    @case (postalCode.errors?.['maxlength']) {
                     <span>Postal code should not exceed 10 characters</span>
                     }
                     @default {
@@ -181,22 +181,22 @@
                     <span class="text-red-500 ml-1">*</span>
                   </span>
                   <input formControlName="street" type="text" placeholder="Enter street address" [ngClass]="{
-                      'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': street?.invalid && (street?.touched || street?.dirty),
-                      'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': street?.valid && (street?.touched || street?.dirty),
-                      'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !street?.touched && !street?.dirty
+                      'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': street.invalid && (street.touched || street.dirty),
+                      'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': street.valid && (street.touched || street.dirty),
+                      'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !street.touched && !street.dirty
                     }"
                     class="mt-2 w-full px-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 placeholder-gray-400 text-gray-900 shadow-sm" />
 
-                  @if (street?.invalid && (street?.dirty || street?.touched)) {
+                  @if (street.invalid && (street.dirty || street.touched)) {
                   <div class="mt-2 text-sm text-red-600">
-                    @switch (street?.errors) {
-                    @case (street?.errors?.['required']) {
+                    @switch (street.errors) {
+                    @case (street.errors?.['required']) {
                     <span>Street address is required</span>
                     }
-                    @case (street?.errors?.['minlength']) {
+                    @case (street.errors?.['minlength']) {
                     <span>Street address should be at least 2 characters</span>
                     }
-                    @case (street?.errors?.['maxlength']) {
+                    @case (street.errors?.['maxlength']) {
                     <span>Street address is too long</span>
                     }
                     @default {
@@ -233,15 +233,15 @@
                 </span>
                 <input type="file" accept="image/*" (change)="onFileSelected($event)"
                 [ngClass]="{
-                  'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': logoUrl?.invalid && (logoUrl?.touched || logoUrl?.dirty),
-                  'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': logoUrl?.valid && (logoUrl?.touched || logoUrl?.dirty),
-                  'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !logoUrl?.touched && !logoUrl?.dirty
+                  'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': logoUrl.invalid && (logoUrl.touched || logoUrl.dirty),
+                  'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': logoUrl.valid && (logoUrl.touched || logoUrl.dirty),
+                  'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !logoUrl.touched && !logoUrl.dirty
                 }" class="mt-2 w-full px-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 placeholder-gray-400 text-gray-900 shadow-sm" />
 
                 <!-- Error messages -->
-                @if (logoUrl?.invalid && (logoUrl?.dirty || logoUrl?.touched)) {
+                @if (logoUrl.invalid && (logoUrl.dirty || logoUrl.touched)) {
                 <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-                  @if (logoUrl?.errors?.['required']) {
+                  @if (logoUrl.errors?.['required']) {
                   <p class="text-sm text-red-700">Please upload a logo file</p>
                   }
                 </div>
@@ -265,20 +265,20 @@
               <textarea formControlName="description" rows="4"
                 placeholder="Tell customers about your store, what makes it special, and what they can expect..."
                 [ngClass]="{
-                    'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': description?.invalid && (description?.touched || description?.dirty),
-                    'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': description?.valid && (description?.touched || description?.dirty),
-                    'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !description?.touched && !description?.dirty
+                    'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': description.invalid && (description.touched || description.dirty),
+                    'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': description.valid && (description.touched || description.dirty),
+                    'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !description.touched && !description.dirty
                   }"
                 class="mt-2 w-full px-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 placeholder-gray-400 text-gray-900 shadow-sm resize-vertical">
                 </textarea>
 
-              @if (description?.invalid && (description?.dirty || description?.touched)) {
+              @if (description.invalid && (description.dirty || description.touched)) {
               <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-                @switch (description?.errors) {
-                @case (description?.errors?.['required']) {
+                @switch (description.errors) {
+                @case (description.errors?.['required']) {
                 <p class="text-sm text-red-700">Please provide a description of your store</p>
                 }
-                @case (description?.errors?.['minlength']) {
+                @case (description.errors?.['minlength']) {
                 <p class="text-sm text-red-700">Description should be at least 10 characters to help customers
                   understand your store</p>
                 }
@@ -315,20 +315,20 @@
                   </span>
                   <textarea formControlName="shipping" rows="4"
                     placeholder="Describe your shipping options, delivery times, and costs..." [ngClass]="{
-                          'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': shipping?.invalid && (shipping?.touched || shipping?.dirty),
-                          'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': shipping?.valid && (shipping?.touched || shipping?.dirty),
-                          'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !shipping?.touched && !shipping?.dirty
+                          'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': shipping.invalid && (shipping.touched || shipping.dirty),
+                          'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': shipping.valid && (shipping.touched || shipping.dirty),
+                          'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !shipping.touched && !shipping.dirty
                         }"
                     class="mt-2 w-full px-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 placeholder-gray-400 text-gray-900 shadow-sm resize-vertical">
                       </textarea>
 
-                  @if (shipping?.invalid && (shipping?.dirty || shipping?.touched)) {
+                  @if (shipping.invalid && (shipping.dirty || shipping.touched)) {
                   <div class="mt-2 text-sm text-red-600">
-                    @switch (shipping?.errors) {
-                    @case (shipping?.errors?.['required']) {
+                    @switch (shipping.errors) {
+                    @case (shipping.errors?.['required']) {
                     <span>Shipping policy is required to inform customers</span>
                     }
-                    @case (shipping?.errors?.['minlength']) {
+                    @case (shipping.errors?.['minlength']) {
                     <span>Please provide more details about your shipping policy</span>
                     }
                     @default {
@@ -349,20 +349,20 @@
                   </span>
                   <textarea formControlName="returns" rows="4"
                     placeholder="Explain your return process, timeframes, and conditions..." [ngClass]="{
-                          'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': returns?.invalid && (returns?.touched || returns?.dirty),
-                          'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': returns?.valid && (returns?.touched || returns?.dirty),
-                          'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !returns?.touched && !returns?.dirty
+                          'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': returns.invalid && (returns.touched || returns.dirty),
+                          'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': returns.valid && (returns.touched || returns.dirty),
+                          'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !returns.touched && !returns.dirty
                         }"
                     class="mt-2 w-full px-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 placeholder-gray-400 text-gray-900 shadow-sm resize-vertical">
                       </textarea>
 
-                  @if (returns?.invalid && (returns?.dirty || returns?.touched)) {
+                  @if (returns.invalid && (returns.dirty || returns.touched)) {
                   <div class="mt-2 text-sm text-red-600">
-                    @switch (returns?.errors) {
-                    @case (returns?.errors?.['required']) {
+                    @switch (returns.errors) {
+                    @case (returns.errors?.['required']) {
                     <span>Return policy is required to set customer expectations</span>
                     }
-                    @case (returns?.errors?.['minlength']) {
+                    @case (returns.errors?.['minlength']) {
                     <span>Please provide more details about your return policy</span>
                     }
                     @default {
@@ -428,9 +428,9 @@
                     <span class="text-red-500 ml-1">*</span>
                   </span>
                   <select formControlName="status" [ngClass]="{
-                          'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': status?.invalid && (status?.touched || status?.dirty),
-                          'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': status?.valid && (status?.touched || status?.dirty),
-                          'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !status?.touched && !status?.dirty
+                          'border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200': status.invalid && (status.touched || status.dirty),
+                          'border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200': status.valid && (status.touched || status.dirty),
+                          'border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-100': !status.touched && !status.dirty
                         }"
                     class="mt-2 w-full px-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-4 text-gray-900 shadow-sm">
                     <option value="" disabled class="text-gray-400">Choose your store's current status</option>
@@ -441,10 +441,10 @@
                     }
                   </select>
 
-                  @if (status?.invalid && (status?.dirty || status?.touched)) {
+                  @if (status.invalid && (status.dirty || status.touched)) {
                   <div class="mt-2 text-sm text-red-600">
-                    @switch (status?.errors) {
-                    @case (status?.errors?.['required']) {
+                    @switch (status.errors) {
+                    @case (status.errors?.['required']) {
                     <span>Please select your store's current status</span>
                     }
                     @default {
