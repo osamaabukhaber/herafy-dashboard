@@ -17,8 +17,6 @@ import { Order, OrderItem, UpdateOrderItemData } from '../../../../shared/models
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    LoadingSpinnerComponent,
-    ConfirmDialogComponent
   ],
   template:'./order-detail.component.html'
 
