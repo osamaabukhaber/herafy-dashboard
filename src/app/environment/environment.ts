@@ -1,5 +1,5 @@
 export enum Environment {
   production = 'true',
-  apiBaseUrl= 'https://herafybackendapp-production.up.railway.app/api',
-  apiUrlRAG ="https://herafybackendapp-production.up.railway.app/api/rag",
+  apiBaseUrl= 'https://herafy-backend.vercel.app/api',
+  apiUrlRAG ="https://herafy-backend.vercel.app/api/rag",
 }
