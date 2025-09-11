@@ -7,7 +7,7 @@ import { CouponService } from '../../../services/coupon-service/coupon-service';
 @Component({
   selector: 'app-coupon-component',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgIf, NgFor, NgClass],
+  imports: [CommonModule, FormsModule],
   templateUrl: './coupon-component.html',
   styleUrl: './coupon-component.css',
 })
