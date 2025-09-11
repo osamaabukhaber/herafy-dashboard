@@ -5,20 +5,35 @@
       <p class="mt-2 text-sm text-gray-600 animate-slide-up [animation-delay:100ms]">Manage all products in your store.
       </p>
     </div>
-    <a routerLink="/products/create"
-      class="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-blue-300/50 transition-all duration-300 ease-in-out transform hover:scale-105 animate-slide-up [animation-delay:200ms]">
-      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-      </svg>
-      Create Product
-    </a>
+    <div class="mt-4 sm:mt-0 flex gap-3">
+      <!-- Refresh Button -->
+      <button title="Change status to approved"
+        (click)="refreshProducts()"
+        [disabled]="loading()"
+        class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all duration-300 ease-in-out transform hover:scale-105 animate-slide-up [animation-delay:150ms] disabled:opacity-50 disabled:cursor-not-allowed">
+        <svg class="w-4 h-4 mr-2 transition-transform duration-300" [class.animate-spin]="loading()" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+        </svg>
+        {{ loading() ? 'Refreshing...' : 'Refresh' }}
+      </button>
+
+      <!-- Create Product Button -->
+      <a routerLink="/products/create"
+        class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-blue-300/50 transition-all duration-300 ease-in-out transform hover:scale-105 animate-slide-up [animation-delay:200ms]">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+        Create Product
+      </a>
+    </div>
   </div>
 
 <section class="mb-6 relative">
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
     <!-- Total Orders -->
     <button
+      aria-label="Total orders"
       type="button"
       (click)="onStatusFilterChange('')"
       class="group relative overflow-hidden rounded-xl p-4 text-left  hover:scale-105 transition  focus:outline-none"
@@ -136,20 +151,6 @@
   }
 </section>
 
-
-
-
-  <!-- <div class="flex flex-wrap gap-3 mb-6">
-    @for (st of ['', 'pending', 'approved', 'rejected', 'suspended']; track st) {
-    <button class="px-4 py-2 rounded-full text-sm font-medium transition-all duration-300" [ngClass]="{
-      'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg scale-105': selectedStatus() === st,
-      'bg-white border border-gray-300 text-gray-700 hover:shadow-md hover:scale-105': selectedStatus() !== st
-    }" (click)="onStatusFilterChange(st)">
-      {{ st || 'All' | titlecase }}
-    </button>
-    }
-
-  </div> -->
 <div class="w-48 mb-5">
   <label for="status" class="sr-only">Filter by status</label>
 
@@ -174,7 +175,6 @@
     </svg>
   </div>
 </div>
-
 
   <div
     class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-x-auto animate-fade-in [animation-delay:300ms]">
@@ -258,6 +258,7 @@
           </td>
           <td class="hidden sm:table-cell px-4 sm:px-6 py-4 whitespace-nowrap">
             <img
+              alt=""
               class="h-10 sm:h-12 w-10 sm:w-12 rounded-lg object-cover shadow-sm transform hover:scale-110 transition-transform duration-300"
               [src]="product.images[0] || 'assets/images/placeholder.png'" [alt]="product.name" />
           </td>
@@ -289,12 +290,13 @@
               {{ getStockStatus(product) }}
             </span>
           </td>
- 
+
           <td>
             <div class="flex items-center gap-3">
               <div
                 class="inline-flex bg-white/20 backdrop-blur-xl border border-white/30 rounded-4xl p-0.5 shadow-2xl shadow-black/30">
                 <button
+                  title="Change status to approved"
                   class="p-2.5 hover:bg-gradient-to-br hover:from-emerald-200/50 hover:to-teal-300/50 focus:ring-4 focus:ring-emerald-400/40 transition-all duration-500 rounded-4xl"
                   [ngClass]="{'bg-gradient-to-br from-emerald-200/60 to-teal-300/60 shadow-lg shadow-emerald-200/30': product.status === 'approved'}"
                   (click)="onStatusChange('approved', product._id)">
@@ -315,6 +317,7 @@
                 <div class="w-px bg-gradient-to-b from-transparent via-white/20 to-transparent mx-0.5"></div>
 
                 <button
+                  title="Change status to pending"
                   class="p-2.5 hover:bg-gradient-to-br hover:from-rose-200/50 hover:to-red-300/50 focus:ring-4 focus:ring-rose-400/40 transition-all duration-500 rounded-4xl"
                   [ngClass]="{'bg-gradient-to-br from-rose-200/60 to-red-300/60 shadow-lg shadow-rose-200/30': product.status === 'rejected'}"
                   (click)="onStatusChange('rejected', product._id)">
@@ -333,9 +336,6 @@
                 </button>
               </div>
             </div>
-
-
-
           </td>
           <td
             class="px-4 sm:px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2 sm:space-x-4 animate-slide-up [animation-delay:300ms]">
@@ -360,6 +360,7 @@
               </svg>
             </a>
             <button (click)="deleteProduct(product._id)"
+               title="Change status to approved"
               class="inline-block text-red-600 hover:text-red-800 transition-colors duration-300 transform hover:scale-110">
               <svg class="w-4 sm:w-5 h-4 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg">
@@ -375,7 +376,6 @@
       </tbody>
     </table>
   </div>
-
 
   <!-- Pagination -->
   <div class="flex items-center justify-center mt-8 space-x-2">
@@ -398,6 +398,5 @@
       Next
     </button>
   </div>
-
 
 </div>

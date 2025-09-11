@@ -2,7 +2,7 @@
   "extends": [
     "development"
   ],
-   "hints": {
+  "hints": {
     "compat-api/css": [
       "default",
       {
@@ -10,7 +10,8 @@
           "backdrop-filter"
         ]
       }
-    ]
+    ],
+    "no-inline-styles": "off"
   },
   "browserslist": [
     "defaults",

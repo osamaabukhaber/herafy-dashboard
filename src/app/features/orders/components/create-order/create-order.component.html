@@ -187,7 +187,7 @@
                                             <!-- Product Preview -->
                                             @if (getSelectedProduct(i); as product) {
                                                 <div class="mt-6 flex items-center space-x-4 p-4 backdrop-blur-sm bg-gradient-to-r from-gray-50/80 to-blue-50/80 rounded-xl border border-white/30">
-                                                    @if (product.images?.[0]) {
+                                                    @if (product?.images?.[0]) {
                                                         <img [src]="product.images[0]" [alt]="product.name"
                                                              class="w-16 h-16 object-cover rounded-xl shadow-md">
                                                     } @else {

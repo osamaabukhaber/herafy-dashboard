@@ -1,4 +1,3 @@
-
 import { ChangeDetectorRef, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -31,6 +30,7 @@ export class ProductListComponent implements OnInit {
   ngOnInit() {
     this.fetchProducts();
   }
+
   statusCounts = signal<Record<string, number>>({ all: 0, approved: 0, pending: 0, rejected: 0 });
 
   // derived counts
@@ -39,6 +39,10 @@ export class ProductListComponent implements OnInit {
   pendingCount = computed(() => this.products().filter(p => (p as any).status === 'pending').length);
   rejectedCount = computed(() => this.products().filter(p => (p as any).status === 'rejected').length);
 
+  // Refresh products method
+  refreshProducts(): void {
+    this.fetchProducts();
+  }
 
   // when user clicks a card to filter
   onStatusFilterChange(status: string) {
@@ -47,8 +51,6 @@ export class ProductListComponent implements OnInit {
     this.currentPage.set(1);
     this.fetchProducts();
   }
-
-
 
   fetchProducts(): void {
     this.loading.set(true);
@@ -77,7 +79,6 @@ export class ProductListComponent implements OnInit {
       this.fetchProducts();
     }
   }
-
 
   deleteProduct(id: string): void {
     if (confirm('Are you sure you want to delete this product?')) {
@@ -116,22 +117,18 @@ export class ProductListComponent implements OnInit {
     return 'In Stock';
   }
 
-
-onStatusChange(status: string, productId: string) {
-  this.productApi.updateProductStatus(productId, status).subscribe({
-    next: () => {
-      this.products.update(products =>
-        products.map(product =>
-          product._id === productId ? { ...product, status } : product
-        )
-      );
-    },
-    error: (err) => {
-      console.error('Failed to update status', err);
-    },
-  });
+  onStatusChange(status: string, productId: string) {
+    this.productApi.updateProductStatus(productId, status).subscribe({
+      next: () => {
+        this.products.update(products =>
+          products.map(product =>
+            product._id === productId ? { ...product, status } : product
+          )
+        );
+      },
+      error: (err) => {
+        console.error('Failed to update status', err);
+      },
+    });
+  }
 }
-
-
-}
-

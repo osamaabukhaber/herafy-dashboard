@@ -30,7 +30,6 @@ interface OrderItemForm {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    LoadingSpinnerComponent
   ],
   templateUrl:"./create-order.component.html"
 })

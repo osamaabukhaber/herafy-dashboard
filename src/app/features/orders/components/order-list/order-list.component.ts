@@ -15,8 +15,6 @@ type OrderListType = 'user' | 'admin' | 'seller';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
-    LoadingSpinnerComponent,
-    EmptyStateComponent,
     PaginationComponent,
   ],
   templateUrl: './order-list.component.html',

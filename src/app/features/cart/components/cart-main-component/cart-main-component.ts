@@ -14,6 +14,14 @@ interface ICartWithSelection extends ICart {
   selected?: boolean;
 }
 
+interface StatCard {
+  label: string;
+  value: string;
+  bgClass: string;
+  iconClass: string;
+  iconPath: string;
+}
+
 @Component({
   selector: 'app-cart-main-component',
   imports: [CommonModule, FormsModule],
@@ -26,6 +34,10 @@ export class CartMainComponent implements OnInit {
   users: IUser[] = [];
   products: Product[] = [];
   coupons: ICoupon[] = [];
+
+  /** Loading States */
+  isLoading = false;
+  isRefreshing = false;
 
   /** Modal states */
   showCartModal = false;
@@ -72,7 +84,11 @@ export class CartMainComponent implements OnInit {
   }
 
   /** ===== Data Fetching ===== */
-  private loadCarts(): void {
+  private loadCarts(showLoading: boolean = true): void {
+    if (showLoading) {
+      this.isLoading = true;
+    }
+
     const queryParams: any = {};
 
     // Add search term if exists
@@ -96,24 +112,37 @@ export class CartMainComponent implements OnInit {
     }).subscribe({
       next: (response: IcartResponceApi) => {
         if (response.status === 'success') {
-          this.cartList = response.data.carts.map(cart  => ({ ...cart, selected: false }));
+          this.cartList = response.data.carts.map(cart => ({ ...cart, selected: false }));
           this.totalCarts = response.pagination.total;
           this.totalPages = response.pagination.totalPages;
           this.currentPage = response.pagination.currentPage;
 
           console.log('Fetched cart items:', this.cartList);
           this.updateStats();
-          this.cdr.detectChanges();
         } else {
           console.error('Failed to fetch cart items');
-          this.cdr.detectChanges()
         }
       },
       error: (error) => {
         console.error('Error fetching cart items:', error);
+      },
+      complete: () => {
+        this.isLoading = false;
+        this.isRefreshing = false;
         this.cdr.detectChanges();
       }
     });
+  }
+
+  /** ===== Refresh Functionality ===== */
+  refreshCarts(): void {
+    this.isRefreshing = true;
+    this.clearSelection(); // Clear any selections on refresh
+    
+    // Add a small delay for better UX (showing the spinning animation)
+    setTimeout(() => {
+      this.loadCarts(false); // Don't show main loading skeleton during refresh
+    }, 500);
   }
 
   /** ===== Stats ===== */
@@ -121,6 +150,39 @@ export class CartMainComponent implements OnInit {
     this.activeCarts = this.cartList.filter(c => !c.isDeleted).length;
     this.totalValue = this.cartList.reduce((sum, c) => sum + c.totalAfterDiscount, 0);
     this.avgCartValue = this.totalCarts ? this.totalValue / this.totalCarts : 0;
+  }
+
+  getStatsCards(): StatCard[] {
+    return [
+      {
+        label: 'Total Carts',
+        value: this.totalCarts.toString(),
+        bgClass: 'bg-gradient-to-br from-blue-100 to-blue-200',
+        iconClass: 'text-blue-600',
+        iconPath: 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'
+      },
+      {
+        label: 'Total Value',
+        value: this.formatCurrency(this.totalValue),
+        bgClass: 'bg-gradient-to-br from-green-100 to-green-200',
+        iconClass: 'text-green-600',
+        iconPath: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'
+      },
+      {
+        label: 'Active Carts',
+        value: this.activeCarts.toString(),
+        bgClass: 'bg-gradient-to-br from-orange-100 to-orange-200',
+        iconClass: 'text-orange-600',
+        iconPath: 'M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z'
+      },
+      {
+        label: 'Avg Cart',
+        value: this.formatCurrency(this.avgCartValue),
+        bgClass: 'bg-gradient-to-br from-purple-100 to-purple-200',
+        iconClass: 'text-purple-600',
+        iconPath: 'M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z'
+      }
+    ];
   }
 
   /** ===== Filters & Search ===== */
@@ -147,21 +209,21 @@ export class CartMainComponent implements OnInit {
 
   /** ===== Pagination ===== */
   goToPage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
+    if (page >= 1 && page <= this.totalPages && !this.isLoading) {
       this.currentPage = page;
       this.loadCarts();
     }
   }
 
   previousPage(): void {
-    if (this.currentPage > 1) {
+    if (this.currentPage > 1 && !this.isLoading) {
       this.currentPage--;
       this.loadCarts();
     }
   }
 
   nextPage(): void {
-    if (this.currentPage < this.totalPages) {
+    if (this.currentPage < this.totalPages && !this.isLoading) {
       this.currentPage++;
       this.loadCarts();
     }
@@ -205,37 +267,45 @@ export class CartMainComponent implements OnInit {
 
   /** ===== CRUD Navigation ===== */
   openCreateCartModal(): void {
-    this.router.navigate(['/createcart']);
+    if (!this.isLoading) {
+      this.router.navigate(['/createcart']);
+    }
   }
 
   editCart(cart: ICart): void {
-    this.router.navigate(['/updatecart', cart._id]);
+    if (!this.isLoading) {
+      this.router.navigate(['/updatecart', cart._id]);
+    }
   }
 
   editCartFromView(): void {
-    if (this.selectedCart) {
+    if (this.selectedCart && !this.isLoading) {
       this.editCart(this.selectedCart);
     }
   }
 
   viewCart(cart: ICart): void {
-    this.router.navigate(['/viewcart', cart._id]);
+    if (!this.isLoading) {
+      this.router.navigate(['/viewcart', cart._id]);
+    }
   }
 
   /** ===== Delete ===== */
   confirmDelete(cart: ICart): void {
-    this.cartToDelete = cart;
-    this.showDeleteModal = true;
+    if (!this.isLoading) {
+      this.cartToDelete = cart;
+      this.showDeleteModal = true;
+    }
   }
 
   deleteCart(id: string): void {
-    if (!id) return;
+    if (!id || this.isLoading) return;
     if (!confirm('Are you sure you want to delete this cart?')) return;
 
     this.cartApiService.deleteCartById(id).subscribe({
       next: () => {
         // Refresh the current page to get updated data
-        this.loadCarts();
+        this.refreshCarts();
       },
       error: (err) => console.error('Error deleting cart:', err)
     });
@@ -243,6 +313,8 @@ export class CartMainComponent implements OnInit {
 
   // Bulk delete selected carts
   deleteSelectedCarts(): void {
+    if (this.isLoading) return;
+    
     const selectedCarts = this.getSelectedCarts();
     if (selectedCarts.length === 0) return;
 
@@ -253,8 +325,7 @@ export class CartMainComponent implements OnInit {
     );
 
     Promise.all(deletePromises).then(() => {
-      this.loadCarts();
-      this.clearSelection();
+      this.refreshCarts();
     }).catch(err => {
       console.error('Error deleting carts:', err);
     });
@@ -262,16 +333,16 @@ export class CartMainComponent implements OnInit {
 
   /** ===== Restore ===== */
   restoreCart(cart: ICart): void {
-    if (!cart._id) return;
+    if (!cart._id || this.isLoading) return;
 
     // Call restore API if available
     // this.cartApiService.restoreCartById(cart._id).subscribe({
-    //   next: () => this.loadCarts(),
+    //   next: () => this.refreshCarts(),
     //   error: (err) => console.error('Error restoring cart:', err)
     // });
 
     // For now, just reload the data
-    this.loadCarts();
+    this.refreshCarts();
   }
 
   /** ===== Utilities ===== */
@@ -302,5 +373,10 @@ export class CartMainComponent implements OnInit {
     const start = (this.currentPage - 1) * this.pageSize + 1;
     const end = Math.min(this.currentPage * this.pageSize, this.totalCarts);
     return `Showing ${start}-${end} of ${this.totalCarts} carts`;
+  }
+
+  /** ===== Loading State Helpers ===== */
+  getSkeletonArray(count: number): number[] {
+    return Array.from({ length: count }, (_, i) => i + 1);
   }
 }
