@@ -27,7 +27,7 @@ import { OrderDetailComponent } from './features/orders/components/order-detail/
 import { CreateOrderComponent } from './features/orders/components/create-order/create-order.component.js';
 import { ProductDetailComponent } from './features/products/components/product-detail/product-detail.component.js';
 import { DashboardChartsComponent } from './features/charts-component/dashboard-charts/dashboard-charts';
-import { Chatbot } from './features/chat bot/components/chatbot/chatbot';
+import { Chatbot } from './features/chatbot/components/chatbot/chatbot';
 
 export const routes: Routes = [
   {
@@ -36,8 +36,8 @@ export const routes: Routes = [
     /* resolve: { loggedIn: AuthStatusResolver }, */
     canActivate: [AuthGuard], // optional now, could be removed
     children: [
-      {path: '', component: DashboardChartsComponent},
-      {path: 'user', component: User },
+      {path: '', component: DashboardChartsComponent , title:"dashboard"},
+      {path: 'user', component: User , title:"user mangement" },
       {path:"store",component:StoreComponent ,title:"store mangement"},
       {path:"add-new-store", component:StoreAddedNewstoreComponent ,title:"add new store"},
       {path: 'update-store/:id', component: StoreUpdateSroreComponent, title: "update store"},
@@ -48,14 +48,14 @@ export const routes: Routes = [
       {path:"viewcart/:id", component:CartViewComponent , title:"view cart"},
       {path:"payments", component:AdminPaymentManagementComponent , title:"payments mangement"},
       { path: 'view-payment/:id', component: PaymentsViewComponent, title: 'view payment' },
-      { path: 'coupon', component: CouponComponent },
-      { path: 'reviews', component: ReviewComponent },
-      { path: 'products', component: ProductListComponent },
-      { path: 'products/:id/edit', component: ProductDetailComponent },
-      { path: 'products/:id/view', component: ProductDetailComponent },
+      { path: 'coupon', component: CouponComponent , title: 'coupon mangement' },
+      { path: 'reviews', component: ReviewComponent , title: 'review mangement' },
+      { path: 'products', component: ProductListComponent , title: 'products mangement' },
+      { path: 'products/:id/edit', component: ProductDetailComponent , title: 'edit product' },
+      { path: 'products/:id/view', component: ProductDetailComponent , title: 'view product' },
       // { path: 'products/:id/edit',  }
       { path: 'products/create', component: ProductFormComponent, title: 'Create Product' },
-      { path: 'category', component: CategoryComponent },
+      { path: 'category', component: CategoryComponent , title: 'category mangement' },
       { path: 'chatbot', component: Chatbot , title: "chatbot" },
       { path: 'orders', component: OrderListComponent, title: "orders" },
       { path: 'orders/create', component: CreateOrderComponent, title: "order" },
@@ -63,6 +63,6 @@ export const routes: Routes = [
       // { path: 'create-order', component: CreateOrderComponent, title: "create order" },
     ],
   },
-  { path: 'login', component: Login },
+  { path: 'login', component: Login , title: 'Login' },
   { path: '**', component: NotFoundComponent, title: 'Not Found' },
 ];
